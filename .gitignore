@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# MkDocs build output
+site/
+
+# OS
+.DS_Store
+
+# Logs (raw data, not published)
+logs/
+
+# Download log
+*.log
