@@ -23,7 +23,6 @@ theme:
   features:
     - navigation.instant
     - navigation.top
-    - navigation.sections
     - search.highlight
     - search.suggest
     - content.code.copy
