@@ -22,12 +22,41 @@ theme:
         name: 切换到亮色模式
   features:
     - navigation.instant
-    - navigation.tabs
     - navigation.expand
     - navigation.top
+    - navigation.sections
     - search.highlight
     - search.suggest
     - content.code.copy
+
+nav:
+  - Home: index.md
+  - 2026-03-19:
+    - CubiD — Cubic Discrete Diffusion: 2026-03-19/cubid.md
+    - FLAC — Few-shot Acoustic Synthesis: 2026-03-19/flac.md
+    - GenVideoLens — AI-Generated Video Detection: 2026-03-19/genvideolens.md
+    - Matryoshka Gaussian Splatting: 2026-03-19/matryoshka-gaussian-splatting.md
+    - MonoArt — Monocular Articulated 3D: 2026-03-19/monoart.md
+    - VEGA-3D — 3D Priors for Scene Understanding: 2026-03-19/vega-3d.md
+    - VLA Mechanistic Study: 2026-03-19/vla-mechanistic-study.md
+    - SEAR — RGB+Thermal 3D Reconstruction: 2026-03-19/sear.md
+    - T-QPM — Temporal OOD Detection for VLMs: 2026-03-19/t-qpm.md
+  - 2026-03-18:
+    - EvoGuard — AI-Generated Image Detection: 2026-03-18/evoguard.md
+    - FineViT — Fine-Grained Perception: 2026-03-18/finevit.md
+    - Harm or Humor — Harmful Humor Benchmark: 2026-03-18/harm-or-humor.md
+    - MCoT-MVS — Composed Image Retrieval: 2026-03-18/mcot-mvs.md
+    - ProbeFlow — Adaptive VLA Flow Matching: 2026-03-18/probeflow.md
+    - UniSAFE — Multimodal Safety Evaluation: 2026-03-18/unisafe.md
+  - 2026-03-17:
+    - BATQuant — MXFP4 Quantization: 2026-03-17/batquant.md
+    - CIRCLES — Counterfactual In-Context Learning: 2026-03-17/circles.md
+    - HeBA — Heterogeneous Bottleneck Adapters: 2026-03-17/heba.md
+    - IOMM — Masked Modeling for Image Pre-training: 2026-03-17/iomm.md
+    - Proxy-GRM — VLM Reward Models: 2026-03-17/proxy-grm.md
+    - V-DyKnow — Time-Sensitive VLM Benchmark: 2026-03-17/v-dyknow.md
+    - VIGOR — Video Generative Alignment: 2026-03-17/vigor.md
+    - VisBrowse-Bench — Visual Browsing Agents: 2026-03-17/visbrowse-bench.md
 
 plugins:
   - search
