@@ -40,6 +40,12 @@ nav:
     - VLA Mechanistic Study: 2026-03-19/vla-mechanistic-study.md
     - SEAR — RGB+Thermal 3D Reconstruction: 2026-03-19/sear.md
     - T-QPM — Temporal OOD Detection for VLMs: 2026-03-19/t-qpm.md
+    - Balanced Thinking — CoT in VLMs: 2026-03-19/balanced-thinking.md
+    - HiMu — Long Video QA Frame Selection: 2026-03-19/himu.md
+    - LVOmniBench — Long Audio-Video Evaluation: 2026-03-19/lvomnibench.md
+    - MemMA — Multi-Agent Memory Reasoning: 2026-03-19/memma.md
+    - PowerFlow — LLM Distribution Matching: 2026-03-19/powerflow.md
+    - Counting Circuits — LVLM Interpretability: 2026-03-19/counting-circuits.md
   - 2026-03-18:
     - EvoGuard — AI-Generated Image Detection: 2026-03-18/evoguard.md
     - FineViT — Fine-Grained Perception: 2026-03-18/finevit.md
