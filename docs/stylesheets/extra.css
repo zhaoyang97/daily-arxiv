@@ -18,3 +18,21 @@
   padding: 0.5em 0.8em;
   font-size: 0.85em;
 }
+
+/* AI 生成声明 - 页面内容底部 */
+.md-content__inner::after {
+  content: "\1F916  本站笔记由 AI 辅助生成，内容仅供学术参考，如有错误欢迎指正";
+  display: block;
+  margin-top: 2.5em;
+  padding: 0.8em 1em;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+  color: var(--md-default-fg-color--light);
+  font-size: 0.8em;
+  text-align: center;
+}
+
+/* AI 生成声明 - 站点页脚 */
+.md-copyright {
+  font-size: 0.72rem;
+  opacity: 0.85;
+}

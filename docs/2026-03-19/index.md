@@ -8,7 +8,7 @@
 
 🛡️ AI安全
 
-用开源 LLM + ICL 实现隐私保护的简历自动筛选，性能匹配/超越商业 LLM 且速度更快。
+提出 AutoScreen-FW，一个本地部署的开源 LLM 简历筛选框架，通过三种代表性样本选择策略（多样性/相似性/聚类）+ 评价准则 + persona 描述进行 few-shot ICL，使 Qwen3-8B 在日本潜力型招聘场景下匹配甚至超越 GPT-5-mini，且每份简历筛选速度快 24-51%。
 
 ---
 
@@ -32,7 +32,7 @@
 
 👁️ 多模态/VLM
 
-通过跨模态理据迁移实现可解释的社交媒体危机分类，提升2-35%且零样本准确率达80%。
+提出 VLTCrisis，一个可解释的多模态危机推文分类框架：先用 ViLT 编码器联合学习文本理据（有监督）和图像理据（通过跨模态对齐零样本迁移），再仅基于提取的理据进行分类，实现 interpretable-by-design。在 CrisisMMD 上 Macro-F1 比 baseline 高 2-35%，零样本泛化到新数据集达 80% 准确率。
 
 ---
 
@@ -56,7 +56,7 @@
 
 🎨 图像生成 / 科学计算
 
-首个用离散 Flow Matching 从质谱预测分子结构的框架，在6个指标中5个达到SOTA，通过迭代优化+化学式约束生成合理分子候选。
+提出 FlowMS，首个将离散 flow matching 用于质谱条件下从头分子结构生成的框架，通过线性插值噪声路径 + CTMC 去噪 + 化学式约束，在 NPLIB1 基准的 6 个指标中 5 个达到 SOTA：9.15% top-1 准确率（比 DiffMS 提升 9.7%）和 7.96 top-10 MCES（比 MS-BART 提升 4.2%）。
 
 ---
 
@@ -72,7 +72,7 @@
 
 🎬 视频理解 / 多模态/VLM
 
-提出 HiMu，用单次 LLM 调用将查询分解为层次逻辑树，叶节点路由到轻量多模态专家（CLIP/OCR/ASR/CLAP），通过模糊逻辑算子自下而上组合产生帧满意度曲线——在 Qwen3-VL 8B + 16 帧配置下超越所有帧选择器，在 GPT-4o 下以 10× 更少 FLOPs 超越 Agent 方法。
+提出 HiMu，一个无训练帧选择框架：用单次 text-only LLM 调用将查询分解为层次逻辑树 → 叶节点路由到轻量多模态专家（CLIP/OVD/OCR/ASR/CLAP）→ 信号归一化+时序平滑 → 模糊逻辑算子自下而上组合成帧满意度曲线 → top-K 帧送入 LVLM。在 Video-MME 上以约 10× 更少 FLOPs 接近 Agent 方法性能，全面超越所有相似度选择器。
 
 ---
 
@@ -88,7 +88,7 @@
 
 🧊 3D视觉 / 机器人
 
-将度量-语义语言查询分解为多个组件，由VLM智能体分别接地并概率组合用于机器人导航，包含 MAPG-Bench 基准和真实机器人部署。
+提出 MAPG（Multi-Agent Probabilistic Grounding），将自然语言度量-语义查询（如"冰箱右边 2 米"）分解为锚点+空间关系+度量约束，由多个 VLM Agent 分别接地并通过概率核组合生成规划器可用的 3D 目标分布。在新提出的 MAPG-Bench 上将目标定位误差从 5.82m 降至 0.07m（98.8% 降幅）。
 
 ---
 
@@ -104,7 +104,7 @@
 
 🦾 LLM Agent
 
-提出 MemMA，一个即插即用的多智能体框架，通过前向路径（Meta-Thinker 指导记忆构建和迭代检索）和后向路径（原位自演化记忆修复）协调记忆循环的三个阶段（构建-检索-利用），在 LoCoMo 上一致超越现有记忆增强基线。
+提出 MemMA，一个即插即用的多智能体框架，通过前向路径（Meta-Thinker 指导 Memory Manager 构建 + Query Reasoner 迭代检索）和后向路径（原位自演化记忆修复：合成探测 QA→验证→失败转修复）协调记忆循环的三个阶段，在 LoCoMo 上整体 ACC 从 75.66% 提升至 81.58%。
 
 ---
 
@@ -120,7 +120,7 @@
 
 🧠 LLM推理
 
-提出 PowerFlow，将无监督 LLM 微调形式化为 α-幂分布匹配问题——α>1 锐化分布增强推理、α<1 平化分布释放创造力——通过长度感知的 Trajectory-Balance 目标解决自回归长度偏差，在无外部监督下匹配甚至超越有监督的 GRPO。
+提出 PowerFlow，将无监督 LLM 微调形式化为 α-幂分布匹配问题——α>1 锐化分布增强推理、α<1 平化分布释放创造力——通过长度感知的 Trajectory-Balance (LA-TB) 目标解决自回归长度偏差。在推理任务上无监督匹配甚至超越 GRPO（有监督），在创造力任务上突破质量-多样性 Pareto 边界。
 
 ---
 
@@ -128,7 +128,7 @@
 
 🎨 图像生成
 
-证明自回归模型通过跨多种token顺序的序边际化预测可超越扩散分类器，效率提升25×同时达到与判别式自监督模型竞争的分类性能。
+揭示固定 token 顺序是 AR 生成式分类器的关键瓶颈，利用 any-order AR 模型（RandAR）通过对多种排列取序边际化（order-marginalized）估计类条件 log-likelihood，在 ImageNet 及 OOD 基准上全面超越扩散分类器，效率提升 25×，并首次与 DINOv2 等 SOTA 自监督方法竞争。
 
 ---
 
@@ -144,7 +144,7 @@
 
 👁️ 多模态/VLM
 
-提出 SLU-SUITE（490K标注QA×33种电影任务）和 UniShot/AgentShots 模型，在电影镜头语言理解上超越任务专用集成和商业VLM 22%。
+提出 SLU-SUITE（490K 人工标注 QA × 33 个电影任务 × 6 维度）和两套方案：UniShot（单模型均衡泛化，动态平衡数据混合）和 AgentShots（专家路由集群，零样本超越 Gemini-3.0-Pro 22%），揭示 VLM 用于镜头语言理解的瓶颈是语义对齐而非视觉感知。
 
 ---
 
@@ -158,9 +158,9 @@
 
 ### [TexEditor: Structure-Preserving Text-Driven Texture Editing](texeditor.md)
 
-🎨 LLM效率 / 图像生成
+🎨 图像生成 / 图像编辑
 
-通过 TexBlender 合成数据和 TexBench 真实基准实现文本驱动的结构保持纹理编辑，在物体外观修改上一致超越基线。
+提出 TexEditor，通过 Blender 合成的 TexBlender 数据集做 SFT 冷启动 + StructureNFT 强化学习（结合指令遵循和结构保持奖励）两阶段训练，在文本驱动纹理编辑中一致超越 Nano Banana Pro 等 SOTA 编辑模型，同时提出 TexBench（真实世界基准）和 TexEval（结合结构一致性的评估指标）。
 
 ---
 

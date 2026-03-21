@@ -48,15 +48,15 @@
 
 👁️ 多模态/VLM
 
-揭示 VLM 集成中的家族相关误差（有效独立投票者仅 2.5-3.6 个），提出 Learned Candidate Scoring (LCS) 在 VQAv2/TextVQA/GQA 上分别提升 0.68/0.61/2.45%，VQAv2 达 87.83%。
+揭示 VLM 集成中的家族相关误差（17个模型仅等价于 2.5-3.6 个独立投票者），提出 Hierarchical Family Voting 和 Learned Candidate Scoring 分别在 Misleading 层恢复 +18-26pp 和在 VQAv2 达到 87.83%。
 
 ---
 
-### [Hyperbolic Multimodal Generative Representation Learning for Generalized Zero-Shot Multimodal Information Extraction](hyperbolic-mmgr.md)
+### [Hyperbolic Multimodal Generative Representation Learning for Generalized Zero-Shot MIE](hyperbolic-mmgr.md)
 
 👁️ 多模态/VLM
 
-在双曲空间中学习多模态生成表示，用于泛化零样本多模态信息抽取，结合图表示和语言模型实现层次化语义知识融合。
+在双曲空间中构建多模态生成表示框架（HMGRL），通过双曲变分信息瓶颈（HVIB）对齐多模态特征并用双曲条件VAE（HMCVAE）生成未见类别的合成样本，实现泛化零样本多模态信息抽取。
 
 ---
 
@@ -88,7 +88,7 @@
 
 👁️ 多模态/VLM
 
-将CLIP启发的对比学习应用于明场显微图像+光学剖面的跨模态浮游生物识别，用少量标注数据实现高精度分类和跨域泛化。
+将 CLIP 式对比学习应用于显微图像+光学剖面（散射/荧光信号）的跨模态浮游生物识别，域内 96% 准确率，跨域 90%+，仅光学信号也达 60%。
 
 ---
 
@@ -102,9 +102,9 @@
 
 ### [RaDAR: Relation-aware Diffusion-Asymmetric Graph Contrastive Learning for Recommendation](radar-recsys.md)
 
-🎨 图像生成 / 推荐系统
+📋 推荐系统
 
-提出 RaDAR，结合扩散引导的图增强和非对称对比学习用于推荐系统，通过关系感知的边细化在噪声和稀疏条件下显著超越 SOTA。
+结合扩散引导的图增强和非对称对比学习用于推荐系统，通过关系感知的边细化在噪声和稀疏条件下显著超越 SOTA。
 
 ---
 
@@ -112,7 +112,7 @@
 
 🎨 图像生成
 
-提出 SemTok，将2D图像压缩为语义对齐的1D token序列，通过语义对齐约束实现SOTA图像重建保真度，为下游自回归生成提供紧凑输入。
+提出 SemTok，用 MMDiT 编码器将 2D 图像压缩为语义对齐的 1D token 序列（~40 tokens/256×256），通过 SigLIP 约束+两阶段训练实现 SOTA 图像重建（5.04 rFID, 1.28 bpp），为 AR 生成提供紧凑输入。
 
 ---
 
@@ -128,7 +128,7 @@
 
 🧊 3D视觉
 
-提出 VIEW2SPACE 基准（2000个3D场景，3M QA对），评估从稀疏多视图进行3D推理的能力，提出基于视觉证据的 Grounded Chain-of-Thought 方法实现 +52% mIoU 提升并可迁移到真实世界。
+构建可扩展 3D 数据引擎生成 2000 个高保真 3D 场景（300万 QA 对），提出 VIEW2SPACE 基准系统评估稀疏多视图推理——SOTA VLM 仅勉强超过随机猜测；提出 Grounded Chain-of-Thought with Visual Evidence 方法在视觉定位任务上提升 +52% mIoU，且可零样本迁移到真实数据集超越专用模型 9%+。
 
 ---
 
@@ -150,16 +150,16 @@
 
 ### [Visual Distraction Undermines Moral Reasoning in Vision-Language Models](visual-distraction-moral.md)
 
-🤖 机器人 / AI安全
+🛡️ AI安全
 
-提出 Moral Dilemma Simulation (MDS) 基准，揭示视觉输入会绕过 VLM 的文本安全机制——视觉模态激活直觉式推理路径，覆盖纯文本场景中的审慎推理，导致道德判断退化。
+提出 Moral Dilemma Simulation (MDS)——基于道德基础理论的可控多模态道德基准（84K 样本），通过三模态诊断协议（文本/描述/图像）揭示视觉输入系统性地破坏 VLM 的道德推理：压制功利主义敏感度、削弱义务论约束、放大人口统计偏见——文本安全对齐无法迁移到视觉模态。
 
 ---
 
 ### [WorldCam: Interactive Autoregressive 3D Gaming Worlds with Camera Pose as Unifying Representation](worldcam.md)
 
-🎨 图像生成
+🎨 图像生成 / 世界模型
 
-以相机位姿(6-DoF)为统一几何表示，通过视频扩散模型实现交互式3D游戏世界生成，支持精确动作控制、长程导航和一致的3D几何，使用3000分钟标注游戏数据训练。
+以相机位姿为统一几何表示，在李代数 $\mathfrak{se}(3)$ 上严格建模用户动作 → 6-DoF 相机位姿，通过 Plücker 嵌入注入视频 DiT + 位姿索引的长期记忆池实现 3D 一致性，配合渐进式自回归推理和 attention sink 支持长序列生成，在 3000 分钟游戏数据上超越 SOTA。
 
 ---

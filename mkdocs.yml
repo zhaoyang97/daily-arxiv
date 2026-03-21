@@ -3,123 +3,117 @@ site_url: https://zhaoyang97.github.io/daily-arxiv/
 site_description: 每日 arXiv AI/LLM/NLP/CV 论文精选笔记
 repo_url: https://github.com/zhaoyang97/daily-arxiv
 docs_dir: docs
-
 theme:
   name: material
   language: zh
   palette:
-    - scheme: default
-      primary: deep purple
-      accent: amber
-      toggle:
-        icon: material/brightness-7
-        name: 切换到暗色模式
-    - scheme: slate
-      primary: deep purple
-      accent: amber
-      toggle:
-        icon: material/brightness-4
-        name: 切换到亮色模式
+  - scheme: default
+    primary: deep purple
+    accent: amber
+    toggle:
+      icon: material/brightness-7
+      name: 切换到暗色模式
+  - scheme: slate
+    primary: deep purple
+    accent: amber
+    toggle:
+      icon: material/brightness-4
+      name: 切换到亮色模式
   features:
-    - navigation.instant
-    - navigation.indexes
-    - navigation.top
-    - search.highlight
-    - search.suggest
-    - content.code.copy
-
+  - navigation.instant
+  - navigation.indexes
+  - navigation.top
+  - search.highlight
+  - search.suggest
+  - content.code.copy
 nav:
-  - Home: index.md
-  - 2026-03-19:
-    - 2026-03-19/index.md
-    - AutoScreen-FW — Resume Screening: 2026-03-19/autoscreen-fw.md
-    - Balanced Thinking — CoT in VLMs: 2026-03-19/balanced-thinking.md
-    - Counting Circuits — LVLM Interpretability: 2026-03-19/counting-circuits.md
-    - Cross-Modal Rationale Transfer: 2026-03-19/cross-modal.md
-    - CubiD — Cubic Discrete Diffusion: 2026-03-19/cubid.md
-    - FLAC — Few-shot Acoustic Synthesis: 2026-03-19/flac.md
-    - FlowMS — Structure Elucidation from Mass Spectra: 2026-03-19/flowms.md
-    - GenVideoLens — AI-Generated Video Detection: 2026-03-19/genvideolens.md
-    - HiMu — Long Video QA Frame Selection: 2026-03-19/himu.md
-    - LVOmniBench — Long Audio-Video Evaluation: 2026-03-19/lvomnibench.md
-    - MAPG — Vision-Language Navigation Grounding: 2026-03-19/mapg.md
-    - Matryoshka Gaussian Splatting: 2026-03-19/matryoshka-gaussian-splatting.md
-    - MemMA — Multi-Agent Memory Reasoning: 2026-03-19/memma.md
-    - MonoArt — Monocular Articulated 3D: 2026-03-19/monoart.md
-    - PowerFlow — LLM Distribution Matching: 2026-03-19/powerflow.md
-    - Revisiting AR Models for Image Classification: 2026-03-19/revisiting.md
-    - SEAR — RGB+Thermal 3D Reconstruction: 2026-03-19/sear.md
-    - Seeking Universal Shot Language Understanding: 2026-03-19/seeking.md
-    - T-QPM — Temporal OOD Detection for VLMs: 2026-03-19/t-qpm.md
-    - TexEditor — Text-Driven Texture Editing: 2026-03-19/texeditor.md
-    - VEGA-3D — 3D Priors for Scene Understanding: 2026-03-19/vega-3d.md
-    - VLA Mechanistic Study: 2026-03-19/vla-mechanistic-study.md
-  - 2026-03-18:
-    - 2026-03-18/index.md
-    - CycleCap — VLM Self-Supervised Captioning: 2026-03-18/cyclecap.md
-    - Directing the Narrative — Story Generation: 2026-03-18/directing.md
-    - EvoGuard — AI-Generated Image Detection: 2026-03-18/evoguard.md
-    - Fine-Grained PTQ for LVLMs: 2026-03-18/fine-grained.md
-    - FineViT — Fine-Grained Perception: 2026-03-18/finevit.md
-    - FloorPlan-VLN — Vision-Language Navigation: 2026-03-18/floorplan-vln.md
-    - Flow Matching with Entropy Regularization: 2026-03-18/flow.md
-    - GeCO — Flow Matching for Robotic Control: 2026-03-18/geco.md
-    - Harm or Humor — Harmful Humor Benchmark: 2026-03-18/harm-or-humor.md
-    - HRI-SA — Human-Robot Teaming Dataset: 2026-03-18/hri-sa.md
-    - Learning Temporal Primitives for Video Reasoning: 2026-03-18/learning.md
-    - LED — Layout Error Detection Benchmark: 2026-03-18/led.md
-    - LoST — Semantics Tokenization for 3D Shapes: 2026-03-18/lost.md
-    - MCoT-MVS — Composed Image Retrieval: 2026-03-18/mcot-mvs.md
-    - Motion-MLLM — Egomotion-Aware 3D Understanding: 2026-03-18/motion-mllm.md
-    - NEO — Unified Search/Recommendation/Reasoning: 2026-03-18/neo.md
-    - ProbeFlow — Adaptive VLA Flow Matching: 2026-03-18/probeflow.md
-    - SegFly — Aerial RGB-Thermal Segmentation: 2026-03-18/segfly.md
-    - UniSAFE — Multimodal Safety Evaluation: 2026-03-18/unisafe.md
-    - VCoT-Bench — LLM Theorem Proving for Rust: 2026-03-18/vcot-bench.md
-  - 2026-03-17:
-    - 2026-03-17/index.md
-    - 360° Image Perception with MLLMs: 2026-03-17/360bench.md
-    - BATQuant — MXFP4 Quantization: 2026-03-17/batquant.md
-    - BUSSARD — Anomaly Detection with Normalizing Flows: 2026-03-17/bussard.md
-    - CIRCLES — Counterfactual In-Context Learning: 2026-03-17/circles.md
-    - HeBA — Heterogeneous Bottleneck Adapters: 2026-03-17/heba.md
-    - Hidden Clones — VLM Ensemble Bias: 2026-03-17/hidden-clones.md
-    - Hyperbolic Multimodal Zero-Shot Extraction: 2026-03-17/hyperbolic-mmgr.md
-    - IOMM — Masked Modeling for Image Pre-training: 2026-03-17/iomm.md
-    - MolmoBot — Zero-Shot Manipulation: 2026-03-17/molmobot.md
-    - Parallel In-context Learning for LVLMs: 2026-03-17/parallel-icl.md
-    - Plankton Recognition — Cross-modal Learning: 2026-03-17/plankton-recognition.md
-    - Proxy-GRM — VLM Reward Models: 2026-03-17/proxy-grm.md
-    - RaDAR — Graph Contrastive Recommendation: 2026-03-17/radar-recsys.md
-    - SemTok — Semantic 1D Tokenizer: 2026-03-17/semtok.md
-    - V-DyKnow — Time-Sensitive VLM Benchmark: 2026-03-17/v-dyknow.md
-    - VIEW2SPACE — Multi-View Visual Reasoning: 2026-03-17/view2space.md
-    - VIGOR — Video Generative Alignment: 2026-03-17/vigor.md
-    - VisBrowse-Bench — Visual Browsing Agents: 2026-03-17/visbrowse-bench.md
-    - Visual Distraction in Moral Reasoning: 2026-03-17/visual-distraction-moral.md
-    - WorldCam — Interactive 3D Gaming Worlds: 2026-03-17/worldcam.md
-
+- Home: index.md
+- '2026-03-19':
+  - 2026-03-19/index.md
+  - AutoScreen-FW — An LLM-based Framework for ...: 2026-03-19/autoscreen-fw.md
+  - Balanced Thinking — Improving Chain of Thought ...: 2026-03-19/balanced-thinking.md
+  - Counting Circuits — Mechanistic Interpretabilit...: 2026-03-19/counting-circuits.md
+  - Cross-Modal Rationale Transfer for Explain...: 2026-03-19/cross-modal.md
+  - CubiD — Cubic Discrete Diffusion — ...: 2026-03-19/cubid.md
+  - FLAC — Few-shot Acoustic Synthesis...: 2026-03-19/flac.md
+  - FlowMS — Flow Matching for De Novo S...: 2026-03-19/flowms.md
+  - GenVideoLens — Where LVLMs Fall Short in A...: 2026-03-19/genvideolens.md
+  - HiMu — Hierarchical Multimodal Fra...: 2026-03-19/himu.md
+  - LVOmniBench — Pioneering Long Audio-Video...: 2026-03-19/lvomnibench.md
+  - MAPG — Multi-Agent Probabilistic G...: 2026-03-19/mapg.md
+  - Matryoshka Gaussian Splatting: 2026-03-19/matryoshka-gaussian-splatting.md
+  - MemMA — Coordinating the Memory Cyc...: 2026-03-19/memma.md
+  - MonoArt — Progressive Structural Reas...: 2026-03-19/monoart.md
+  - PowerFlow — Unlocking the Dual Nature o...: 2026-03-19/powerflow.md
+  - Revisiting Autoregressive Models for Gener...: 2026-03-19/revisiting.md
+  - SEAR — Simple and Efficient Adapta...: 2026-03-19/sear.md
+  - Seeking Universal Shot Language Understand...: 2026-03-19/seeking.md
+  - T-QPM — Enabling Temporal Out-Of-Di...: 2026-03-19/t-qpm.md
+  - TexEditor — Structure-Preserving Text-D...: 2026-03-19/texeditor.md
+  - VEGA-3D — Generation Models Know Spac...: 2026-03-19/vega-3d.md
+  - Not All Features Are Created Equal — A Mechanistic Study of Visi...: 2026-03-19/vla-mechanistic-study.md
+- '2026-03-18':
+  - 2026-03-18/index.md
+  - CycleCap — Improving VLMs Captioning v...: 2026-03-18/cyclecap.md
+  - Directing the Narrative — Controlling Coherence and S...: 2026-03-18/directing.md
+  - EvoGuard — An Extensible Agentic RL-ba...: 2026-03-18/evoguard.md
+  - Fine-Grained Post-Training Quantization fo...: 2026-03-18/fine-grained.md
+  - FineViT — Progressively Unlocking Fin...: 2026-03-18/finevit.md
+  - FloorPlan-VLN — Floor Plan Guided Vision-La...: 2026-03-18/floorplan-vln.md
+  - Flow Matching Policy with Entropy Regulari...: 2026-03-18/flow.md
+  - GeCO — Time Unconditional Flow Mat...: 2026-03-18/geco.md
+  - Harm or Humor — A Multimodal, Multilingual ...: 2026-03-18/harm-or-humor.md
+  - HRI-SA — Multimodal Dataset for Huma...: 2026-03-18/hri-sa.md
+  - Learning Transferable Temporal Primitives ...: 2026-03-18/learning.md
+  - LED — A Benchmark for Evaluating ...: 2026-03-18/led.md
+  - LoST — Level of Semantics Tokeniza...: 2026-03-18/lost.md
+  - MCoT-MVS — Multi-level Vision Selectio...: 2026-03-18/mcot-mvs.md
+  - Motion-MLLM — Egomotion-Aware Video Repre...: 2026-03-18/motion-mllm.md
+  - NEO — A Unified Language Model fo...: 2026-03-18/neo.md
+  - ProbeFlow — Training-Free Adaptive Flow...: 2026-03-18/probeflow.md
+  - SegFly — A 2D-3D-2D Paradigm for Aer...: 2026-03-18/segfly.md
+  - UniSAFE — A Comprehensive Benchmark f...: 2026-03-18/unisafe.md
+  - VCoT-Bench — Can LLMs Reason Like Automa...: 2026-03-18/vcot-bench.md
+- '2026-03-17':
+  - 2026-03-17/index.md
+  - '360° Image Perception with MLLMs: A Compre...': 2026-03-17/360bench.md
+  - BATQuant — Outlier-resilient MXFP4 Qua...: 2026-03-17/batquant.md
+  - BUSSARD — Normalizing Flows for Bijec...: 2026-03-17/bussard.md
+  - CIRCLES — Retrieving Counterfactuals ...: 2026-03-17/circles.md
+  - HeBA — Heterogeneous Bottleneck Ad...: 2026-03-17/heba.md
+  - Hidden Clones — Exposing and Fixing Family ...: 2026-03-17/hidden-clones.md
+  - Hyperbolic Multimodal Generative Represent...: 2026-03-17/hyperbolic-mmgr.md
+  - IOMM — Rethinking UMM Visual Gener...: 2026-03-17/iomm.md
+  - MolmoBot — Large-Scale Simulation Enab...: 2026-03-17/molmobot.md
+  - Parallel In-context Learning for Large Vis...: 2026-03-17/parallel-icl.md
+  - Cross-modal Learning for Plankton Recognition: 2026-03-17/plankton-recognition.md
+  - Proxy-GRM — Learning Transferable Rubri...: 2026-03-17/proxy-grm.md
+  - RaDAR — Relation-aware Diffusion-As...: 2026-03-17/radar-recsys.md
+  - SemTok — Semantic One-Dimensional To...: 2026-03-17/semtok.md
+  - V-DyKnow — A Dynamic Benchmark for Tim...: 2026-03-17/v-dyknow.md
+  - VIEW2SPACE — Studying Multi-View Visual ...: 2026-03-17/view2space.md
+  - VIGOR — Video Geometry-Oriented Rew...: 2026-03-17/vigor.md
+  - VisBrowse-Bench — Benchmarking Visual-Native ...: 2026-03-17/visbrowse-bench.md
+  - Visual Distraction Undermines Moral Reason...: 2026-03-17/visual-distraction-moral.md
+  - WorldCam — Interactive Autoregressive ...: 2026-03-17/worldcam.md
 plugins:
-  - search
-
+- search
 markdown_extensions:
-  - tables
-  - toc:
-      permalink: true
-  - admonition
-  - pymdownx.details
-  - pymdownx.superfences
-  - pymdownx.arithmatex:
-      generic: true
-
+- tables
+- toc:
+    permalink: true
+- admonition
+- pymdownx.details
+- pymdownx.superfences
+- pymdownx.arithmatex:
+    generic: true
 extra_css:
-  - stylesheets/extra.css
-
+- stylesheets/extra.css
 extra_javascript:
-  - javascripts/mathjax.js
-  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
-
+- javascripts/mathjax.js
+- https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+copyright: 🤖 本站笔记由 AI 辅助生成，内容仅供学术参考，如有错误欢迎指正
 extra:
   social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/zhaoyang97/daily-arxiv
+  - icon: fontawesome/brands/github
+    link: https://github.com/zhaoyang97/daily-arxiv
