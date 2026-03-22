@@ -81,20 +81,23 @@ def score_paper(paper: dict, domain: str) -> float:
     authors = [a.lower() for a in paper.get("authors", [])]
     text = f"{title} {abstract}"
 
-    # 1. 领域权重 (0-20)
+    # 1. 领域权重 (0-15) — 均匀化，避免单一领域主导
     domain_weights = {
-        "multimodal_vlm": 20, "llm_reasoning": 18, "llm_agent": 16,
-        "llm_efficiency": 15, "llm_alignment": 14, "llm_nlp": 12,
-        "image_generation": 14, "video_understanding": 13, "3d_vision": 12,
-        "model_compression": 10, "self_supervised": 10,
-        "nlp_understanding": 10, "nlp_generation": 10,
-        "robotics": 12, "ai_safety": 11,
+        "multimodal_vlm": 15, "llm_reasoning": 15, "llm_agent": 14,
+        "llm_efficiency": 13, "llm_alignment": 13, "llm_nlp": 12,
+        "image_generation": 13, "video_understanding": 13, "3d_vision": 12,
+        "model_compression": 11, "self_supervised": 11,
+        "nlp_understanding": 11, "nlp_generation": 11,
+        "robotics": 13, "ai_safety": 12,
     }
     score += domain_weights.get(domain, 5)
 
-    # 2. 团队加分 (0-15)
+    # 2. 团队加分 (0-15) — 搜索 authors + abstract + comment
     author_text = " ".join(authors)
-    team_hits = sum(1 for t in TOP_TEAMS if t in author_text)
+    abstract_lower = abstract
+    comment_lower = paper.get("comment", "").lower()
+    team_text = f"{author_text} {abstract_lower} {comment_lower}"
+    team_hits = sum(1 for t in TOP_TEAMS if t in team_text)
     score += min(team_hits * 5, 15)
 
     # 3. 高价值关键词 (0-30)

@@ -28,6 +28,28 @@ theme:
   - content.code.copy
 nav:
 - Home: index.md
+- '2026-03-20':
+  - 2026-03-20/index.md
+  - AgroCoT — A Chain-of-Thought Benchmar...: 2026-03-20/agrocot.md
+  - AutoScreen-FW — An LLM-based Framework for ...: 2026-03-20/autoscreen-fw.md
+  - CubiD — Cubic Discrete Diffusion fo...: 2026-03-20/cubid.md
+  - CycleCap — Improving VLMs Captioning P...: 2026-03-20/cyclecap.md
+  - DuoTeach — Dual Role Self-Teaching for...: 2026-03-20/duoteach.md
+  - FLAC — Few-shot Acoustic Synthesis...: 2026-03-20/flac.md
+  - GenVideoLens — Where LVLMs Fall Short in A...: 2026-03-20/genvideolens.md
+  - GriDiT — Factorized Grid-Based Diffu...: 2026-03-20/gridit.md
+  - Harm or Humor — A Multimodal, Multilingual ...: 2026-03-20/harm-or-humor.md
+  - Infinity-RoPE — Action-Controllable Infinit...: 2026-03-20/infinity-rope.md
+  - MLA — A Multisensory Language-Act...: 2026-03-20/mla.md
+  - MMSearch-Plus — Benchmarking Provenance-Awa...: 2026-03-20/mmsearch-plus.md
+  - Mobile-VideoGPT — Fast and Accurate Model for...: 2026-03-20/mobile-videogpt.md
+  - Modality Equilibrium Matters — Minor-Modality-Aware Adapti...: 2026-03-20/modality-equilibrium.md
+  - Multi-Scale Distillation for RGB-D Anomaly...: 2026-03-20/multi-scale-distill.md
+  - Multimodal OCR — Parse Anything from Documents: 2026-03-20/multimodal-ocr.md
+  - SEAR — Simple and Efficient Adapta...: 2026-03-20/sear.md
+  - T-QPM — Enabling Temporal Out-Of-Di...: 2026-03-20/t-qpm.md
+  - TexEditor — Structure-Preserving Text-D...: 2026-03-20/texeditor.md
+  - VEGA-3D — Generation Models Know Spac...: 2026-03-20/vega-3d.md
 - '2026-03-19':
   - 2026-03-19/index.md
   - AutoScreen-FW — An LLM-based Framework for ...: 2026-03-19/autoscreen-fw.md
@@ -96,6 +118,39 @@ nav:
   - VisBrowse-Bench — Benchmarking Visual-Native ...: 2026-03-17/visbrowse-bench.md
   - Visual Distraction Undermines Moral Reason...: 2026-03-17/visual-distraction-moral.md
   - WorldCam — Interactive Autoregressive ...: 2026-03-17/worldcam.md
+- '2026-03-16':
+  - 2026-03-16/index.md
+  - Mostly Text, Smart Visuals — Asymmetric Text-Visual Prun...: 2026-03-16/atv-pruning.md
+  - DAIT — Distillation from Vision-La...: 2026-03-16/dait.md
+  - Flash-Unified — A Training-Free and Task-Aw...: 2026-03-16/flash-unified.md
+  - HYDRA — Unifying Multi-modal Genera...: 2026-03-16/hydra.md
+  - MER-Bench — A Comprehensive Benchmark f...: 2026-03-16/mer-bench.md
+  - MMSpec — Benchmarking Speculative De...: 2026-03-16/mmspec.md
+  - POLCA — Stochastic Generative Optim...: 2026-03-16/polca.md
+  - SAMA — A Skill-augmented Agentic F...: 2026-03-16/sama-mvx.md
+  - Video-CoE — Reinforcing Video Event Pre...: 2026-03-16/video-coe.md
+- '2026-03-15':
+  - 2026-03-15/index.md
+  - AgentProcessBench — Diagnosing Step-Level Proce...: 2026-03-15/agentprocessbench.md
+  - On the Nature of Attention Sink that Shape...: 2026-03-15/attention-sink-outro.md
+  - Balancing Multimodal Domain Generalization...: 2026-03-15/balancing-multimodal-dg.md
+  - CangjieBench — Benchmarking LLMs on a Low-...: 2026-03-15/cangjiebench.md
+  - ChArtist — Generating Pictorial Charts...: 2026-03-15/chartist.md
+  - DC-ViT — Modulating Spatial and Chan...: 2026-03-15/dc-vit.md
+  - Deeper Thought, Weaker Aim — Understanding and Mitigatin...: 2026-03-15/deeper-thought-vrga.md
+  - DiFlowDubber — Discrete Flow Matching for ...: 2026-03-15/diflowdubber.md
+  - DualTSR — Unified Dual-Diffusion Tran...: 2026-03-15/dualtsr.md
+  - ES-Merging — Biological MLLM Merging via...: 2026-03-15/es-merging.md
+  - Fair Benchmarking of Emerging One-Step Gen...: 2026-03-15/fair-benchmarking-onestep.md
+  - FOCUS — Bridging Fine-Grained Recog...: 2026-03-15/focus-fg-dg-gcd.md
+  - GenState-AI — State-Aware Dataset for Tex...: 2026-03-15/genstate-ai.md
+  - GoldenStart — Q-Guided Priors and Entropy...: 2026-03-15/goldenstart.md
+  - LatSearch — Latent Reward-Guided Search...: 2026-03-15/latsearch.md
+  - LongVidSearch — An Agentic Benchmark for Mu...: 2026-03-15/longvidsearch.md
+  - PA³ — Policy-Aware Agent Alignmen...: 2026-03-15/pa3-policy-alignment.md
+  - Safety-Potential Pruning for Enhancing Saf...: 2026-03-15/safety-potential-pruning.md
+  - Uni-MDTrack — Learning Decoupled Memory a...: 2026-03-15/uni-mdtrack.md
+  - UniFusion — A Unified Image Fusion Fram...: 2026-03-15/unifusion.md
 plugins:
 - search
 markdown_extensions:

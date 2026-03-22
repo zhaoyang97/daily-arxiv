@@ -129,17 +129,29 @@ def gen_main_index() -> str:
         if not m:
             continue
         date = m.group(1)
-        with open(jf, "r", encoding="utf-8") as f:
-            papers = json.load(f)
 
-        if not papers:
+        # 优先展示 filtered 数据
+        filtered_path = LOGS_DIR / f"filtered_{date}.json"
+        if filtered_path.exists():
+            with open(filtered_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            tier_a = data.get("tier_a", [])
+            total = data.get("stats", {}).get("total", 0)
+            display_count = f"{len(tier_a)} 精选 / {total} 总"
+            papers_for_domain = tier_a
+        else:
+            with open(jf, "r", encoding="utf-8") as f:
+                papers_for_domain = json.load(f)
+            display_count = str(len(papers_for_domain))
+
+        if not papers_for_domain:
             lines.append(f"| {date} | 0 | - |")
             continue
 
         # 分类并找热门领域
         domain_counts: dict[str, int] = {}
-        for p in papers:
-            d = classify_paper(p["title"], p["abstract"])
+        for p in papers_for_domain:
+            d = p.get("domain") or classify_paper(p["title"], p["abstract"])
             domain_counts[d] = domain_counts.get(d, 0) + 1
 
         top_domains = sorted(domain_counts.items(), key=lambda x: -x[1])[:3]
@@ -147,7 +159,7 @@ def gen_main_index() -> str:
             f"{DOMAIN_EMOJI.get(d, '')} {DOMAIN_NAMES.get(d, d)}"
             for d, _ in top_domains
         )
-        lines.append(f"| [{date}](./{date}/) | {len(papers)} | {hot} |")
+        lines.append(f"| [{date}](./{date}/) | {display_count} | {hot} |")
 
     lines.append("")
     return "\n".join(lines)
@@ -180,8 +192,17 @@ def main():
             continue
         date = m.group(1)
 
-        with open(jf, "r", encoding="utf-8") as f:
-            papers = json.load(f)
+        # 优先使用 filtered JSON（只含 A 档），否则 fallback 到全量
+        filtered_path = LOGS_DIR / f"filtered_{date}.json"
+        if filtered_path.exists():
+            with open(filtered_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            papers = data.get("tier_a", [])
+            print(f"  📄 {date}: 使用 filtered (A档 {len(papers)} 篇)")
+        else:
+            with open(jf, "r", encoding="utf-8") as f:
+                papers = json.load(f)
+            print(f"  📄 {date}: 使用全量 ({len(papers)} 篇，未筛选)")
 
         # 生成每日页面
         out_dir = DOCS_DIR / date
