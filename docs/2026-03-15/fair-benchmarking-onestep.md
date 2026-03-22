@@ -1,8 +1,8 @@
 # Fair Benchmarking of Emerging One-Step Generative Models Against Multistep Diffusion and Flow Models
 
-**日期**: 2026-03-15
-**arXiv**: [2603.14186](https://arxiv.org/abs/2603.14186)
-**领域**: 图像生成
+**日期**: 2026-03-15  
+**arXiv**: [2603.14186](https://arxiv.org/abs/2603.14186)  
+**领域**: 图像生成  
 **关键词**: one-step generation, diffusion model, fair benchmark, MinMax Harmonic Mean, CFG
 
 ## 一句话总结

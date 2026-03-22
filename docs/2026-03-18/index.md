@@ -22,7 +22,7 @@
 
 ### [EvoGuard: An Extensible Agentic RL-based Framework for Practical AI-Generated Image Detection](evoguard.md)
 
-👁️ 多模态/VLM / AI安全
+🧩 多模态/VLM / AI安全
 
 提出 EvoGuard，将异构 AIGI 检测器封装为可调用工具，用 MLLM Agent 通过能力感知的动态编排机制多轮调用和推理，仅需二值标签的 GRPO 训练，实现 SOTA 检测精度和无需重训练的即插即用可扩展性。
 
@@ -30,7 +30,7 @@
 
 ### [Fine-Grained Post-Training Quantization for LVLMs with Quantization-aware Integrated Gradients](fine-grained.md)
 
-👁️ 多模态/VLM / 模型压缩
+🧩 多模态/VLM / 模型压缩
 
 借鉴可解释性中的公理化归因方法，提出量化感知积分梯度 (QIG) 将 LVLM 量化敏感度测量从模态级推进到 token 级，在 W3A16 下 LLaVA-onevision-7B 平均精度提升 1.60%，与全精度差距仅 1.33%。
 
@@ -38,7 +38,7 @@
 
 ### [FineViT: Progressively Unlocking Fine-Grained Perception with Dense Recaptions](finevit.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 提出 FineViT，一个从零训练的三阶段渐进式视觉编码器（MIM初始化→高分辨率对比学习→LLM对齐），配合 4.5 亿区域级标注数据集 FineCap-450M，在零样本识别/检索和 MLLM 多模态理解上全面超越 SigLIP2 和 Qwen-ViT。
 
@@ -70,7 +70,7 @@
 
 ### [Harm or Humor: A Multimodal, Multilingual Benchmark for Overt and Covert Harmful Humor](harm-or-humor.md)
 
-👁️ 多模态/VLM / AI安全
+🧩 多模态/VLM / AI安全
 
 提出多模态多语言有害幽默检测基准（3000文本+6000图像+1200视频，英语/阿拉伯语），将有害幽默细分为显式和隐式两类，系统评估SOTA开源和闭源模型，发现闭源模型显著优于开源，隐式有害幽默是所有模型的最大盲区，阿拉伯语安全对齐严重滞后。
 
@@ -110,7 +110,7 @@
 
 ### [MCoT-MVS: Multi-level Vision Selection by Multi-modal Chain-of-Thought Reasoning for Composed Image Retrieval](mcot-mvs.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 提出 MCoT-MVS，利用 MLLM 的链式思维推理将组合图像检索（CIR）中的用户意图分解为"保留/删除/目标"三部分文本，指导 patch 级和实例级双层视觉选择，在 CIRR 和 FashionIQ 上达到新 SOTA。
 
@@ -150,7 +150,7 @@ SegFly 提出 **2D-3D-2D** 范式——从手动标注的 <3% 高分辨率航拍
 
 ### [UniSAFE: A Comprehensive Benchmark for Safety Evaluation of Unified Multimodal Models](unisafe.md)
 
-👁️ 多模态/VLM / AI安全
+🧩 多模态/VLM / AI安全
 
 提出 UniSAFE，首个系统级 UMM 安全基准，覆盖 7 种 I/O 模态组合（包括首次评估多图组合和图像输出安全），通过"共享目标"设计控制跨任务对比，评估 15 个 SOTA UMM 发现图像输出任务比文本输出显著更脆弱、多图组合和多轮场景安全违规率最高。
 

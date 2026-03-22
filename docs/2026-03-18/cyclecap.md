@@ -1,7 +1,7 @@
 # CycleCap: Improving VLMs Captioning via Self-Supervised Cycle Consistency
 
-**日期**: 2026-03-18 | **arXiv**: [2603.18282](https://arxiv.org/abs/2603.18282) | **领域**: 图像生成 / 多模态/VLM
-**代码**: 无
+**日期**: 2026-03-18 | **arXiv**: [2603.18282](https://arxiv.org/abs/2603.18282) | **领域**: 图像生成 / 多模态/VLM  
+**代码**: 无  
 **关键词**: 循环一致性, 自监督, GRPO, 图像描述, VLM微调
 
 ## 一句话总结

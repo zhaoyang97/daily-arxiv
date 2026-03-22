@@ -1,6 +1,6 @@
 # Directing the Narrative: Controlling Coherence and Style in Story Generation
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17295](https://arxiv.org/abs/2603.17295) | **领域**: 图像生成 / 视频理解
+**日期**: 2026-03-18 | **arXiv**: [2603.17295](https://arxiv.org/abs/2603.17295) | **领域**: 图像生成 / 视频理解  
 **关键词**: 故事可视化, 角色一致性, Group-Shared Attention, DPO, FLUX.1
 
 ## 一句话总结

@@ -1,6 +1,6 @@
 # VCoT-Bench: Can LLMs Reason Like Automated Theorem Provers for Rust Verification?
 
-**日期**: 2026-03-18 | **arXiv**: [2603.18334](https://arxiv.org/abs/2603.18334) | **领域**: LLM推理/形式验证
+**日期**: 2026-03-18 | **arXiv**: [2603.18334](https://arxiv.org/abs/2603.18334) | **领域**: LLM推理/形式验证  
 **关键词**: 自动定理证明, Rust验证, 思维链, 形式推理, Verus, 评估基准
 
 ## 一句话总结

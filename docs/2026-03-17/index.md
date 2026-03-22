@@ -6,7 +6,7 @@
 
 ### [360° Image Perception with MLLMs: A Comprehensive Benchmark and Training-Free Method](360bench.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 提出 360Bench（7K分辨率360°图像+7个子任务+人工标注）和 Free360（无训练场景图VQA框架），在投影感知任务上提升14%，揭示最强模型(46.5%)与人类(86.3%)的巨大差距。
 
@@ -14,7 +14,7 @@
 
 ### [BATQuant: Outlier-resilient MXFP4 Quantization via Learnable Block-wise Optimization](batquant.md)
 
-👁️ 多模态/VLM / 模型压缩
+🧩 多模态/VLM / 模型压缩
 
 提出 BATQuant，通过块对齐的仿射变换（而非全局旋转）处理 MXFP4 量化中的异常值问题，用 Global-Private Kronecker 分解将参数量降低 79%，在 W4A4KV16 激进配置下恢复多模态基准 96.43% 的全精度性能。
 
@@ -22,7 +22,7 @@
 
 ### [BUSSARD: Normalizing Flows for Bijective Universal Scene-Specific Anomalous Relationship Detection](bussard.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 用正则化流+LLM嵌入检测场景图中的异常物体-关系-物体三元组，比基线高10% AUROC且推理快5×，对同义词变化鲁棒。
 
@@ -30,7 +30,7 @@
 
 ### [CIRCLES: Retrieving Counterfactuals Improves Visual In-Context Learning](circles.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 提出 CIRCLES 框架，通过组合图像检索（CIR）主动构造反事实风格的示例集，替代传统基于相似度的被动检索，使 VLM 在视觉上下文学习中学习因果属性关系而非虚假关联，在细粒度分类和 VQA 上一致超越 RICES 等基线。
 
@@ -38,7 +38,7 @@
 
 ### [HeBA: Heterogeneous Bottleneck Adapters for Robust Vision-Language Models](heba.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 提出 HeBA，一种异构瓶颈适配器框架，为 CLIP 的视觉和文本分支分别设计卷积和线性适配器（压缩而非扩展），配合 Kaiming 初始化替代零初始化，在 11 个 few-shot 基准上以 81.35% 调和平均达到新 SOTA。
 
@@ -46,7 +46,7 @@
 
 ### [Hidden Clones: Exposing and Fixing Family Bias in Vision-Language Model Ensembles](hidden-clones.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 揭示 VLM 集成中的家族相关误差（17个模型仅等价于 2.5-3.6 个独立投票者），提出 Hierarchical Family Voting 和 Learned Candidate Scoring 分别在 Misleading 层恢复 +18-26pp 和在 VQAv2 达到 87.83%。
 
@@ -54,7 +54,7 @@
 
 ### [Hyperbolic Multimodal Generative Representation Learning for Generalized Zero-Shot MIE](hyperbolic-mmgr.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 在双曲空间中构建多模态生成表示框架（HMGRL），通过双曲变分信息瓶颈（HVIB）对齐多模态特征并用双曲条件VAE（HMCVAE）生成未见类别的合成样本，实现泛化零样本多模态信息抽取。
 
@@ -78,7 +78,7 @@
 
 ### [Parallel In-context Learning for Large Vision Language Models](parallel-icl.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 提出 Parallel-ICL，将长示例上下文分割为并行处理的小块，通过加权 Product-of-Experts 融合，在保持完整上下文ICL性能的同时大幅降低推理延迟。
 
@@ -86,7 +86,7 @@
 
 ### [Cross-modal Learning for Plankton Recognition](plankton-recognition.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 将 CLIP 式对比学习从文本-图像迁移到显微图像-光学剖面的跨模态浮游生物识别，通过 InfoNCE 对齐双模态到共享空间后用 k-NN 分类，域内达 96% 准确率且仅需 16 个标注样本/类，同时显著超越 DINO 单模态基线。
 
@@ -94,7 +94,7 @@
 
 ### [Proxy-GRM: Learning Transferable Rubrics via Proxy-Guided Critique for VLM Reward Models](proxy-grm.md)
 
-👁️ 多模态/VLM / LLM对齐
+🧩 多模态/VLM / LLM对齐
 
 提出 Proxy-GRM，通过训练独立的代理评估器验证生成式奖励模型（GRM）产生的评估准则（rubric）的可迁移性，将该验证信号作为 RL 奖励闭环优化 rubric 质量，仅用 ~50K 数据在三个 VLM 奖励基准上达到 SOTA。
 
@@ -118,7 +118,7 @@
 
 ### [V-DyKnow: A Dynamic Benchmark for Time-Sensitive Knowledge in Vision Language Models](v-dyknow.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 提出 V-DyKnow，一个动态基准用于评估 VLM 的时效性事实知识——通过 Wikidata 在评估时获取最新事实作为标准答案，发现 VLM 频繁输出过时信息（开源模型仅 3-32% 正确），且视觉输入比文本输入的事实召回显著退化。
 
@@ -142,7 +142,7 @@
 
 ### [VisBrowse-Bench: Benchmarking Visual-Native Search for Multimodal Browsing Agents](visbrowse-bench.md)
 
-👁️ 多模态/VLM / LLM Agent
+🧩 多模态/VLM / LLM Agent
 
 提出 VisBrowse-Bench，一个 169 道专家构造的多模态 VQA 基准，要求浏览 Agent 在搜索过程中主动获取和推理视觉信息（而非仅靠反向图像搜索获取实体名后退化为文本搜索），最强模型 Claude-4.6-Opus 仅达 47.6% 准确率。
 

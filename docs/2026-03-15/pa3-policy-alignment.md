@@ -1,8 +1,8 @@
 # PA³: Policy-Aware Agent Alignment through Chain-of-Thought
 
-**日期**: 2026-03-15
-**arXiv**: [2603.14602](https://arxiv.org/abs/2603.14602)
-**领域**: LLM推理 / LLM Agent
+**日期**: 2026-03-15  
+**arXiv**: [2603.14602](https://arxiv.org/abs/2603.14602)  
+**领域**: LLM推理 / LLM Agent  
 **关键词**: policy alignment, chain-of-thought, GRPO, business rules, conversational agent
 
 ## 一句话总结

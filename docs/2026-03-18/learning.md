@@ -1,6 +1,6 @@
 # Learning Transferable Temporal Primitives for Video Reasoning via Synthetic Videos
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17693](https://arxiv.org/abs/2603.17693) | **领域**: 视频理解
+**日期**: 2026-03-18 | **arXiv**: [2603.17693](https://arxiv.org/abs/2603.17693) | **领域**: 视频理解  
 **关键词**: 时序原语, 合成视频, Chain-of-Thought, 强化学习, 数据效率, 视频VLM, post-training
 
 ## 一句话总结

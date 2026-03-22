@@ -1,8 +1,8 @@
 # FOCUS: Bridging Fine-Grained Recognition and Open-World Discovery across Domains
 
-**日期**: 2026-03-15
-**arXiv**: [2603.14240](https://arxiv.org/abs/2603.14240)
-**领域**: 目标检测 / 域泛化
+**日期**: 2026-03-15  
+**arXiv**: [2603.14240](https://arxiv.org/abs/2603.14240)  
+**领域**: 目标检测 / 域泛化  
 **关键词**: generalized category discovery, domain generalization, fine-grained recognition, part discovery, uncertainty
 
 ## 一句话总结

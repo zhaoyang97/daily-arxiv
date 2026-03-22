@@ -1,6 +1,6 @@
 # NEO: A Unified Language Model for Large-Scale Search, Recommendation, and Reasoning
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17533](https://arxiv.org/abs/2603.17533) | **领域**: 推荐系统/LLM
+**日期**: 2026-03-18 | **arXiv**: [2603.17533](https://arxiv.org/abs/2603.17533) | **领域**: 推荐系统/LLM  
 **关键词**: 语义标识符, 统一语言模型, 搜索推荐统一, 目录对齐, 跨任务迁移
 
 ## 一句话总结

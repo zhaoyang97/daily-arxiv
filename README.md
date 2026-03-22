@@ -2,6 +2,8 @@
 
 每日自动追踪 arXiv 上 AI / LLM / NLP / CV 领域新发布的论文，筛选最值得关注的论文并生成深度论文解读。
 
+> 🛠️ 本站由 [**Daily arXiv Tool**](https://github.com/zhaoyang97/daily-arxiv-tool) 生成 — 一个聊天驱动的 arXiv 论文追踪工具，在聊天框说句话就能每天自动抓论文、写解读、发布到博客。
+
 ## 在线浏览
 [zhaoyang97.github.io/daily-arxiv](https://zhaoyang97.github.io/daily-arxiv/)
 

@@ -1,8 +1,8 @@
 # Balancing Multimodal Domain Generalization via Gradient Modulation and Projection
 
-**日期**: 2026-03-15
-**arXiv**: [2603.14175](https://arxiv.org/abs/2603.14175)
-**领域**: 视频理解 / 多模态VLM
+**日期**: 2026-03-15  
+**arXiv**: [2603.14175](https://arxiv.org/abs/2603.14175)  
+**领域**: 视频理解 / 多模态VLM  
 **关键词**: multimodal domain generalization, gradient modulation, gradient projection, video-audio
 
 ## 一句话总结

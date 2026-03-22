@@ -202,7 +202,7 @@ DOMAIN_EMOJI = {
     "graph_learning": "🕸️",
     "robotics": "🤖",
     "recommender": "📋",
-    "multimodal_vlm": "👁️",
+    "multimodal_vlm": "🧩",
     "model_compression": "📦",
     "self_supervised": "🔄",
     "llm_reasoning": "🧠",

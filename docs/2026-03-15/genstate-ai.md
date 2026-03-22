@@ -1,8 +1,8 @@
 # GenState-AI: State-Aware Dataset for Text-to-Video Retrieval on AI-Generated Videos
 
-**日期**: 2026-03-15
-**arXiv**: [2603.14426](https://arxiv.org/abs/2603.14426)
-**领域**: 视频理解 / 多模态VLM
+**日期**: 2026-03-15  
+**arXiv**: [2603.14426](https://arxiv.org/abs/2603.14426)  
+**领域**: 视频理解 / 多模态VLM  
 **关键词**: text-to-video retrieval, state transition, hard negative, AI-generated, benchmark
 
 ## 一句话总结

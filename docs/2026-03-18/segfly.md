@@ -1,6 +1,6 @@
 # SegFly: A 2D-3D-2D Paradigm for Aerial RGB-Thermal Semantic Segmentation
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17920](https://arxiv.org/abs/2603.17920) | **领域**: 3D视觉/遥感
+**日期**: 2026-03-18 | **arXiv**: [2603.17920](https://arxiv.org/abs/2603.17920) | **领域**: 3D视觉/遥感  
 **关键词**: 无人机分割, RGB-热多模态, 自动标注, 多视图几何, 标签传播, SfM, 3D配准
 
 ## 一句话总结

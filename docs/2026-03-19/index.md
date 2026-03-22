@@ -14,7 +14,7 @@
 
 ### [Balanced Thinking: Improving Chain of Thought Training in Vision Language Models](balanced-thinking.md)
 
-👁️ 多模态/VLM / LLM推理
+🧩 多模态/VLM / LLM推理
 
 提出 SCALe-SFT（Scheduled Curriculum Adaptive Loss），通过在 SFT 阶段动态调整 think 和 answer 段的损失权重（从重推理逐渐转向重答案），解决推理数据中 token 不均衡问题，仅 SFT 即可匹配 SFT+GRPO 的效果且节省 ~6/7 训练时间。
 
@@ -22,7 +22,7 @@
 
 ### [Counting Circuits: Mechanistic Interpretability of Visual Reasoning in Large Vision-Language Models](counting-circuits.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 以计数任务为最小化探针，提出 Visual Activation Patching 和 HeadLens 两种新可解释性方法，发现 LVLM 中结构化的"计数电路"（4 类功能注意力头），并基于电路发现设计干预策略：仅用 8000 张合成图微调即可在 OOD 计数上提升 +8.36%、通用视觉推理提升 +1.54%。
 
@@ -30,7 +30,7 @@
 
 ### [Cross-Modal Rationale Transfer for Explainable Humanitarian Classification](cross-modal.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 提出 VLTCrisis，一个可解释的多模态危机推文分类框架：先用 ViLT 编码器联合学习文本理据（有监督）和图像理据（通过跨模态对齐零样本迁移），再仅基于提取的理据进行分类，实现 interpretable-by-design。在 CrisisMMD 上 Macro-F1 比 baseline 高 2-35%，零样本泛化到新数据集达 80% 准确率。
 
@@ -62,7 +62,7 @@
 
 ### [GenVideoLens: Where LVLMs Fall Short in AI-Generated Video Detection?](genvideolens.md)
 
-👁️ 多模态/VLM / AI安全
+🧩 多模态/VLM / AI安全
 
 提出 GenVideoLens，一个 15 维细粒度 AI 生成视频检测基准（400 高仿真合成+100 真实视频，6000+ 专家标注），揭示 LVLM 在光学一致性、物理交互和时序因果推理上的系统性弱点，且模型几乎不利用时序信息做真伪判断。
 
@@ -142,7 +142,7 @@
 
 ### [Seeking Universal Shot Language Understanding Solutions](seeking.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 提出 SLU-SUITE（490K 人工标注 QA × 33 个电影任务 × 6 维度）和两套方案：UniShot（单模型均衡泛化，动态平衡数据混合）和 AgentShots（专家路由集群，零样本超越 Gemini-3.0-Pro 22%），揭示 VLM 用于镜头语言理解的瓶颈是语义对齐而非视觉感知。
 
@@ -150,7 +150,7 @@
 
 ### [T-QPM: Enabling Temporal Out-Of-Distribution Detection and Domain Generalization for VLMs](t-qpm.md)
 
-👁️ 多模态/VLM
+🧩 多模态/VLM
 
 提出 T-QPM，将 CLIP 的 OOD 检测从静态双模式匹配扩展到时序四模式匹配（图像×文本 × ID×OOD），通过时间步特定的视觉原型+轻量融合权重+ATC正则化，在时序变化环境下显著超越静态基线。
 

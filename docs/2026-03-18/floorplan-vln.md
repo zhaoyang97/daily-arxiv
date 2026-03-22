@@ -1,6 +1,6 @@
 # FloorPlan-VLN: Floor Plan Guided Vision-Language Navigation
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17437](https://arxiv.org/abs/2603.17437) | **领域**: 机器人
+**日期**: 2026-03-18 | **arXiv**: [2603.17437](https://arxiv.org/abs/2603.17437) | **领域**: 机器人  
 **关键词**: 平面图导航, VLN, 空间推理, MLLM, 双视角对齐
 
 ## 一句话总结

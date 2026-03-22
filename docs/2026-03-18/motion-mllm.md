@@ -1,6 +1,6 @@
 # Motion-MLLM: Egomotion-Aware Video Representation for Efficient 3D Scene Understanding
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17980](https://arxiv.org/abs/2603.17980) | **领域**: 3D视觉
+**日期**: 2026-03-18 | **arXiv**: [2603.17980](https://arxiv.org/abs/2603.17980) | **领域**: 3D视觉  
 **关键词**: 自运动感知, IMU融合, 视频3D理解, 关键帧筛选, 跨模态融合
 
 ## 一句话总结

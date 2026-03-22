@@ -1,6 +1,6 @@
 # Flow Matching Policy with Entropy Regularization (FMER)
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17685](https://arxiv.org/abs/2603.17685) | **领域**: 强化学习
+**日期**: 2026-03-18 | **arXiv**: [2603.17685](https://arxiv.org/abs/2603.17685) | **领域**: 强化学习  
 **关键词**: flow matching, 策略优化, 熵正则化, ODE, 多峰动作分布, 在线 RL
 
 ## 一句话总结

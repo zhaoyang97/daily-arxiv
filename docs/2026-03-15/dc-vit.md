@@ -1,8 +1,8 @@
 # DC-ViT: Modulating Spatial and Channel Interactions for Multi-Channel Images
 
-**日期**: 2026-03-15
-**arXiv**: [2603.14281](https://arxiv.org/abs/2603.14281)
-**领域**: 多通道图像处理 / 遥感
+**日期**: 2026-03-15  
+**arXiv**: [2603.14281](https://arxiv.org/abs/2603.14281)  
+**领域**: 多通道图像处理 / 遥感  
 **关键词**: multi-channel imaging, ViT, decoupled attention, channel interaction, remote sensing
 
 ## 一句话总结

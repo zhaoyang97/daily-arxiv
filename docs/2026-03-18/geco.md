@@ -1,7 +1,7 @@
 # GeCO: Time Unconditional Flow Matching for Robotic Control
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17834](https://arxiv.org/abs/2603.17834) | **领域**: 机器人 / 生成模型
-**代码**: [GitHub](https://hrh6666.github.io/GeCO/)
+**日期**: 2026-03-18 | **arXiv**: [2603.17834](https://arxiv.org/abs/2603.17834) | **领域**: 机器人 / 生成模型  
+**代码**: [GitHub](https://hrh6666.github.io/GeCO/)  
 **关键词**: flow matching, 时间无关, 自适应推理, OOD检测, 机器人控制, 稳态速度场
 
 ## 一句话总结

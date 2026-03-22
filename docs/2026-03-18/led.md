@@ -1,6 +1,6 @@
 # LED: A Benchmark for Evaluating Layout Error Detection in Document Analysis
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17265](https://arxiv.org/abs/2603.17265) | **领域**: 多模态/文档理解
+**日期**: 2026-03-18 | **arXiv**: [2603.17265](https://arxiv.org/abs/2603.17265) | **领域**: 多模态/文档理解  
 **关键词**: 文档布局分析, 结构错误检测, 文档AI, 评估基准, LLM推理, 细粒度诊断
 
 ## 一句话总结

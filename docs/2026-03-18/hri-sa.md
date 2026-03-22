@@ -1,6 +1,6 @@
 # HRI-SA: Multimodal Dataset for Human Situational Awareness in Human-Robot Teaming
 
-**日期**: 2026-03-18 | **arXiv**: [2603.18344](https://arxiv.org/abs/2603.18344) | **领域**: 机器人 / 人机交互
+**日期**: 2026-03-18 | **arXiv**: [2603.18344](https://arxiv.org/abs/2603.18344) | **领域**: 机器人 / 人机交互  
 **关键词**: 人机协作, 情境感知, 眼动追踪, 多模态数据集, SA延迟检测
 
 ## 一句话总结

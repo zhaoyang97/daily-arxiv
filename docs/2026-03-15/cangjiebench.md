@@ -1,8 +1,8 @@
 # CangjieBench: Benchmarking LLMs on a Low-Resource General-Purpose Programming Language
 
-**日期**: 2026-03-15
-**arXiv**: [2603.14501](https://arxiv.org/abs/2603.14501)
-**领域**: NLP生成 / LLM推理
+**日期**: 2026-03-15  
+**arXiv**: [2603.14501](https://arxiv.org/abs/2603.14501)  
+**领域**: NLP生成 / LLM推理  
 **关键词**: CangjieLang, code benchmark, low-resource programming, RAG, agent
 
 ## 一句话总结

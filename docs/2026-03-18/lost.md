@@ -1,7 +1,7 @@
 # LoST: Level of Semantics Tokenization for 3D Shapes
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17995](https://arxiv.org/abs/2603.17995) | **领域**: 3D视觉/生成模型
-**代码**: [lost3d.github.io](https://lost3d.github.io)
+**日期**: 2026-03-18 | **arXiv**: [2603.17995](https://arxiv.org/abs/2603.17995) | **领域**: 3D视觉/生成模型  
+**代码**: [lost3d.github.io](https://lost3d.github.io)  
 **关键词**: 3D形状token化, 语义显著性, 前缀可解码, 自回归生成, Matryoshka表示
 
 ## 一句话总结
