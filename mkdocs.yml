@@ -120,14 +120,25 @@ nav:
   - WorldCam — Interactive Autoregressive ...: 2026-03-17/worldcam.md
 - '2026-03-16':
   - 2026-03-16/index.md
+  - Architecture-Agnostic Feature Synergy for ...: 2026-03-16/atfs-defense.md
   - Mostly Text, Smart Visuals — Asymmetric Text-Visual Prun...: 2026-03-16/atv-pruning.md
   - DAIT — Distillation from Vision-La...: 2026-03-16/dait.md
+  - Decision-Level Ordinal Modeling for Multim...: 2026-03-16/dlom-essay-scoring.md
+  - DOMINO — Towards Generalizable Robot...: 2026-03-16/domino-dynamic-manipulation.md
+  - Electrodermal Activity as a Unimodal Signa...: 2026-03-16/eda-exercise.md
+  - EditHF-1M — A Million-Scale Rich Human ...: 2026-03-16/edithf-1m.md
   - Flash-Unified — A Training-Free and Task-Aw...: 2026-03-16/flash-unified.md
+  - FSENet — Face-Guided Sentiment Bound...: 2026-03-16/fsenet-sentiment.md
+  - You've Got a Golden Ticket — Improving Generative Robot ...: 2026-03-16/golden-ticket.md
+  - GUI-CEval — A Hierarchical and Comprehe...: 2026-03-16/gui-ceval.md
   - HYDRA — Unifying Multi-modal Genera...: 2026-03-16/hydra.md
+  - LLMind — Bio-inspired Training-free ...: 2026-03-16/llmind-bio-vision.md
   - MER-Bench — A Comprehensive Benchmark f...: 2026-03-16/mer-bench.md
   - MMSpec — Benchmarking Speculative De...: 2026-03-16/mmspec.md
+  - Multi-Turn Physics-Informed Vision-Languag...: 2026-03-16/physics-vlm-anomaly.md
   - POLCA — Stochastic Generative Optim...: 2026-03-16/polca.md
   - SAMA — A Skill-augmented Agentic F...: 2026-03-16/sama-mvx.md
+  - VAREX — A Benchmark for Multi-Modal...: 2026-03-16/varex.md
   - Video-CoE — Reinforcing Video Event Pre...: 2026-03-16/video-coe.md
 - '2026-03-15':
   - 2026-03-15/index.md
@@ -151,6 +162,94 @@ nav:
   - Safety-Potential Pruning for Enhancing Saf...: 2026-03-15/safety-potential-pruning.md
   - Uni-MDTrack — Learning Decoupled Memory a...: 2026-03-15/uni-mdtrack.md
   - UniFusion — A Unified Image Fusion Fram...: 2026-03-15/unifusion.md
+- '2026-03-14':
+  - 2026-03-14/index.md
+  - AD-Copilot — A Vision-Language Assistant...: 2026-03-14/ad-copilot.md
+  - Computation and Communication Efficient Fe...: 2026-03-14/fed-unlearning.md
+  - Garments2Look — A Multi-Reference Dataset f...: 2026-03-14/garments2look.md
+  - Geo-ID — Test-Time Geometric Consens...: 2026-03-14/geo-id.md
+  - IGU-LoRA — Adaptive Rank Allocation vi...: 2026-03-14/igu-lora.md
+  - Learning through Creation — A Hash-Free Framework for O...: 2026-03-14/ltc-category-discovery.md
+  - MHPO — Modulated Hazard-aware Poli...: 2026-03-14/mhpo.md
+  - Multi-Modal Character Localization and Ext...: 2026-03-14/multi-modal-character.md
+  - OasisSimp — An Open-source Asian-Englis...: 2026-03-14/oasisssimp.md
+  - Revisiting the Perception-Distortion Trade...: 2026-03-14/perception-distortion.md
+  - PhysAlign — Physics-Coherent Image-to-V...: 2026-03-14/physalign.md
+  - QTrack — Query-Driven Reasoning for ...: 2026-03-14/qtrack.md
+  - RSEdit — Text-Guided Image Editing f...: 2026-03-14/rsedit.md
+  - Sat-JEPA-Diff — Bridging Self-Supervised Le...: 2026-03-14/sat-jepa-diff.md
+  - Sparse-Dense Mixture of Experts Adapter fo...: 2026-03-14/sdmoea-tracking.md
+  - Sky2Ground — A Benchmark for Site Modeli...: 2026-03-14/sky2ground.md
+  - ST-VLA — Enabling 4D-Aware Spatiotem...: 2026-03-14/st-vla.md
+  - Steering Generative Models for Accessibility — EasyRead Image Generation: 2026-03-14/steering-accessibility.md
+  - ToolFlood — Beyond Selection — Hiding V...: 2026-03-14/toolflood.md
+  - vla-eval — A Unified Evaluation Harnes...: 2026-03-14/vla-eval.md
+- '2026-03-13':
+  - 2026-03-13/index.md
+  - Cheers — Decoupling Patch Details fr...: 2026-03-13/cheers.md
+  - CMHANet — A Cross-Modal Hybrid Attent...: 2026-03-13/cmhanet.md
+  - daVinci-Env — Open SWE Environment Synthe...: 2026-03-13/davinci-env.md
+  - DiveUp — Learning Feature Upsampling...: 2026-03-13/diveup.md
+  - Thinking in Dynamics — How MLLMs Perceive, Track, ...: 2026-03-13/dyn-bench.md
+  - Do You See What I Am Pointing At? Gesture-...: 2026-03-13/egopoint-vqa.md
+  - Reinforcement Learning for Diffusion LLMs ...: 2026-03-13/egspo.md
+  - ESG-Bench — Benchmarking Long-Context E...: 2026-03-13/esg-bench.md
+  - Expert Pyramid Tuning — Efficient Parameter Fine-Tu...: 2026-03-13/expert-pyramid-tuning.md
+  - Feynman — Knowledge-Infused Diagrammi...: 2026-03-13/feynman.md
+  - Geo-ADAPT — Locatability-Guided Adaptiv...: 2026-03-13/geo-adapt.md
+  - GeoChemAD — Benchmarking Unsupervised G...: 2026-03-13/geochemad.md
+  - HiFICL — High-Fidelity In-Context Le...: 2026-03-13/hificl.md
+  - InterEdit — Navigating Text-Guided Mult...: 2026-03-13/interedit.md
+  - LibraGen — Playing a Balance Game in S...: 2026-03-13/libragen.md
+  - Multimodal OCR — Parse Anything from Documents: 2026-03-13/multimodal-ocr.md
+  - Beyond Binary Success — Sample-Efficient and Statis...: 2026-03-13/n-score.md
+  - PISmith — Reinforcement Learning-base...: 2026-03-13/pismith.md
+  - Purify Once, Edit Freely — Breaking Image Protections ...: 2026-03-13/purify-once-edit-freely.md
+  - TacVLA — Contact-Aware Tactile Fusio...: 2026-03-13/tacvla.md
+- '2026-03-12':
+  - 2026-03-12/index.md
+  - Ada3Drift — Adaptive Training-Time Drif...: 2026-03-12/ada3drift.md
+  - DocSage — An Information Structuring ...: 2026-03-12/docsage.md
+  - DVD — Deterministic Video Depth E...: 2026-03-12/dvd.md
+  - DyWeight — Dynamic Gradient Weighting ...: 2026-03-12/dyweight.md
+  - Controllable Egocentric Video Generation v...: 2026-03-12/ego-video-3d-hand.md
+  - EndoCoT — Scaling Endogenous Chain-of...: 2026-03-12/endocot.md
+  - Explicit Logic Channel for Validation and ...: 2026-03-12/explicit-logic.md
+  - GRADE — Benchmarking Discipline-Inf...: 2026-03-12/grade.md
+  - HomeSafe-Bench — Evaluating VLMs on Unsafe A...: 2026-03-12/homesafe-bench.md
+  - Beyond Single-Sample — Reliable Multi-Sample Disti...: 2026-03-12/multi-sample-distill.md
+  - MV-SAM3D — Adaptive Multi-View Fusion ...: 2026-03-12/mv-sam3d.md
+  - One-Step Flow Policy — Self-Distillation for Fast ...: 2026-03-12/one-step-flow-policy.md
+  - OSCBench — Benchmarking Object State C...: 2026-03-12/oscbench.md
+  - SoulX-LiveAct — Towards Hour-Scale Real-Tim...: 2026-03-12/soulx-liveact.md
+  - Video Streaming Thinking — VideoLLMs Can Watch and Thi...: 2026-03-12/video-streaming-thinking.md
+  - VisDoT — Enhancing Visual Reasoning ...: 2026-03-12/visdot.md
+  - VQQA — An Agentic Approach for Vid...: 2026-03-12/vqqa.md
+  - Wasserstein Gradient Flows for Batch Bayes...: 2026-03-12/wasserstein-boed.md
+  - WAT — Online Video Understanding ...: 2026-03-12/wat.md
+  - WeEdit — A Dataset, Benchmark and Gl...: 2026-03-12/weedit.md
+- '2026-03-11':
+  - 2026-03-11/index.md
+  - A²-Edit — Precise Reference-Guided Im...: 2026-03-11/a2-edit.md
+  - CUAAudit — Meta-Evaluation of Vision-L...: 2026-03-11/cuaaudit.md
+  - DiT4DiT — Jointly Modeling Video Dyna...: 2026-03-11/dit4dit.md
+  - FairFAL — Federated Active Learning U...: 2026-03-11/fed-active-learning.md
+  - Fuel Gauge — Estimating Chain-of-Thought...: 2026-03-11/fuel-gauge.md
+  - Geometric Autoencoder for Diffusion Models: 2026-03-11/geometric-autoencoder.md
+  - HyPER-GAN — 基于混合Patch的图像翻译实现实时真实感增强: 2026-03-11/hyper-gan.md
+  - IMTBench — 面向图像内机器翻译的多场景跨模态协同评估基准: 2026-03-11/imtbench.md
+  - LIDA — Attribution as Retrieval — ...: 2026-03-11/lida-attribution.md
+  - LookaheadKV — Fast and Accurate KV Cache ...: 2026-03-11/lookaheadkv.md
+  - Pointy — A Lightweight Transformer f...: 2026-03-11/pointy.md
+  - Is this Idea Novel? An Automated Benchmark...: 2026-03-11/rinobench.md
+  - Are Video Reasoning Models Ready to Go Out...: 2026-03-11/rova.md
+  - SignSparK — Efficient Multilingual Sign...: 2026-03-11/signspark.md
+  - TennisExpert — Towards Expert-Level Analyt...: 2026-03-11/tennis-expert.md
+  - UniCompress — Token Compression for Unifi...: 2026-03-11/unicompress.md
+  - UniStitch — Unifying Semantic and Geome...: 2026-03-11/unistitch.md
+  - The Unlearning Mirage — A Dynamic Framework for Eva...: 2026-03-11/unlearning-mirage.md
+  - V₀.₅ — Generalist Value Model as a...: 2026-03-11/v05-value-model.md
+  - WebVR — Benchmarking Multimodal LLM...: 2026-03-11/webvr.md
 plugins:
 - search
 markdown_extensions:

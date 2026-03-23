@@ -126,7 +126,6 @@
 
 ### [LongVidSearch: An Agentic Benchmark for Multi-hop Evidence Retrieval Planning in Long Videos](longvidsearch.md)
 
-
 🎬 视频理解 / LLM Agent
 
 提出 LongVidSearch benchmark（3000 QA / 447 长视频 / 平均 26 分钟），通过 N-1 adversarial ablation 严格保证 multi-hop 检索的必要性，用统一 tool 接口评估 agent 的检索规划能力，GPT-5 最高准确率仅 42.43%，揭示 multi-hop retrieval planning 是当前最大瓶颈。
