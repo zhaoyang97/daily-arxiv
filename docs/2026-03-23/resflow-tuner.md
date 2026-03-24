@@ -1,0 +1,73 @@
+# ResFlow-Tuner: Tuning Real-World Image Restoration at Inference via Test-Time Scaling
+
+**日期**: 2026-03-23  
+**arXiv**: [2603.22027](https://arxiv.org/abs/2603.22027)  
+**代码**: 无  
+**领域**: 图像生成 / 图像复原  
+**关键词**: image restoration, flow matching, test-time scaling, FLUX, reward model
+
+## 一句话总结
+提出 ResFlow-Tuner，基于 FLUX.1-dev flow matching 模型做真实世界图像复原，通过统一多模态融合（UMMF）编码条件信息 + 训练免费的 test-time scaling（推理时用 reward model 反馈动态调整去噪方向），在多个标准基准达到 SOTA。
+
+## 研究背景与动机
+
+1. **领域现状**: 基于扩散的真实世界图像复原（Real-IR）取得了显著进展，超大规模预训练 T2I 模型（如 FLUX、SD3）为图像复原提供了强大的生成先验。
+
+2. **现有痛点**: 如何高效利用超大规模预训练 T2I 模型并充分挖掘其潜力仍是挑战——直接微调成本高，且可能破坏生成质量；推理时如何进一步提升已训练模型的性能也是开放问题。
+
+3. **核心矛盾**: 大模型有强大的生成能力但如何让它"服务于"复原任务？训练时的优化目标和推理时实际需求之间可能存在 gap。
+
+4. **切入角度**: (i) 利用 FLUX 的 MM-DiT 架构将多模态条件（退化图、文本描述等）编码为统一序列指导生成；(ii) 引入 test-time scaling——推理时通过 reward model 反馈动态引导去噪方向，无需额外训练。
+
+5. **核心 idea**: 统一多模态融合条件注入 + 训练免费 test-time scaling（reward model 引导推理） = 充分释放 flow matching 模型在低层视觉任务中的潜力。
+
+## 方法详解
+
+### 整体框架
+输入退化图像 → UMMF 编码多模态条件（退化图 + 文本等）为统一序列 → FLUX MM-DiT 网络生成高质量复原图像。推理时引入 test-time scaling：在每步去噪后用 reward model 评估当前生成质量，动态调整去噪方向。
+
+### 关键设计
+
+1. **统一多模态融合 (UMMF)**:
+   - 做什么：将退化图像和其他条件信息编码为统一 token 序列，与 FLUX 的 MM-DiT 架构对齐
+   - 核心思路：充分利用 MM-DiT 天然的多模态处理能力，避免外接 adapter 带来的信息瓶颈
+   - 设计动机：FLUX 的 MM-DiT 本身就设计用于处理文本+图像的联合序列，复原条件注入可以无缝集成
+
+2. **训练免费 Test-Time Scaling (TTS)**:
+   - 做什么：推理时通过 reward model 反馈实时优化去噪轨迹
+   - 核心思路：类似 LLM 的 test-time compute，在推理阶段投入更多计算来提升输出质量。reward model 评估中间去噪结果，提供梯度信号引导后续去噪步骤
+   - 设计动机：弥合训练目标和推理需求之间的 gap，以可控的计算开销换取显著性能提升
+   - 关键优势：无需重新训练模型，即插即用
+
+### 训练策略
+基于 FLUX.1-dev 微调 UMMF 条件注入模块；TTS 部分完全 training-free，仅需一个预训练的 reward model。
+
+## 实验关键数据
+
+*注：仅有摘要信息，论文报告在多个标准基准上达到 SOTA*
+
+| 对比维度 | 说明 |
+|----------|------|
+| 基础模型 | FLUX.1-dev (flow matching) |
+| 条件注入 | UMMF (统一多模态融合) |
+| 推理增强 | TTS (reward model guided) |
+| 效果 | 多个基准 SOTA |
+
+*详细 PSNR/SSIM/LPIPS 数据待论文全文发布后补充*
+
+## 亮点与洞察
+- **Test-time scaling 引入低层视觉**: 将 LLM 领域的 test-time compute scaling 思路迁移到图像复原，用推理时计算换质量
+- **FLUX 在图像复原中的首次全面验证**: 证明 flow matching 模型在低层视觉任务中的强大潜力
+- **训练-推理解耦**: UMMF 负责训练期条件注入，TTS 负责推理期质量提升，两者互补且解耦
+
+## 局限性 / 可改进方向
+- TTS 增加推理时间，具体开销比例未知
+- Reward model 的选择和质量直接影响效果，鲁棒性待验证
+- 仅有摘要信息，消融实验和失败案例待阅读全文
+- 对极重退化（如大面积遮挡）的表现未知
+
+## 评分
+- 新颖性: ⭐⭐⭐⭐ test-time scaling 在图像复原中的新应用，UMMF 设计与 FLUX 架构契合
+- 实验充分度: ⭐⭐⭐ 声称多基准 SOTA，但缺乏全文数据
+- 写作质量: ⭐⭐⭐ 仅基于摘要，27页10图暗示内容丰富
+- 价值: ⭐⭐⭐⭐ 为 flow matching 模型在低层视觉的应用开辟新方向
