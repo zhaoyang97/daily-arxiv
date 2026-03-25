@@ -110,9 +110,9 @@
 
 ### [Omni-WorldBench: Towards a Comprehensive Interaction-Centric Evaluation for World Models](omni-worldbench.md)
 
-🧊 3D视觉 / 世界模型评测
+🎬 视频理解 / 多模态VLM
 
-提出 Omni-WorldBench，首个以交互响应为核心的世界模型评测基准：Omni-WorldSuite 提供三层交互级别（物体级→局部环境→全局）×多场景类型的系统化 prompt 套件，Omni-Metrics 用 agent-based 评估框架量化交互动作对状态转移的因果影响并融合为统一 AgenticScore，在 18 个世界模型上揭示交互响应的关键局限。
+首个面向世界模型交互响应能力的综合评估基准，包含 Omni-WorldSuite（1068 条跨 3 个交互层级 × 多场景类型的评估 prompt）和 Omni-Metrics（评估生成视频质量 + 相机-物体可控性 + 交互效果保真度的 agent-based 指标体系），系统评估了 18 个代表性世界模型，揭示当前模型在交互响应方面的关键局限。
 
 ---
 

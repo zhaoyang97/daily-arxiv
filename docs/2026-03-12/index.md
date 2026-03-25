@@ -32,7 +32,7 @@
 
 🎨 图像生成 / 扩散模型加速
 
-提出 DyWeight，一种基于学习的多步 ODE 求解器，通过动态梯度加权（放松经典数值约束 ∑w≠1）+ 隐式时间平移和缩放机制替代复杂的解耦参数化，实现无需训练数据的蒸馏——CIFAR-10 上 5 NFE 达到 7.77 FID（iPNDM/DPM-Solver++: 9.94），FLUX.1 上 7 NFE 视觉保真度超越标准求解器。
+提出 DyWeight，一种基于学习的多步 ODE 求解器，通过放松经典数值约束（∑w≠1）实现动态梯度加权 + 隐式时间校准（time shifting & scaling），将梯度聚合与步长调节隐式耦合，仅需末端监督即可单轮优化——CIFAR-10 上 5 NFE 达到 3.02 FID（iPNDM: 7.77, S4S-Alt: 3.73），FLUX.1-dev 上全面超越 DPM-Solver++ 和 iPNDM。
 
 ---
 
@@ -80,7 +80,7 @@
 
 🎬 视频理解 / 知识蒸馏
 
-提出 R-MSD（Reliable Multi-Sample Distillation），针对视频 LVLM 蒸馏中教师采样方差导致的监督噪声问题，通过多样本质量感知信号匹配（每输入 K 个教师响应 + 任务自适应质量评估）+ 在线 critic 对抗蒸馏，4B 学生模型在 VideoMME 上 +1.5%、Video-MMMU +3.2%、MathVerse +3.6%。
+提出 R-MSD（Reliable Multi-Sample Distillation），针对视频 LVLM 蒸馏中教师采样方差导致的监督噪声问题，通过多样本质量感知信号匹配 + 在线 critic 对抗蒸馏，4B 学生在 VideoMME +1.5%、Video-MMMU +3.2%、MathVerse +3.6%。
 
 ---
 
@@ -96,7 +96,7 @@
 
 🎨 图像生成 / 机器人策略
 
-提出 One-Step Flow Policy (OFP)，通过从零开始的自蒸馏框架（自一致性 loss 强制跨时间连贯 + CFG 自引导正则化 + warm-start 利用时间动作相关性），无需预训练教师即可实现单步动作生成——在 56 个仿真操作任务上达到 SOTA，比 100 步 flow/diffusion 基线快 100 倍。
+提出 One-Step Flow Policy (OFP)，通过从零开始的自蒸馏框架（自一致性 loss + 自引导正则化 + warm-start），无需预训练教师即可实现单步动作生成——在 56 个仿真操作任务上 1-NFE 平均成功率 71.6%，超越 100 步 DP3 基线（66.4%），推理仅需 17.58 ms（加速 183×）。
 
 ---
 
@@ -104,7 +104,7 @@
 
 🎬 视频理解 / T2V Benchmark
 
-提出 OSCBench，首个专门评估文本到视频生成中物体状态变化（如水结冰、蜡烛燃烧）的 benchmark，包含 1,120 个提示覆盖 140 个场景，通过 CoT 四维评估策略（语义/状态变化准确性+一致性/场景对齐/感知质量）揭示当前 SOTA T2V 模型在物体状态变化上的关键瓶颈。
+提出 OSCBench，首个专门评估 T2V 生成中物体状态变化（Object State Change）的 benchmark，包含 1,120 个提示覆盖 140 个烹饪场景（常规/新颖/组合），通过 CoT 四维评估揭示即使 Veo-3.1-Fast 在 OSC 准确性上也仅 0.740，开源模型 Open-Sora-2.0 更低至 0.512。
 
 ---
 
@@ -120,7 +120,7 @@
 
 🎬 视频理解 / 流式推理
 
-提出 Video Streaming Thinking (VST)，让 VideoLLM 在视频播放过程中主动交错生成 CoT 推理（而非等到查询后再推理），通过双记忆系统（短期视觉+长期文本语义）+ 两阶段后训练（SFT+RL）+ 知识图谱数据合成，在 StreamingBench 上达到 79.5%，比 Video-R1 快 15.7 倍。
+提出 Video Streaming Thinking (VST)，让 VideoLLM 在视频播放过程中主动交错生成 CoT 推理（而非等到查询后再推理），通过双记忆系统（短期视觉+长期文本语义）+ 两阶段后训练（SFT+RL）+ 知识图谱数据合成，在 StreamingBench 上达到 79.5%（超越 GPT-4o 6.2%），比 Video-R1 快 15.7 倍。
 
 ---
 
@@ -136,15 +136,15 @@
 
 🎬 视频理解 / 视频生成评估
 
-提出 VQQA，一个多 Agent 视频评估与质量改进框架——通过三个 Agent（问题生成→视频问答→提示优化）构建闭环，将 VLM 的评估反馈作为"语义梯度"驱动 prompt 迭代优化，无需模型微调，在 T2V-CompBench 上对 CogVideoX-5B 提升 11.57%，VBench2 上 +8.43%。
+提出 VQQA，一个多 Agent 视频评估与质量改进框架——通过三个 Agent（问题生成→视频问答→提示优化）构建闭环，将 VLM 的评估反馈作为"语义梯度"驱动 prompt 迭代优化，无需模型微调，在 T2V-CompBench 上对 CogVideoX-5B 提升 +11.57%（41.89%→53.46%），VBench2 上 +8.43%（41.98%→50.41%）。
 
 ---
 
 ### [Wasserstein Gradient Flows for Batch Bayesian Optimal Experimental Design](wasserstein-boed.md)
 
-📄 多模态VLM / 贝叶斯优化
+📄 贝叶斯优化 / 实验设计
 
-提出基于 Wasserstein 梯度流的批量贝叶斯最优实验设计方法——通过将批量 EIG 优化提升到概率测度空间，引入熵正则化（唯一 Gibbs 分布最小化器），推导 mean-field 和 i.i.d. 乘积族的梯度流公式，并用粒子时空离散化和双随机变体实现可扩展的近似求解。
+将批量 BOED 问题提升到概率测度空间，通过熵正则化得到唯一 Gibbs 分布最小化器，推导 mean-field 和 i.i.d. 乘积族的 Wasserstein 梯度流，并用粒子时空离散化 + 双随机蒙特卡洛变体实现可扩展求解。
 
 ---
 
@@ -160,6 +160,6 @@
 
 🎨 图像生成 / 文本编辑
 
-提出 WeEdit，一个面向图像中文字修改/翻译/重排的系统方案——基于 HTML 的自动数据生成 pipeline 构建 330K 训练对（覆盖 15 种语言）+ 字形引导微调注入空间内容先验 + 多目标强化学习对齐指令遵循/文字清晰度/背景保持，在多语文字编辑上大幅超越现有开源模型。
+提出 WeEdit，首个面向图像中文字修改/翻译/重排的系统性方案——基于 HTML 的自动数据生成 pipeline 构建 330K 训练对（覆盖 15 种语言）+ 字形引导微调注入空间内容先验 + 多目标强化学习对齐指令遵循/文字清晰度/背景保持，在多语文字编辑上大幅超越现有开源模型。
 
 ---

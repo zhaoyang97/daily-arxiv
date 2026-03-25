@@ -28,6 +28,72 @@ theme:
   - content.code.copy
 nav:
 - Home: index.md
+- '2026-03-23':
+  - 2026-03-23/index.md
+  - ADaFuSE — Adaptive Diffusion-generate...: 2026-03-23/adafuse.md
+  - BayesMM — Adapting Point Cloud Analys...: 2026-03-23/bayesmm.md
+  - Back to Point — Exploring Point-Language Mo...: 2026-03-23/btp-3d-ad.md
+  - CatRAG — Functor-Guided Structural D...: 2026-03-23/catrag.md
+  - Structured Visual Narratives Undermine Saf...: 2026-03-23/comicjailbreak.md
+  - CORE — Concept-aware Continual Unl...: 2026-03-23/core-unlearning.md
+  - Let's Think with Images Efficiently! An In...: 2026-03-23/dap-icot.md
+  - DiT-Flow — Speech Enhancement Robust t...: 2026-03-23/dit-flow.md
+  - EAGER — Efficient Failure Managemen...: 2026-03-23/eager.md
+  - EgoGroups — A Benchmark For Detecting S...: 2026-03-23/egogroups.md
+  - FIM-Merging — Data-Free Layer-Adaptive Me...: 2026-03-23/fim-merging.md
+  - GeoFusion-CAD — Structure-Aware Diffusion w...: 2026-03-23/geofusion-cad.md
+  - Exploring Multimodal Prompts For Unsupervi...: 2026-03-23/multimodal-ucad.md
+  - Omni-WorldBench — Towards a Comprehensive Int...: 2026-03-23/omni-worldbench.md
+  - P-Flow — Prompting Visual Effects Ge...: 2026-03-23/p-flow.md
+  - ResFlow-Tuner — Tuning Real-World Image Res...: 2026-03-23/resflow-tuner.md
+  - RoboGate — Adaptive Failure Discovery ...: 2026-03-23/robogate.md
+  - SpatialReward — Verifiable Spatial Reward M...: 2026-03-23/spatial-reward.md
+  - StreamingEval — A Unified Evaluation Protoc...: 2026-03-23/streaming-eval.md
+  - Do World Action Models Generalize Better t...: 2026-03-23/wam-vs-vla.md
+- '2026-03-22':
+  - 2026-03-22/index.md
+  - Amortized Variational Inference for Logist...: 2026-03-22/amortized-vi.md
+  - AutoKernel — Autonomous GPU Kernel Optim...: 2026-03-22/autokernel.md
+  - Benchmarking Bengali Dialectal Bias — A Multi-Stage Framework Int...: 2026-03-22/bengali-bias.md
+  - Uncertainty-Aware Knowledge Distillation f...: 2026-03-22/beta-kd.md
+  - Closed-form Conditional Diffusion Models f...: 2026-03-22/closed-form-diffusion.md
+  - A Generalised Exponentiated Gradient Appro...: 2026-03-22/fairness-geg.md
+  - Aggregation Alignment for Federated Learni...: 2026-03-22/fedalign-moe.md
+  - KG-Hopper — Empowering Compact Open LLM...: 2026-03-22/kg-hopper.md
+  - KHMP — Frequency-Domain Kalman Ref...: 2026-03-22/khmp.md
+  - The Library Theorem — How External Organization G...: 2026-03-22/library-theorem.md
+  - More Than Sum of Its Parts — Deciphering Intent Shifts i...: 2026-03-22/more-than-sum.md
+  - Identity-Consistent Video Generation under...: 2026-03-22/mv2id.md
+  - PAS3R — Pose-Adaptive Streaming 3D ...: 2026-03-22/pas3r.md
+  - PLR — Plackett-Luce for Reorderin...: 2026-03-22/plr-icl.md
+  - Enhancing Reasoning Accuracy in Large Lang...: 2026-03-22/reasoning-accuracy.md
+  - Relax Forcing — Relaxed KV-Memory for Consi...: 2026-03-22/relax-forcing.md
+  - When Models Judge Themselves — Unsupervised Self-Evolution...: 2026-03-22/self-judge.md
+  - Silent Commitment Failure in Instruction-Tuned Language Models — Evidence of Governability D...: 2026-03-22/silent-commitment.md
+  - Text-Image Conditioned 3D Generation (TIGON): 2026-03-22/tigon.md
+  - Test-Time Adaptation via Cache Personaliza...: 2026-03-22/tta-cap.md
+- '2026-03-21':
+  - 2026-03-21/index.md
+  - AC4A — Access Control for Agents: 2026-03-21/ac4a.md
+  - AEGIS — From Clues to Verdicts -- G...: 2026-03-21/aegis.md
+  - Attention in Space — Functional Roles of VLM Hea...: 2026-03-21/attention-in-space.md
+  - BenchBench — Benchmarking Automated Benc...: 2026-03-21/benchbench.md
+  - Code-MIE — A Code-style Model for Mult...: 2026-03-21/code-mie.md
+  - CTCal — Rethinking Text-to-Image Di...: 2026-03-21/ctcal.md
+  - Democratizing AI — A Comparative Study in Deep...: 2026-03-21/democratizing-ai.md
+  - DiscoUQ — Structured Disagreement Ana...: 2026-03-21/discouq.md
+  - Memory-Efficient Fine-Tuning Diffusion Tra...: 2026-03-21/dit-blockskip.md
+  - E-SocialNav — Efficient Socially Complian...: 2026-03-21/e-socialnav.md
+  - IBCapsNet — Information Bottleneck Caps...: 2026-03-21/ibcapsnet.md
+  - ME-IQA — Memory-Enhanced Image Quali...: 2026-03-21/me-iqa.md
+  - Reasoning Topology Matters — Network-of-Thought for Comp...: 2026-03-21/network-of-thought.md
+  - ROI-Driven Foveated Attention for Unified ...: 2026-03-21/roi-foveated-attention.md
+  - Mamba Learns in Context — Structure-Aware Domain Gene...: 2026-03-21/sadg.md
+  - Satellite-to-Street — Synthesizing Post-Disaster ...: 2026-03-21/satellite-to-street.md
+  - ScaleEdit-12M — Scaling Open-Source Image E...: 2026-03-21/scaleedit-12m.md
+  - Seed1.8 Model Card — Towards Generalized Real-Wo...: 2026-03-21/seed1-8.md
+  - Improving Diffusion Generalization with We...: 2026-03-21/sgg.md
+  - StageCraft — Execution Aware Mitigation ...: 2026-03-21/stagecraft.md
 - '2026-03-20':
   - 2026-03-20/index.md
   - AgroCoT — A Chain-of-Thought Benchmar...: 2026-03-20/agrocot.md
@@ -166,7 +232,7 @@ nav:
   - 2026-03-14/index.md
   - AD-Copilot — A Vision-Language Assistant...: 2026-03-14/ad-copilot.md
   - Computation and Communication Efficient Fe...: 2026-03-14/fed-unlearning.md
-  - Garments2Look — A Multi-Reference Dataset f...: 2026-03-14/garments2look.md
+  - Garments2Look — 首个大规模 Outfit 级虚拟试穿数据集: 2026-03-14/garments2look.md
   - Geo-ID — Test-Time Geometric Consens...: 2026-03-14/geo-id.md
   - IGU-LoRA — Adaptive Rank Allocation vi...: 2026-03-14/igu-lora.md
   - Learning through Creation — A Hash-Free Framework for O...: 2026-03-14/ltc-category-discovery.md
@@ -183,7 +249,7 @@ nav:
   - ST-VLA — Enabling 4D-Aware Spatiotem...: 2026-03-14/st-vla.md
   - Steering Generative Models for Accessibility — EasyRead Image Generation: 2026-03-14/steering-accessibility.md
   - ToolFlood — Beyond Selection — Hiding V...: 2026-03-14/toolflood.md
-  - vla-eval — A Unified Evaluation Harnes...: 2026-03-14/vla-eval.md
+  - vla-eval — VLA 模型统一评估框架: 2026-03-14/vla-eval.md
 - '2026-03-13':
   - 2026-03-13/index.md
   - Cheers — Decoupling Patch Details fr...: 2026-03-13/cheers.md
@@ -250,6 +316,138 @@ nav:
   - The Unlearning Mirage — A Dynamic Framework for Eva...: 2026-03-11/unlearning-mirage.md
   - V₀.₅ — Generalist Value Model as a...: 2026-03-11/v05-value-model.md
   - WebVR — Benchmarking Multimodal LLM...: 2026-03-11/webvr.md
+- '2026-03-10':
+  - 2026-03-10/index.md
+  - Chain of Event-Centric Causal Thought for ...: 2026-03-10/causal-thought-video.md
+  - Does the Question Really Matter? Training-...: 2026-03-10/cvs-data-selection.md
+  - Test-time Ego-Exo-centric Adaptation for A...: 2026-03-10/ego-exo-adaptation.md
+  - Ego — Embedding-Guided Personaliz...: 2026-03-10/ego-vlm.md
+  - EvoPrompt — Evolving Prompt Adaptation ...: 2026-03-10/evolving-prompt.md
+  - EXPLORE-Bench — Egocentric Scene Prediction...: 2026-03-10/explore-bench.md
+  - FrameDiT — Diffusion Transformer with ...: 2026-03-10/framedit.md
+  - InfiniteDance — Scalable 3D Dance Generatio...: 2026-03-10/infinitedance.md
+  - IntroSVG — Introspective Generator-Cri...: 2026-03-10/introsvg.md
+  - Kinodynamic Motion Retargeting for Humanoi...: 2026-03-10/kinodynamic-motion.md
+  - Latent-DARM — Bridging Discrete Diffusion...: 2026-03-10/latent-darm.md
+  - LLM-MRD — LLM-Guided Multi-View Reaso...: 2026-03-10/llm-mrd.md
+  - MDTrack — Modality-Aware Fusion and D...: 2026-03-10/mdtrack.md
+  - MORE-R1 — Guiding LVLM for Multimodal...: 2026-03-10/more-r1.md
+  - NanoBench — A Multi-Task Benchmark Data...: 2026-03-10/nanobench.md
+  - OddGridBench — Exposing the Lack of Fine-G...: 2026-03-10/oddgridbench.md
+  - Benchmarking Political Persuasion Risks Ac...: 2026-03-10/political-persuasion.md
+  - RubiCap — Rubric-Guided Reinforcement...: 2026-03-10/rubicap.md
+  - VLM-Loc — Localization in Point Cloud...: 2026-03-10/vlm-loc.md
+  - Beyond Short-Horizon — VQ-Memory for Robust Long-H...: 2026-03-10/vq-memory.md
+- '2026-03-09':
+  - 2026-03-09/index.md
+  - BuildMamba — 基于视觉状态空间模型的多任务建筑分割与高度估计: 2026-03-09/buildmamba.md
+  - Beyond Heuristic Prompting — A Concept-Guided Bayesian F...: 2026-03-09/cgbc.md
+  - CoCo — Code as CoT for Text-to-Ima...: 2026-03-09/coco-code-cot.md
+  - ELLMob — Event-Driven Human Mobility...: 2026-03-09/ellmob.md
+  - EvoStage — 基于 LLM 的演化分阶段自动算法设计: 2026-03-09/evo-stage.md
+  - FinToolBench — Evaluating LLM Agents for R...: 2026-03-09/fintoolbench.md
+  - HiAR — 基于层级去噪的高效自回归长视频生成: 2026-03-09/hiar.md
+  - HMR-1 — Hierarchical Massage Robot ...: 2026-03-09/hmr-1.md
+  - IMSE — Intrinsic Mixture of Spectr...: 2026-03-09/imse.md
+  - MERLIN — Building Low-SNR Robust Mul...: 2026-03-09/merlin.md
+  - Adaptive Collaboration with Humans — Metacognitive Policy Optimi...: 2026-03-09/metacognitive.md
+  - QualiTeacher — Quality-Conditioned Pseudo-...: 2026-03-09/qualiteacher.md
+  - RetroAgent — From Solving to Evolving vi...: 2026-03-09/retroagent.md
+  - Can Vision-Language Models Solve the Shell...: 2026-03-09/shell-game.md
+  - SOT-GLP — Local-Global Prompt Learnin...: 2026-03-09/sot-glp.md
+  - SWIFT — Sliding Window Reconstructi...: 2026-03-09/swift.md
+  - TALON — Test-time Adaptive Learning...: 2026-03-09/talon.md
+  - Controllable Complex Human Motion Video Ge...: 2026-03-09/text-skeleton-cascade.md
+  - Reading ≠ Seeing — 诊断并弥合 VLM 中的排版感知差距: 2026-03-09/typo-vlm.md
+  - UIS-Digger — Towards Comprehensive Resea...: 2026-03-09/uis-digger.md
+- '2026-03-08':
+  - 2026-03-08/index.md
+  - AgriPath — A Systematic Exploration of...: 2026-03-08/agripath.md
+  - AI Misuse in Education Is a Measurement Problem — Toward a Learning Visibilit...: 2026-03-08/ai-misuse-education.md
+  - AQuA — Toward Strategic Response G...: 2026-03-08/aqua.md
+  - AtomicVLA — Unlocking the Potential of ...: 2026-03-08/atomic-vla.md
+  - Bolbosh — Script-Aware Flow Matching ...: 2026-03-08/bolbosh.md
+  - C²-Explorer — Contiguity-Driven Task Allo...: 2026-03-08/c2-explorer.md
+  - Constraints Matrix Diffusion based Generat...: 2026-03-08/cmd-vrp.md
+  - Learning Context-Adaptive Motion Priors fo...: 2026-03-08/context-motion-diffusion.md
+  - DocCogito — Aligning Layout Cognition a...: 2026-03-08/doccogito.md
+  - DogWeave — High-Fidelity 3D Canine Rec...: 2026-03-08/dogweave.md
+  - Holi-Spatial — Evolving Video Streams into...: 2026-03-08/holi-spatial.md
+  - InterReal — A Unified Physics-Based Imi...: 2026-03-08/interreal.md
+  - Benchmarking Large Language Models for Quebec Insurance — From Closed-Book to RAG: 2026-03-08/llm-quebec-insurance.md
+  - Scalable Training of Mixture-of-Experts Mo...: 2026-03-08/megatron-moe.md
+  - QdaVPR — A novel query-based domain-...: 2026-03-08/qdavpr.md
+  - SeDa — A Unified System for Datase...: 2026-03-08/seda.md
+  - Scaling Test-Time Robustness of Vision-Lan...: 2026-03-08/self-critic-vlm.md
+  - SiamGM — Siamese Geometry-Aware and ...: 2026-03-08/siamgm.md
+  - TDM-R1 — Reinforcing Few-Step Diffus...: 2026-03-08/tdm-r1.md
+  - VIVECaption — A Split Approach to Caption...: 2026-03-08/vivecaption.md
+- '2026-03-07':
+  - 2026-03-07/index.md
+  - ACD-U — Asymmetric Co-teaching with...: 2026-03-07/acd-u.md
+  - AdaGen — Learning Adaptive Policy fo...: 2026-03-07/adagen.md
+  - Governance Architecture for Autonomous Agent Systems — Threats, Framework, and Eng...: 2026-03-07/agent-governance.md
+  - Agentic Planning with Reasoning for Image ...: 2026-03-07/agentic-styling.md
+  - AgrI Challenge — A Data-Centric AI Competiti...: 2026-03-07/agri-challenge.md
+  - Looking Back and Forth — Cross-Image Attention Calib...: 2026-03-07/cross-image-hallucination.md
+  - DyACE — Dynamic Algorithm Co-evolut...: 2026-03-07/dyace.md
+  - Facial Expression Generation Aligned with ...: 2026-03-07/facial-expression.md
+  - Unlocking Data Value in Finance — A Study on Distillation and...: 2026-03-07/finance-distillation.md
+  - FinSheet-Bench — From Simple Lookups to Comp...: 2026-03-07/finsheet-bench.md
+  - Hit-RAG — Learning to Reason with Lon...: 2026-03-07/hit-rag.md
+  - Making LLMs Optimize Multi-Scenario CUDA K...: 2026-03-07/llm-cuda.md
+  - MURE — Hierarchical Multi-Resoluti...: 2026-03-07/mure.md
+  - PolyGLU — State-Conditional Activatio...: 2026-03-07/polyglu.md
+  - Retrieval-Augmented Generation for Predict...: 2026-03-07/rag-cellular.md
+  - SRLM — Self-Reflective Program Sea...: 2026-03-07/recursive-lm-search.md
+  - RoTri-Diff — A Spatial Robot-Object Tria...: 2026-03-07/rotri-diff.md
+  - Optimizing Multi-Modal Models for Image-Based Shape Retrieval — The Role of Pre-Alignment a...: 2026-03-07/shape-retrieval.md
+  - VirtueBench — Evaluating Trustworthiness ...: 2026-03-07/virtuebench.md
+  - Foundational World Models Accurately Detec...: 2026-03-07/world-model-failure.md
+- '2026-03-06':
+  - 2026-03-06/index.md
+  - Multimodal Behavior Tree Generation — A Small Vision-Language Mod...: 2026-03-06/behavior-tree-vlm.md
+  - Beyond Rows to Reasoning — Agentic Retrieval for Multi...: 2026-03-06/brtr-spreadsheet.md
+  - Reforming the Mechanism — Editing Reasoning Patterns ...: 2026-03-06/circuit-reshaping.md
+  - Spatial Colour Mixing Illusions as a Perce...: 2026-03-06/color-mixing-vlm.md
+  - DC-Merge — Improving Model Merging wit...: 2026-03-06/dc-merge.md
+  - DreamToNav — Generalizable Navigation fo...: 2026-03-06/dreamtonav.md
+  - GenHOI — Towards Object-Consistent H...: 2026-03-06/genhoi.md
+  - HERO — Hierarchical Embedding-Refi...: 2026-03-06/hero-ov-tsgv.md
+  - Restoring Linguistic Grounding in VLA Mode...: 2026-03-06/igar-vla-grounding.md
+  - LIT-RAGBench — Benchmarking Generator Capa...: 2026-03-06/lit-ragbench.md
+  - Cut to the Chase — Training-free Multimodal Su...: 2026-03-06/multimodal-summary.md
+  - Omni-Diffusion — Unified Multimodal Understa...: 2026-03-06/omni-diffusion.md
+  - Penguin-VL — Exploring the Efficiency Li...: 2026-03-06/penguin-vl.md
+  - Physical Simulator In-the-Loop Video Gener...: 2026-03-06/physics-video-gen.md
+  - Pinterest Canvas — Large-Scale Image Generatio...: 2026-03-06/pinterest-canvas.md
+  - Place-it-R1 — Unlocking Environment-aware...: 2026-03-06/place-it-r1.md
+  - Reference-guided Policy Optimization for M...: 2026-03-06/ref-policy-mol.md
+  - Reflective Flow Sampling Enhancement: 2026-03-06/reflective-flow.md
+  - SpatialMAGIC — A Hybrid Framework Integrat...: 2026-03-06/spatialmagic.md
+  - History-Conditioned Spatio-Temporal Visual...: 2026-03-06/vln-token-pruning.md
+- '2026-03-05':
+  - 2026-03-05/index.md
+  - Multi-label Instance-level Generalised Vis...: 2026-03-05/agri-visual-grounding.md
+  - Any to Full — Prompting Depth Anything fo...: 2026-03-05/any-to-full-depth.md
+  - Interpretable Perception and Reasoning for...: 2026-03-05/audiovisual-geolocation.md
+  - C2-Faith — Benchmarking LLM Judges for...: 2026-03-05/c2-faith.md
+  - DARE — Aligning LLM Agents with th...: 2026-03-05/dare-r-agent.md
+  - Guiding Diffusion-based Reconstruction wit...: 2026-03-05/dcr.md
+  - Design Behaviour Codes (DBCs) — A Taxonomy-Driven Layered G...: 2026-03-05/design-behaviour-codes.md
+  - An Exploration-Analysis-Disambiguation Rea...: 2026-03-05/ead-wsd.md
+  - Survive at All Costs — Exploring LLM's Risky Behav...: 2026-03-05/llm-survival-pressure.md
+  - MASQuant — Modality-Aware Smoothing Qu...: 2026-03-05/masquant.md
+  - Multi-Paradigm Collaborative Adversarial A...: 2026-03-05/mpcattack.md
+  - MultiHaystack — Benchmarking Multimodal Ret...: 2026-03-05/multihaystack.md
+  - Free Lunch for Pass@k? Low Cost Diverse Sa...: 2026-03-05/odd-diverse-sampling.md
+  - ORMOT — A Dataset and Framework for...: 2026-03-05/ormot.md
+  - On Multi-Step Theorem Prediction via Non-P...: 2026-03-05/pri-tpg.md
+  - Towards Highly Transferable Vision-Languag...: 2026-03-05/sadca.md
+  - Revisiting Shape from Polarization in the ...: 2026-03-05/shape-from-polarization.md
+  - SIQA — Toward Reliable Scientific ...: 2026-03-05/siqa.md
+  - SpectralCache — Frequency-Aware Error-Bound...: 2026-03-05/spectral-cache.md
+  - Enhancing Zero-shot Commonsense Reasoning ...: 2026-03-05/visual-commonsense-imagination.md
 plugins:
 - search
 markdown_extensions:

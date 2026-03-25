@@ -16,7 +16,7 @@
 
 🧊 3D视觉 / 点云配准
 
-提出 CMHANet，通过跨模态混合注意力机制融合 2D 图像纹理特征和 3D 点云几何特征，结合对比学习优化函数增强噪声和低重叠场景下的鲁棒性，在 3DMatch/3DLoMatch 上达到 SOTA 配准召回率。
+提出 CMHANet，通过三种跨模态混合注意力机制（自注意力 + 聚合注意力 + 交叉注意力）融合 2D 图像纹理和 3D 点云几何特征，结合跨模态对比损失，在 3DMatch 上达到 92.4% Registration Recall，3DLoMatch 上达到 75.5% RR，均为 SOTA。
 
 ---
 
@@ -40,7 +40,7 @@
 
 🎬 多模态VLM / 视频理解
 
-提出 Dyn-Bench，首个大规模物理 4D 动态理解 benchmark（1K 视频、7K VQA、3K 动态目标 grounding），发现现有 MLLM 无法同时维持时空推理和动态目标定位的强表现，提出 Mask-Guided Fusion 和 ST-TCM 结构化集成方法显著提升动态感知能力。
+提出 Dyn-Bench，首个大规模物理 4D 动态理解 benchmark（1K 视频、7K VQA、3K 动态目标 grounding），系统评测发现现有 MLLM 无法同时维持时空推理和动态 grounding 的强表现，CoT 等传统 prompting 改善有限，而 Mask-Guided Fusion 和 ST-TCM 结构化方法显著提升动态感知能力。
 
 ---
 
@@ -48,7 +48,7 @@
 
 🎬 视频理解 / 第一人称视觉
 
-提出 EgoPointVQA 数据集（4000 合成+400 真实视频）和 HINT（Hand Intent Tokens）方法——将 3D 手部关键点编码为手势意图 token 并交织进 MLLM 输入，HINT-14B 在 6 类指示推理任务上以 68.1% 准确率超越 InternVL3-14B 6.6%。
+提出 EgoPointVQA 数据集（4000 合成+400 真实视频，18745 QA 对）和 HINT（Hand Intent Tokens）方法——将 3D 手部关键点编码为手势意图 token 并交织进 MLLM 输入，HINT-14B 在 6 类指示推理任务上以 68.1% 准确率超越 InternVL3-14B 5.4%（+6.6% vs InternVL3-14B 的 62.7%）。
 
 ---
 
@@ -56,7 +56,7 @@
 
 🎨 图像生成 / LLM推理
 
-针对扩散语言模型（DLM）提出 EGSPO/EGSPO-SA，将去噪轨迹建模为有限时域 MDP，推导出精确的逐步策略梯度——通过熵引导选择信息量最大的去噪步 + 单步去噪奖励估计逐步优势，在编码和逻辑推理上达到 DLM RL 后训练的 SOTA。
+针对扩散语言模型（DLM）提出 EGSPO/EGSPO-SA——将去噪轨迹建模为有限时域 MDP 并推导精确逐步策略梯度，通过熵引导选择信息量最大的去噪步 + 单步去噪奖励估计逐步优势，EGSPO-SA 在 Sudoku 上达 94.3%、Countdown 78.5%、MBPP 51.1%、HumanEval 44.5%，均为 DLM RL SOTA。（ICML 2026）
 
 ---
 
@@ -64,7 +64,7 @@
 
 🧠 LLM推理 / NLP
 
-构建 ESG-Bench——首个面向长上下文 ESG 报告的幻觉检测与缓解 benchmark（人工标注 QA 对+幻觉类型标签），设计任务特定 CoT 策略微调 LLM，显著减少 ESG 分析中的幻觉生成。
+构建 ESG-Bench——首个面向长上下文 ESG 报告的幻觉检测与缓解 benchmark（94 份真实报告、270 QA 对、博士级人工标注），设计四步 CoT 微调策略将 LLaMA-3.2-3B 的幻觉缓解准确率从 76.0% 提升到 96.0%。
 
 ---
 
@@ -88,7 +88,7 @@
 
 📄 多模态VLM / 视觉推理
 
-提出 Geo-ADAPT——可定位性引导的自适应推理框架，通过优化可定位性分数量化图像的深度推理适宜性，策划 Geo-ADAPT-51K 数据集 + 两阶段 GRPO 课程训练动态调节推理深度，在多个地理定位 benchmark 上达到 SOTA 并大幅减少幻觉。
+提出 Geo-ADAPT——可定位性引导的自适应推理框架，通过优化可定位性分数 $L_{opt}$ 量化深度推理适宜性，策划 Geo-ADAPT-51K 数据集 + 两阶段 GRPO 课程训练，Geo-ADAPT-8B 在 IM2GPS3K 上 Region-200km 达 62.6%（+3.6%）、Country-750km 达 77.9%（+1.7%），国家命名准确率 89.2% 超越 Gemini 2.5 Flash。
 
 ---
 
@@ -104,7 +104,7 @@
 
 📄 多模态VLM / ICL
 
-通过数学推导揭示 ICL 效应的精确形式——注意力输出是标准自注意力和示例值矩阵的动态混合，据此提出 HiFICL，用可学习的低秩虚拟 key-value 对直接参数化 ICL 源头，在多模态 benchmark 上超越现有 ICL 近似方法。（CVPR 2026）
+通过数学推导精确分解注意力公式：$\text{Attn}_{out} = \alpha \cdot \text{SA}(q,K,V) + \beta \cdot V_D$，揭示 ICL 效应的精确形式，据此提出 HiFICL 用低秩虚拟 key-value 对直接参数化 ICL 源头，在 Idefics2 上 VQAv2 达 72.08%（比 MimIC 高 2.79%），仅用 ~2.2M 参数。（CVPR 2026）
 
 ---
 
@@ -112,7 +112,7 @@
 
 🎨 图像生成 / 3D动作
 
-提出多人 3D 动作编辑任务（TMME）、InterEdit3D 数据集（5161 个源-目标-指令三元组）和 InterEdit 模型——通过语义感知计划 token 对齐 + 交互感知频率 token 对齐（DCT 能量池化），实现精确的文本指导双人动作编辑，在 TMME 上达到 SOTA。
+提出多人 3D 动作编辑任务（TMME）、InterEdit3D 数据集（5161 个源-目标-指令三元组）和 InterEdit 模型——通过语义感知计划 token 对齐 + 交互感知频率 token 对齐（DCT 能量池化），在 g2t R@1 上达 30.82%（比 TIMotion 高 +5.85%），FID 0.37（低 17%）。
 
 ---
 
@@ -136,7 +136,7 @@
 
 🤖 机器人 / 评估方法论
 
-提出 N-SCORE，一个基于安全随时有效推断（SAVI）的机器人策略对比框架——支持从二值成功率到连续奖励的通用评估指标，通过序贯检验在统计严格性不降的前提下，比批处理方法减少 70% 评估负担，比二值序贯方法减少 50%。
+提出 N-SCORE，基于安全随时有效推断（SAVI）的机器人策略对比框架，支持从二值成功率到连续奖励的通用指标，通过序贯检验在统计严格性不降的前提下比批处理方法减少最多 70% 评估负担（仿真）和 50%（硬件），在 4500+ 硬件 rollout 上验证。
 
 ---
 
@@ -152,7 +152,7 @@
 
 🛡️ AI安全 / 图像保护
 
-揭示对抗性图像保护方法的严重缺陷——提出 VAE-Trans 和 EditorClean 两种净化器，利用模型架构不匹配和扩散 Transformer 的重建能力，在 6 种保护方法 × 2100 个编辑任务上将 PSNR 提升 3-6 dB、FID 降低 50-70%，证明"净化一次，自由编辑"的攻击模式。
+揭示对抗性图像保护方法的严重缺陷——提出 VAE-Trans 和 EditorClean 两种净化器，利用模型架构不匹配（U-Net vs DiT）和 VAE 潜空间分布偏移，在 6 种保护方法 × 2100 个编辑任务上将 PSNR 提升 3-6 dB、FID 降低 50-70%，证明"净化一次，自由编辑"的攻击模式。
 
 ---
 

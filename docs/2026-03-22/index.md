@@ -24,7 +24,7 @@
 
 🗣️ LLM/NLP
 
-首个系统量化孟加拉语方言偏差的框架——用 RAG 管道生成 9 种方言的 4000 问题变体，用 LLM-as-judge 替代失效的传统指标（BLEU CCC=0.065 vs LLM-judge CCC=0.506），对 19 个 LLM 进行 68,395 次 RLAIF 评估揭示严重方言歧视。
+首个系统量化孟加拉语方言偏差的框架——用 RAG 管道生成 9 种方言的 4000 问题变体，用 LLM-as-judge 替代完全失效的传统指标（BLEU CCC=0.065 vs LLM-judge CCC=0.506），对 19 个 LLM 进行 68,395 次 RLAIF 评估，发现偏差与方言语言学发散度高度系统相关（Chittagong 最差 5.44/10 vs Tangail 最优 7.68/10）。
 
 ---
 

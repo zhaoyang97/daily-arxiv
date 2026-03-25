@@ -16,15 +16,15 @@
 
 🛡️ AI安全 / 联邦遗忘
 
-提出 FOUL（Federated On-server UnLearning），通过两阶段策略——训练时用因果-非因果解纠缠将模型分为域不变/域特异子网络（Learning-to-Unlearn），遗忘时在服务器端用梯度冲突匹配仅更新域特异子网络——实现高效、无需客户端数据访问的联邦客户级遗忘。
+提出 FOUL（Federated On-server UnLearning），训练时用因果解纠缠将模型分为域不变/域特异子网络（L2U），遗忘时仅在服务器端对域特异子网络做梯度冲突匹配，实现高效无需客户端数据的联邦客户级遗忘。
 
 ---
 
-### [Garments2Look: A Multi-Reference Dataset for High-Fidelity Outfit-Level Virtual Try-On](garments2look.md)
+### [Garments2Look: 首个大规模 Outfit 级虚拟试穿数据集](garments2look.md)
 
 🎨 图像生成 / 虚拟试穿
 
-构建 Garments2Look outfit 级虚拟试穿数据集——80,041 对穿搭级样本，涵盖 40+ 大类 300+ 子类，每对提供 3-12 张参考图，支持 1-5 层叠穿和 5 种造型技巧，通过 LLM 驱动的穿搭知识库 + 合成 pipeline + 严格筛选构建。
+构建首个 outfit 级虚拟试穿数据集 Garments2Look（80K 穿搭对、40+ 大类 300+ 子类、平均 4.48 参考图），benchmark 揭示 VTON 专用方法在 outfit 级表现极差（FastFit Layering 仅 0.131），通用编辑模型 Nano Banana 全面更优（Garment 0.925、Layering 0.885），结构化文本标注使 FID 降低 7.4%。
 
 ---
 
@@ -32,15 +32,15 @@
 
 🧊 3D视觉 / 内在分解
 
-提出 Geo-ID，一种推理时框架，通过几何引导的稀疏对应关系耦合多视角内在分解预测，用体素化共识初始化 + 共识引导扩散注入跨视角约束，无需修改模型参数即可实现多视角一致的 albedo/metallicity 估计。
+提出 Geo-ID，一种推理时框架，通过几何引导的稀疏对应关系耦合多视角内在分解预测，用体素化共识初始化 + 共识引导扩散注入跨视角约束，无需修改模型参数即可将 Marigold Appearance 的 Metallicity MAD 从 0.070 降至 0.044（32 视角），同时保持单视角分解质量不下降。
 
 ---
 
 ### [IGU-LoRA: Adaptive Rank Allocation via Integrated Gradients and Uncertainty-Aware Scoring](igu-lora.md)
 
-🎬 视频理解 / 参数高效微调
+📄 参数高效微调 / 自适应 LoRA
 
-提出 IGU-LoRA，将 Integrated Gradients 扩展到参数空间计算层内参数重要性得分，结合不确定性感知评分（EMA+偏差追踪）抑制噪声更新，用随机求积近似降低计算成本，实现自适应 LoRA rank 分配，在 GLUE 上以 0.33M 参数达到 89.42% 平均精度。
+提出 IGU-LoRA，将 Integrated Gradients 从输入归因扩展到参数空间计算层级重要性得分，结合 EMA+偏差追踪的 SNR 不确定性感知评分实现自适应 rank 分配。RoBERTa-large 上 GLUE 平均 89.42%（0.33M 参数），Qwen-2.5-0.5B 上以 8.8M 参数达 59.17% 超越 Full FT（494M 参数 58.98%）。
 
 ---
 
@@ -64,7 +64,7 @@
 
 📄 多模态VLM / 文字识别
 
-提出 LER（Localization-Extraction-Recognition）框架，通过 CLIP 多模态信息辅助字符定位 + 显式字符特征解耦 + 部首感知 IDS 解码器，解决中文场景文字识别中的误差累积和注意力漂移问题，在 CTR benchmark 上达到 SOTA。
+提出 LER（Localization-Extraction-Recognition）框架，通过 CLIP 多模态信息辅助字符定位 + 显式字符特征解耦 + 部首感知 IDS 解码器，解决中文场景文字识别中的误差累积和注意力漂移问题，在 CTR benchmark 上以 81.47% 平均 LACC 达到 SOTA。
 
 ---
 
@@ -72,7 +72,7 @@
 
 ⚡ LLM效率 / 文本简化
 
-构建 OasisSimp 多语言句子简化数据集（英语/僧伽罗语/泰语/泰米尔语/普什图语），由训练有素的母语标注者按统一标准人工简化，评估 8 个开源多语言 LLM 发现高资源与低资源语言之间存在巨大性能差距。
+构建 OasisSimp 多语言句子简化数据集（英语/僧伽罗语/泰语/泰米尔语/普什图语），由母语标注者经 3 轮训练后人工简化；评估 8 个开源 LLM 发现英语 SARI 可达 44.99 而低资源语言最低仅 24.07，揭示巨大的多语言性能鸿沟。
 
 ---
 
@@ -80,7 +80,7 @@
 
 🎨 图像生成 / 超分辨率
 
-提出 SpaSemSR，通过空间锚定文本引导（Grounded-SAM 检测目标+坐标编码融入 prompt）和语义增强视觉引导（双分支编码器+VAE/SAM 先验约束），用 Spatial-Semantic ControlNet 自适应融合到 Stable Diffusion 中，在超分任务上同时改善感知质量和保真度，缓解感知-失真 trade-off。
+提出 SpaSemSR 空间-语义引导扩散超分框架，通过空间锚定文本引导和语义增强视觉引导双路互补，在 DIV2K-Val 上 PSNR 21.31 超越全部扩散方法（StableSR 20.74），CLIP-IQA 0.693 大幅超越 GAN 方法（Real-ESRGAN 0.549），并在真实数据 RealSR/DRealSR 上全面领先，消融证实空间引导提升 PSNR +1.84，语义引导提升 CLIP-IQA +4.09%。
 
 ---
 
@@ -96,7 +96,7 @@
 
 🎬 视频理解 / 多目标跟踪
 
-提出 QTrack，将多目标跟踪从"跟踪所有物体"扩展为"根据自然语言查询推理并跟踪指定目标"的范式，通过端到端 VLM + TAPO（时序感知策略优化）+ 结构化奖励实现语言条件化的时空推理跟踪，并构建 RMOT26 大规模 benchmark。
+提出 QTrack，将多目标跟踪从"跟踪所有物体"扩展为"根据自然语言查询推理并跟踪指定目标"，通过端到端 VLM + TAPO（时序感知策略优化）+ 结构化奖励实现语言条件化的时空推理跟踪，3B 模型即超越 GPT-5.2 等 10+ baseline，并构建 RMOT26 大规模 benchmark。
 
 ---
 
@@ -112,7 +112,7 @@
 
 🎨 图像生成 / 遥感时序预测
 
-提出 Sat-JEPA-Diff，用 IJEPA 在 latent 空间预测未来帧的语义表示，再通过轻量 cross-attention adapter 引导冻结的 Stable Diffusion 3.5 生成高保真卫星图像，在 GSSIM（边缘保持）上比确定性方法提升 11%+，FID 达 0.1475。
+提出 Sat-JEPA-Diff，用 IJEPA 在 latent 空间预测未来帧的语义表示，再通过 ~25M 参数的 cross-attention adapter 引导冻结的 SD 3.5 生成高保真卫星图像，在全球 100 个 ROI 的 Sentinel-2 数据集上 GSSIM 达 0.8984（比确定性方法高 11%+），FID 0.1475。
 
 ---
 
@@ -128,7 +128,7 @@
 
 🧊 3D视觉 / 跨视角定位
 
-构建 Sky2Ground 跨高度场景建模 benchmark（51 个地理站点，覆盖卫星/航拍/地面三种视角），提出 SkyNet 双流架构（Masked-Satellite-Attention + 课程训练）进行跨视角定位，RRA@5 提升 9.6%。
+构建 Sky2Ground 跨高度场景建模 benchmark（51 个地理站点、80k 张图像，覆盖卫星/航拍/地面三种视角），提出 SkyNet 双流架构在 GAS 设置下 RRA@5 达 83.2%（+9.6%），平均指标 65.1（VGGT 零样本 52.9），消融显示 MSA 贡献 +8.2%、P-VS 贡献 +7.3%。
 
 ---
 
@@ -142,9 +142,9 @@
 
 ### [Steering Generative Models for Accessibility: EasyRead Image Generation](steering-accessibility.md)
 
-🎨 图像生成 / 可访问性
+🎨 图像生成 / 可访问性, **关键词**: EasyRead, pictogram, LoRA fine-tuning, cognitive accessibility, diffusion model
 
-针对智力障碍和低识字率人群的 EasyRead 象形图生成需求，在 OpenMoji/ARASAAC/LDS 混合数据集上用 LoRA rank-16 微调 SD v1.5，提出 EasyRead Score (ERS) 综合评估指标，生成风格统一的简洁象形图（ERS 提升 17.5%，CLIP 相似度 +28%）。
+在 OpenMoji/ARASAAC/LDS 三源混合数据集（共 ~17k 图）上用 LoRA rank-16 微调 SD v1.5，提出首个定量 EasyRead Score (ERS) 评估框架，生成面向智力障碍与低识字人群的简洁象形图（ERS 0.40→0.47，CLIP 相似度 24.33→31.15）。发表于 CHI EA 2026。
 
 ---
 
@@ -152,14 +152,14 @@
 
 🦾 LLM Agent / 安全攻击
 
-揭露 tool-augmented LLM agent 的检索阶段新漏洞——ToolFlood 通过 Monte Carlo 候选生成 + 贪心语义覆盖，仅注入 1% 的对抗性工具即可实现 95% 的 top-k 支配率，使合法工具被完全隐藏在检索结果之外。
+揭露 tool-augmented LLM agent 检索阶段的新漏洞——ToolFlood 通过 Monte Carlo 候选生成 + 贪心语义覆盖，在 ToolBench（11,760 工具）上仅注入 1.2% 的对抗工具即实现 91% TDR 和 ~95% ASR，使合法工具被完全隐藏在 top-k 检索结果之外。
 
 ---
 
-### [vla-eval: A Unified Evaluation Harness for Vision-Language-Action Models](vla-eval.md)
+### [vla-eval: VLA 模型统一评估框架](vla-eval.md)
 
 📄 多模态VLM / 评估框架
 
-提出 vla-eval 统一评估框架，通过 WebSocket+msgpack 协议解耦模型推理与 benchmark 执行，用 Docker 容器化隔离环境，支持 13 个仿真 benchmark + 6 个模型服务器，并行评估实现 47× 吞吐提升，发现多个现有方法存在不可复现问题。
+统一评估框架 vla-eval，WebSocket+msgpack 协议解耦模型与 benchmark，Docker 隔离环境冲突，支持 13 个仿真 benchmark + 6 个模型。并行评估（N=50 shards + B=16 batch）实现 **47× 加速**，2000 LIBERO episodes 仅需 ~18 min。可复现性审计发现 SimplerEnv 终止语义歧义、CALVIN 隐藏归一化统计等未文档化问题。
 
 ---
