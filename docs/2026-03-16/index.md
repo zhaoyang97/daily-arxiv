@@ -30,9 +30,9 @@
 
 ### [Decision-Level Ordinal Modeling for Multimodal Essay Scoring with Large Language Models](dlom-essay-scoring.md)
 
-🧩 多模态/VLM / NLP理解
+📄 教育 NLP / 自动作文评分
 
-将 LLM 作文评分从隐式 token 生成重构为显式序数决策——复用 LM head 在预定义分数 token 上提取 score-wise logits，提出 DLOM-GF 门控融合多模态评分和 DLOM-DA 距离感知正则化，在 EssayJudge 和 ASAP/ASAP++ 上一致超越生成式基线。
+提出 DLOM：把 LLM 作文评分从“生成文本再解析分数”改为“在分数 token 上直接做决策”，并进一步给出多模态门控融合（DLOM-GF）与距离感知正则（DLOM-DA），在 EssayJudge 与 ASAP/ASAP++ 上稳定优于生成式基线。
 
 ---
 

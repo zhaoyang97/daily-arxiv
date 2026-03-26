@@ -62,9 +62,9 @@
 
 ### [GriDiT: Factorized Grid-Based Diffusion for Efficient Long Image Sequence Generation](gridit.md)
 
-🎨 图像生成 / 视频理解
+📄 长序列生成 / 视频与体数据生成
 
-提出 GriDiT 两阶段分解生成框架——Stage 1 将帧序列排成 K×K 网格图在低分辨率下建模帧间关联，Stage 2 逐帧超分重建——在 CT-RATE 医学影像上比 GenerateCT 快 3.4× 且 FVD 更优（998.43 vs 1092.3），支持 1024 帧长序列生成。
+提出 GriDiT：把长图像序列生成拆成“网格级低分辨率粗生成 + 逐帧超分精修”两阶段，并配套网格自回归采样，实现更好的长程一致性和显著更快推理，在 CT-RATE 上达到 3.4x 速度提升且 FVD 更优。
 
 ---
 
@@ -142,9 +142,9 @@
 
 ### [T-QPM: Enabling Temporal Out-Of-Distribution Detection and Domain Generalization for Vision-Language Models](t-qpm.md)
 
-🛡️ 多模态VLM / AI安全
+📄 多模态安全 / OOD 检测
 
-提出 T-QPM 框架，用四路跨模态匹配分数（语义匹配、视觉典型性、Caption-文本对齐、Caption-视觉对齐）扩展 DPM，配合时间步特定原型和三组件训练损失，在动态开放世界中实现时序鲁棒的 OOD 检测——CLEAR100 上 FPR95 从 DPM 的 41.53 降至 17.42，ImageNet 上 AUROC 达 98.79。
+提出 T-QPM：在 CLIP 冻结 backbone 上，将原 DPM 的双模式扩展为四路跨模态匹配，并加入时间步原型与时序漂移正则，使 OOD 检测在动态分布下更稳健；在 CLEAR100 上 FPR95 从 41.53 降至 17.42。
 
 ---
 

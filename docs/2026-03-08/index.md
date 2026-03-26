@@ -38,7 +38,7 @@
 
 ### [Bolbosh: Script-Aware Flow Matching for Kashmiri Text-to-Speech](bolbosh.md)
 
-🎨 图像生成
+📄 NLP / 语音合成
 
 为克什米尔语构建首个开源神经 TTS 系统——基于 OT-CFM（最优传输条件流匹配）的跨语言适配策略 + 三阶段声学增强管线，MOS 从多语言基线的 1.86 提升至 3.63。
 

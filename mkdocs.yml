@@ -28,6 +28,40 @@ theme:
   - content.code.copy
 nav:
 - Home: index.md
+- '2026-03-25':
+  - 2026-03-25/index.md
+  - PaddleOCR-VL — Boosting Document Parsing w...: 2026-03-25/coarse-to-fine-doc.md
+  - DepthArb — Training-Free Depth-Arbitra...: 2026-03-25/deptharb.md
+  - EMoT — Enhanced Mycelium of Though...: 2026-03-25/emot.md
+  - Memory-Augmented VL Agents for Persistent ...: 2026-03-25/memory-vl-agent.md
+  - MMTIT-Bench — Multilingual Multi-Scenario...: 2026-03-25/mmtit-bench.md
+  - OmniWeaving — Towards Unified Video Gener...: 2026-03-25/omniweaving.md
+  - SafeFlow — Real-Time Text-Driven Human...: 2026-03-25/safeflow.md
+  - ScrollScape — Unlocking 32K Image Generat...: 2026-03-25/scrollscape.md
+  - SOMA — Strategic Orchestration and...: 2026-03-25/soma.md
+  - ViHOI — Human-Object Interaction Sy...: 2026-03-25/vihoi.md
+- '2026-03-24':
+  - 2026-03-24/index.md
+  - 3DCity-LLM — Empowering Multi-modality L...: 2026-03-24/3dcity-llm.md
+  - ABot-PhysWorld — Interactive World Foundatio...: 2026-03-24/abot-physworld.md
+  - AeroScene — Progressive Scene Synthesis...: 2026-03-24/aeroscene.md
+  - ClusterSTM — Cluster-Wise Spatio-Tempora...: 2026-03-24/clusterstm.md
+  - Cog3DMap — Multi-View Vision-Language ...: 2026-03-24/cog3dmap.md
+  - CoMaTrack — Competitive Multi-Agent Gam...: 2026-03-24/comatrack.md
+  - DBAutoDoc — Automated Discovery and Doc...: 2026-03-24/dbautodoc.md
+  - E3Flow — Efficient Hybrid SE(3)-Equi...: 2026-03-24/e3flow.md
+  - ForeSea — AI Forensic Search with Mul...: 2026-03-24/foresea.md
+  - GeoTikzBridge — Advancing Multimodal Code G...: 2026-03-24/geotikzbridge.md
+  - I3DM — Implicit 3D-aware Memory Re...: 2026-03-24/i3dm.md
+  - InterDyad — Interactive Dyadic Speech-t...: 2026-03-24/interdyad.md
+  - MultiCam — On-the-fly Multi-Camera Pos...: 2026-03-24/multicam.md
+  - PEPO — Rethinking Token-Level Poli...: 2026-03-24/pepo.md
+  - SMSP — A Plug-and-Play Strategy of...: 2026-03-24/smsp.md
+  - SpecEyes — Accelerating Agentic Multim...: 2026-03-24/speceyes.md
+  - TDATR — Improving End-to-End Table ...: 2026-03-24/tdatr.md
+  - TreeTeaming — Autonomous Red-Teaming of V...: 2026-03-24/treeteaming.md
+  - UniGRPO — Unified Policy Optimization...: 2026-03-24/unigrpo.md
+  - ViBe — Ultra-High-Resolution Video...: 2026-03-24/vibe.md
 - '2026-03-23':
   - 2026-03-23/index.md
   - ADaFuSE — Adaptive Diffusion-generate...: 2026-03-23/adafuse.md
@@ -448,6 +482,94 @@ nav:
   - SIQA — Toward Reliable Scientific ...: 2026-03-05/siqa.md
   - SpectralCache — Frequency-Aware Error-Bound...: 2026-03-05/spectral-cache.md
   - Enhancing Zero-shot Commonsense Reasoning ...: 2026-03-05/visual-commonsense-imagination.md
+- '2026-03-04':
+  - 2026-03-04/index.md
+  - CAM-LDS — 网络攻击表征日志数据集: 2026-03-04/cam_lds_cyber_attack_dataset.md
+  - CubeComposer — Spatio-Temporal Autoregress...: 2026-03-04/cubecomposer_4k_360_video.md
+  - DISC — 大规模开放集语义建图: 2026-03-04/disc_open_set_semantic_mapping.md
+  - DistriVoting — 分布引导的推理模型置信度校准: 2026-03-04/distrivoting_confidence_calibration.md
+  - Dual Diffusion Models for Multi-modal Guid...: 2026-03-04/dual_diffusion_3d_avatar.md
+  - ECHO — 基于多智能体协作的多媒体事件抽取: 2026-03-04/echo_multimedia_event_extraction.md
+  - EVAFusion — 人类评价驱动的红外-可见光图像融合: 2026-03-04/evafusion_ir_visible_fusion.md
+  - Helios — Real Real-Time Long Video G...: 2026-03-04/helios_realtime_video_generation.md
+  - HIER — 进化式多模态推理的层级语义表示: 2026-03-04/hier_evolutionary_multimodal_reasoning.md
+  - In-Context Environments 诱发语言模型的评估感知: 2026-03-04/in_context_evaluation_awareness.md
+  - InEdit-Bench — 交互式图像编辑的中间逻辑路径基准: 2026-03-04/inedit_bench_image_editing.md
+  - KFRA — 知识增强的开放集细粒度视觉理解智能体: 2026-03-04/kfra_knowledge_augmented_agent.md
+  - Learning-per-Watt — AI 教育中的推理能耗与延迟分析: 2026-03-04/learning_per_watt_ai_education.md
+  - 轻量级社会感知机器人的视觉推理: 2026-03-04/lightweight_visual_reasoning_robot.md
+  - Narrative Weaver — 可控长程视觉一致性内容生成: 2026-03-04/narrative_weaver_visual_consistency.md
+  - PinPoint — Evaluation of Composed Imag...: 2026-03-04/pinpoint_cir_benchmark.md
+  - PreLabellingProbe — 基础模型预训练数据欠表示的一击探测: 2026-03-04/prelabellingprobe_underrepresented.md
+  - RAGTrack — 语言增强的 RGBT 目标跟踪: 2026-03-04/ragtrack_rgbt_tracking.md
+  - RIVER — A Real-Time Interaction Ben...: 2026-03-04/river_realtime_video_benchmark.md
+  - $V_1$ — Unifying Generation and Sel...: 2026-03-04/v1_pairwise_verification.md
+- '2026-03-03':
+  - 2026-03-03/index.md
+  - ACE-Merging — Data-Free Model Merging wit...: 2026-03-03/ace-merging.md
+  - Beyond Language Modeling — An Exploration of Multimoda...: 2026-03-03/beyond-language-modeling.md
+  - BrandFusion — A Multi-Agent Framework for...: 2026-03-03/brandfusion.md
+  - Chain of World — World Model Thinking in Lat...: 2026-03-03/chain-of-world.md
+  - From "What" to "How" — Constrained Reasoning for A...: 2026-03-03/cor-painter.md
+  - EduVQA — Benchmarking AI-Generated V...: 2026-03-03/eduvqa.md
+  - Graph-GRPO — Stabilizing Multi-Agent Top...: 2026-03-03/graph-grpo.md
+  - LoGeR — Long-Context Geometric Reco...: 2026-03-03/loger.md
+  - PhyPrompt — RL-based Prompt Refinement ...: 2026-03-03/phyprompt.md
+  - QFlowNet — Fast, Diverse, and Efficien...: 2026-03-03/qflownet.md
+  - SERP — Agentic Self-Evolutionary R...: 2026-03-03/serp-replanning.md
+  - SFDE — Spatial and Frequency Domai...: 2026-03-03/sfde-crossview.md
+  - TagaVLM — Topology-Aware Global Actio...: 2026-03-03/tagavlm.md
+  - TC-Padé — Trajectory-Consistent Padé ...: 2026-03-03/tc-pade.md
+  - Think-as-You-See — Streaming Chain-of-Thought ...: 2026-03-03/think-as-you-see.md
+  - TRACE — Task-Adaptive Reasoning and...: 2026-03-03/trace.md
+  - Tucano 2 Cool — Better Open Source LLMs for...: 2026-03-03/tucano2.md
+  - ULTRA — Unified Multimodal Control ...: 2026-03-03/ultra-humanoid.md
+  - UniG2U-Bench — Do Unified Models Advance M...: 2026-03-03/unig2u-bench.md
+  - VB — Visibility Benchmark for Vi...: 2026-03-03/vb-visibility-benchmark.md
+- '2026-03-02':
+  - 2026-03-02/index.md
+  - According to Me — Long-Term Personalized Refe...: 2026-03-02/according-to-me.md
+  - AgenticGEO — A Self-Evolving Agentic Sys...: 2026-03-02/agenticgeo.md
+  - CRoCoDiL — Continuous and Robust Condi...: 2026-03-02/crocodil.md
+  - Deepfake Forensics Adapter — A Dual-Stream Network for G...: 2026-03-02/deepfake-forensics-adapter.md
+  - DUEL — Exact Likelihood for Masked...: 2026-03-02/duel.md
+  - FACE — A Face-based Autoregressive...: 2026-03-02/face.md
+  - FireRed-OCR Technical Report: 2026-03-02/firered-ocr.md
+  - FreeAct — Freeing Activations for LLM...: 2026-03-02/freeact.md
+  - GVCoT — Generative Visual Chain-of-...: 2026-03-02/gvcot.md
+  - ICPO — Provable and Practical In-C...: 2026-03-02/icpo.md
+  - KidGym — 2D Grid-Based Reasoning Ben...: 2026-03-02/kidgym.md
+  - Kiwi-Edit — Versatile Video Editing via...: 2026-03-02/kiwi-edit.md
+  - Legal RAG Bench — An End-to-End Benchmark for...: 2026-03-02/legal-rag-bench.md
+  - LFPO — Likelihood-Free Policy Opti...: 2026-03-02/lfpo.md
+  - MIST-RL — Mutation-based Incremental ...: 2026-03-02/mist-rl.md
+  - Nano-EmoX — Unifying Multimodal Emotion...: 2026-03-02/nano-emox.md
+  - PhotoBench — Beyond Visual Matching Towa...: 2026-03-02/photobench.md
+  - StepVAR — Structure-Texture Guided Pr...: 2026-03-02/stepvar.md
+  - Video TokenCom — Textual Intent-guided Multi...: 2026-03-02/video-tokencom.md
+  - WorldStereo — Bridging Camera-Guided Vide...: 2026-03-02/worldstereo.md
+- '2026-03-01':
+  - 2026-03-01/index.md
+  - AgilePruner — Adaptive Visual Token Pruni...: 2026-03-01/agilepruner.md
+  - ArtLLM — Generating Articulated Asse...: 2026-03-01/artllm.md
+  - DEP — A Decentralized Large Langu...: 2026-03-01/dep.md
+  - Can Thinking Models Think to Detect Hatefu...: 2026-03-01/hateful-memes-thinking.md
+  - HypeLoRA — Hyper-Network-Generated LoR...: 2026-03-01/hypelora.md
+  - ICPRL — Acquiring Physical Intuitio...: 2026-03-01/icprl.md
+  - JailNewsBench — Multi-Lingual and Regional ...: 2026-03-01/jailnewsbench.md
+  - MOSAIC — Modular Opinion Summarizati...: 2026-03-01/mosaic.md
+  - Multilingual Hate Speech Detection and Counterspeech Generation — A Survey: 2026-03-01/multilingual-hate-speech.md
+  - PR-A²CL — Predictive Reasoning with A...: 2026-03-01/pr-a2cl.md
+  - Communication-Efficient Quantum Federated ...: 2026-03-01/quantum-fl.md
+  - riMESA — Consensus ADMM for Real-Wor...: 2026-03-01/rimesa.md
+  - RMBench — Memory-Dependent Robotic Ma...: 2026-03-01/rmbench.md
+  - RnG — A Unified Transformer for C...: 2026-03-01/rng.md
+  - SandboxEscapeBench — Quantifying LLM Capabilitie...: 2026-03-01/sandbox-escape.md
+  - TCD-Net — Teacher-Guided Causal Disen...: 2026-03-01/tcd-denoising.md
+  - Token-level Data Selection for Safe LLM Fi...: 2026-03-01/toss-safe-finetuning.md
+  - Agent-Based Simulation of Trust Developmen...: 2026-03-01/trust-hri.md
+  - Truth as a Trajectory (TaT) — What Internal Representatio...: 2026-03-01/truth-trajectory.md
+  - VisNec — Measuring and Leveraging Vi...: 2026-03-01/visnec.md
 plugins:
 - search
 markdown_extensions:

@@ -94,9 +94,9 @@
 
 ### [LLM-MRD: LLM-Guided Multi-View Reasoning Distillation for Fake News Detection](llm-mrd.md)
 
-🧩 多模态/VLM / 假新闻检测
+📄 多模态 / 假新闻检测
 
-提出 LLM-MRD，一个教师-学生框架：LLM 教师从文本/视觉/跨模态三个视角生成深度推理链作为监督信号，通过校准蒸馏（Calibration Distillation）将推理知识高效转移到轻量学生模型，在三个多模态假新闻检测基准上平均提升 ACC 5.19%、F1-Fake 6.33%。
+提出 LLM-MRD：让 Qwen2.5-VL 教师分别从文本、图像、跨模态三视角生成推理链，再通过“校准蒸馏”把推理能力迁移给轻量学生模型，在 Weibo/Weibo21/GossipCop 上显著超过现有多模态方法。
 
 ---
 
@@ -126,9 +126,9 @@
 
 ### [OddGridBench: Exposing the Lack of Fine-Grained Visual Discrepancy Sensitivity in MLLMs](oddgridbench.md)
 
-🧩 多模态/VLM / 基准评测
+📄 多模态评测 / 感知基准
 
-提出 OddGridBench 基准——1,400+ 张网格图像中需找出在颜色/大小/旋转/位置上有细微差异的"odd one"，揭示所有 MLLM（包括 GPT-5、Gemini 2.5 Pro）在细粒度视觉差异感知上远低于人类（68% vs 87%）。进而提出 OddGrid-GRPO（课程学习 + 距离感知奖励）将 Qwen3-VL-2B 从 17% 提升到 83%。
+提出 OddGridBench（1400+ 样本）系统评估 MLLM 的细粒度视觉差异感知能力，发现即使 GPT-5/Gemini 也明显低于人类；进一步提出 OddGrid-GRPO，把 Qwen3-VL-2B 从 17.1% 提升到 82.6%。
 
 ---
 
@@ -150,9 +150,9 @@
 
 ### [VLM-Loc: Localization in Point Cloud Maps via Vision-Language Models](vlm-loc.md)
 
-🧊 3D视觉 / 点云定位
+🧊 3D视觉 / 文本到点云定位
 
-提出 VLM-Loc，利用大型视觉语言模型（VLM）进行文本到点云（T2P）定位——将点云转为 BEV 图像 + 场景图作为结构化输入，引入部分节点分配（PNA）机制显式关联文本线索与场景图节点，实现可解释的空间推理定位。在自建 CityLoc 基准上 Recall@5m 超越前 SOTA CMMLoc 14.20%。
+提出 VLM-Loc：把点云地图转成 BEV 图像 + 场景图并输入 VLM，再通过部分节点分配（PNA）显式做文本-节点对齐，实现可解释的空间推理定位；在 CityLoc-K 上较 CMMLoc 提升 Recall@5m 达 14.20%。
 
 ---
 

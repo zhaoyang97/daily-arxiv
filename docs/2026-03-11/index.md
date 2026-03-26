@@ -126,9 +126,9 @@
 
 ### [UniCompress: Token Compression for Unified Vision-Language Understanding and Generation](unicompress.md)
 
-📦 多模态VLM / 模型压缩
+📄 多模态模型效率 / Token 压缩
 
-提出 UniCompress，面向统一视觉-语言模型的即插即用视觉 token 压缩框架，通过可学习全局元 token 引导的压缩-解压机制将视觉 token 压缩 4 倍，理解任务掉点 ≤3%，生成 FID 增加 ≤5，推理延迟降低 41.8%。
+提出 UniCompress：在不改 LLM 主干的前提下，对统一视觉-语言模型加入“压缩器 + 全局元 token + 解压器”，把视觉 token 压缩到 1/4，同时保持理解任务小幅掉点，并把推理延迟最多降低 41.8%。
 
 ---
 
@@ -158,8 +158,8 @@
 
 ### [WebVR: Benchmarking Multimodal LLMs for WebPage Recreation from Videos via Human-Aligned Visual Rubrics](webvr.md)
 
-📄 多模态VLM / 代码生成
+📄 多模态代码生成 / 网页重建评测
 
-提出 WebVR，首个视频到网页生成基准——175 个合成网页 + 细粒度人对齐视觉评分体系，评估 19 个 MLLM 从演示视频忠实重建网页的能力，自动评估与人类偏好达 96% 一致率。
+提出 WebVR：首个“视频到网页重建”基准，用 175 个合成网页和人类对齐的细粒度视觉 rubric 评估 19 个 MLLM，发现模型在动态交互（动画/悬停/滚动）维度普遍最弱，自动评测与人类偏好一致率达 96%。
 
 ---
