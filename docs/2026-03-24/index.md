@@ -1,6 +1,6 @@
 # 📅 2026-03-24 精选笔记
 
-> 共 **15** 篇
+> 共 **20** 篇
 
 ---
 
@@ -12,6 +12,14 @@
 
 ---
 
+### [ABot-PhysWorld: Interactive World Foundation Model for Robotic Manipulation with Physics Alignment](abot-physworld.md)
+
+📄 具身智能 / 世界模型
+
+ABot-PhysWorld 是一个 14B Diffusion Transformer 世界模型，通过物理感知标注的 300 万操作视频训练 + 基于 DPO 的解耦物理对齐后训练（分别判别物理合理性和视觉质量），生成视觉逼真且物理一致的可控操作视频，在 PBench 和新提出的 EZSbench 上超越 Veo 3.1 和 Sora v2 Pro。
+
+---
+
 ### [AeroScene: Progressive Scene Synthesis for Aerial Robotics](aeroscene.md)
 
 🧊 3D视觉 / 场景生成 / 无人机
@@ -20,11 +28,35 @@
 
 ---
 
+### [ClusterSTM: Cluster-Wise Spatio-Temporal Masking for Efficient Video-Language Pretraining](clusterstm.md)
+
+🎬 视频理解 / 多模态预训练
+
+ClusterSTM 提出语义聚类驱动的时空遮掩策略来高效预训练视频语言模型：先帧内聚类将视觉token分为语义独立组，再按时间密度选保留token，确保保留token覆盖整体视频内容且有强时间关联。配合视频-文本相关性重建目标，在检索/QA/字幕任务上建立新SOTA。
+
+---
+
+### [Cog3DMap: Multi-View Vision-Language Reasoning with 3D Cognitive Maps](cog3dmap.md)
+
+🧊 多模态VLM / 3D视觉
+
+Cog3DMap 提出从多视角图像递归构建显式 3D 认知地图的框架——每个 token 在 3D 空间中有明确位置并同时携带语义和几何信息，使 MLLM 直接对空间结构化的 3D 地图进行推理，在多个空间推理 benchmark 上达到 SOTA。
+
+---
+
 ### [CoMaTrack: Competitive Multi-Agent Game-Theoretic Tracking with Vision-Language-Action Models](comatrack.md)
 
 🎬 视频理解 / 具身智能 / 多智能体
 
 将具身视觉追踪（EVT）从单智能体模仿学习转变为多智能体对抗博弈 RL：tracker 和 opponent 在动态对抗环境中共同进化，用 3B VLM 超越所有 7B 模型的 SOTA（STT 92.1%, DT 74.2%, AT 57.5%），并发布首个对抗式 EVT benchmark。
+
+---
+
+### [DBAutoDoc: Automated Discovery and Documentation of Undocumented Database Schemas](dbautodoc.md)
+
+🦾 LLM Agent / 数据库
+
+DBAutoDoc 通过结合统计数据分析与迭代式 LLM 精炼，自动发现和文档化无文档数据库的关系模式（主键/外键/列含义/ER图），核心思想是将模式理解建模为图结构上的迭代语义传播问题，在 benchmark 上加权得分达 96.1%，确定性流水线比纯 LLM 的 FK 检测 F1 提升 23 点。
 
 ---
 
@@ -97,6 +129,14 @@
 🧩 多模态/VLM / LLM效率 / Agentic AI
 
 提出 SpecEyes，将投机推理从 token 级提升到 agent 级：四阶段 pipeline（大模型判断工具必要性→小模型无状态投机→认知门控验证→失败回退 agentic 路径），在 V* Bench/HR-Bench/POPE 上实现 1.1-3.35× 加速且保持甚至提升准确率（+6.7%），通过异构并行实现吞吐量倍增。
+
+---
+
+### [TDATR: Improving End-to-End Table Recognition via Table Detail-Aware Learning](tdatr.md)
+
+📄 多模态VLM / 文档解析
+
+TDATR 提出"感知-融合"两阶段端到端表格识别框架：先通过多任务语言建模联合感知表格结构和内容细节，再融合隐式表格细节生成结构化 HTML 输出，配合结构引导的单元格定位模块增强视觉-语言对齐，在有限数据下 7 个 benchmark 上取得 SOTA 或高度竞争力。
 
 ---
 

@@ -30,15 +30,24 @@ nav:
 - Home: index.md
 - '2026-03-25':
   - 2026-03-25/index.md
+  - A³ — Towards Advertising Aesthet...: 2026-03-25/a3-advertising.md
+  - Leave No Stone Unturned — Audio-Visual Deepfake Detec...: 2026-03-25/av-deepfake-detect.md
   - PaddleOCR-VL — Boosting Document Parsing w...: 2026-03-25/coarse-to-fine-doc.md
   - DepthArb — Training-Free Depth-Arbitra...: 2026-03-25/deptharb.md
   - EMoT — Enhanced Mycelium of Though...: 2026-03-25/emot.md
-  - Memory-Augmented VL Agents for Persistent ...: 2026-03-25/memory-vl-agent.md
+  - HGGT — Robust and Flexible 3D Hand...: 2026-03-25/hggt.md
+  - Language-Assisted Image Clustering Guided ...: 2026-03-25/laic.md
+  - Marchuk — Efficient Global Weather Fo...: 2026-03-25/marchuk.md
+  - Invisible Threats from Model Context Protocol — Generating Stealthy Injecti...: 2026-03-25/mcp-tip.md
+  - EPOS-VLM — Memory-Augmented Vision-Lan...: 2026-03-25/memory-vl-agent.md
   - MMTIT-Bench — Multilingual Multi-Scenario...: 2026-03-25/mmtit-bench.md
   - OmniWeaving — Towards Unified Video Gener...: 2026-03-25/omniweaving.md
+  - PP-OCRv5 — A Specialized 5M-Parameter ...: 2026-03-25/pp-ocrv5.md
+  - QuadFM — Foundational Text-Driven Qu...: 2026-03-25/quadfm.md
   - SafeFlow — Real-Time Text-Driven Human...: 2026-03-25/safeflow.md
   - ScrollScape — Unlocking 32K Image Generat...: 2026-03-25/scrollscape.md
   - SOMA — Strategic Orchestration and...: 2026-03-25/soma.md
+  - Thinking with Tables (TWT) — Enhancing Multi-Modal Tabul...: 2026-03-25/thinking-with-tables.md
   - ViHOI — Human-Object Interaction Sy...: 2026-03-25/vihoi.md
 - '2026-03-24':
   - 2026-03-24/index.md
