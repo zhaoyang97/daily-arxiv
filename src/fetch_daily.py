@@ -31,8 +31,8 @@ ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 proxy_handler = urllib.request.ProxyHandler({
-    "http": "http://127.0.0.1:7890",
-    "https": "http://127.0.0.1:7890",
+    "http": "http://127.0.0.1:1082",
+    "https": "http://127.0.0.1:1082",
 })
 https_handler = urllib.request.HTTPSHandler(context=ctx)
 opener = urllib.request.build_opener(proxy_handler, https_handler)
