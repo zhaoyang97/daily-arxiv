@@ -25,20 +25,20 @@
 ### 关键设计
 
 1. **帧间图注意力（IFGA）**:
-   - 做什么：将搜索区域特征作为 query、模板特征作为 key/value，建立跨帧拓扑映射
-   - 核心思路：$Q_s = \text{PWC}_q(F_s), K_t = \text{PWC}_k(F_t)$，通过 softmax 注意力计算搜索区域每个点与模板的对应权重，再聚合增强：$F_s^{out} = F_s + \gamma \hat{F}_s$
-   - 设计动机：小目标缺乏纹理信息，通道级互相关不够，需要点对点的拓扑结构对应来补偿空间变换
-   - 用通道缩减因子 $r=4$ 减少计算，仅在 P2/P3 层使用
+    - 做什么：将搜索区域特征作为 query、模板特征作为 key/value，建立跨帧拓扑映射
+    - 核心思路：$Q_s = \text{PWC}_q(F_s), K_t = \text{PWC}_k(F_t)$，通过 softmax 注意力计算搜索区域每个点与模板的对应权重，再聚合增强：$F_s^{out} = F_s + \gamma \hat{F}_s$
+    - 设计动机：小目标缺乏纹理信息，通道级互相关不够，需要点对点的拓扑结构对应来补偿空间变换
+    - 用通道缩减因子 $r=4$ 减少计算，仅在 P2/P3 层使用
 
 2. **长宽比约束标签分配（LA）**:
-   - 做什么：根据目标长宽比 $\rho$ 动态调整 centerness 标签分布
-   - 核心思路：引入调制因子 $\alpha(\rho) = \min(1, \rho^\gamma)$，修改 centerness 计算使正样本沿主轴集中，减少背景噪声
-   - 额外设计 CGCS（centerness-guided classification score）统一分类和 centerness 的训练-推理差异
+    - 做什么：根据目标长宽比 $\rho$ 动态调整 centerness 标签分布
+    - 核心思路：引入调制因子 $\alpha(\rho) = \min(1, \rho^\gamma)$，修改 centerness 计算使正样本沿主轴集中，减少背景噪声
+    - 额外设计 CGCS（centerness-guided classification score）统一分类和 centerness 的训练-推理差异
 
 3. **在线运动模型修正（OMMR）**:
-   - 做什么：利用 nPSR 动态评估响应图可信度，融合历史轨迹修正跟踪
-   - nPSR 低（<0.5）→ 不信任当前帧，用 N₁=50 帧长期轨迹线性拟合估计平均速度
-   - nPSR 高 → 信任当前帧，用 N₂=10 帧短期瞬时速度微调中心坐标，$\delta' = \alpha \cdot \delta_o + (1-\alpha) \cdot \mathbf{v}$，其中 $\alpha = (\text{nPSR})^2$
+    - 做什么：利用 nPSR 动态评估响应图可信度，融合历史轨迹修正跟踪
+    - nPSR 低（<0.5）→ 不信任当前帧，用 N₁=50 帧长期轨迹线性拟合估计平均速度
+    - nPSR 高 → 信任当前帧，用 N₂=10 帧短期瞬时速度微调中心坐标，$\delta' = \alpha \cdot \delta_o + (1-\alpha) \cdot \mathbf{v}$，其中 $\alpha = (\text{nPSR})^2$
 
 ### 训练策略
 三分支联合优化：分类用 CJCL loss + 回归用加权 IoU loss + centerness 用交叉熵，权重 $\lambda_{cls}=1, \lambda_{reg}=2, \lambda_{cen}=1$。仅在 VISO 数据集上训练 20 epochs。

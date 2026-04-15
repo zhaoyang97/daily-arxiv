@@ -25,24 +25,24 @@
 ### 关键设计
 
 1. **I/O 页面模型**:
-   - 将 Transformer 上下文窗口形式化为容量 C 的 I/O 页面
-   - 顺序访问: 读任意页 i 无结构信息, 最坏 $\Omega(N)$ 次
-   - 这个类比让经典外存算法理论直接适用
+    - 将 Transformer 上下文窗口形式化为容量 C 的 I/O 页面
+    - 顺序访问: 读任意页 i 无结构信息, 最坏 $\Omega(N)$ 次
+    - 这个类比让经典外存算法理论直接适用
 
 2. **B-tree 索引检索**:
-   - 内部节点包含键范围，分支因子 $b = \lfloor C/(\eta + \kappa + \delta) \rfloor$
-   - 检索成本 $\lceil \log_b N \rceil + 1$ 次页读取
-   - 累积 T 步成本 $O(T \log_b T)$ vs 顺序 $\Theta(T^2)$
+    - 内部节点包含键范围，分支因子 $b = \lfloor C/(\eta + \kappa + \delta) \rfloor$
+    - 检索成本 $\lceil \log_b N \rceil + 1$ 次页读取
+    - 累积 T 步成本 $O(T \log_b T)$ vs 顺序 $\Theta(T^2)$
 
 3. **三种内容类型控制实验**:
-   - **Hash 内容**: 随机字符串，纯检索能力测试
-   - **Numeric 内容**: 数字键值，可测试 Agent 是否自发做二分搜索
-   - **Encyclopedia 内容**: 真实知识条目，测试参数记忆竞争
+    - **Hash 内容**: 随机字符串，纯检索能力测试
+    - **Numeric 内容**: 数字键值，可测试 Agent 是否自发做二分搜索
+    - **Encyclopedia 内容**: 真实知识条目，测试参数记忆竞争
 
 4. **参数记忆竞争现象**:
-   - 在 Encyclopedia 条件下，模型倾向于直接用参数知识回答而非遵循检索协议
-   - 这是一种新的失败模式: 语义理解绕过了工具使用
-   - INDEXED-CORRUPTED: 打乱索引后性能崩溃到 FLAT 以下，证明模型确实在使用索引
+    - 在 Encyclopedia 条件下，模型倾向于直接用参数知识回答而非遵循检索协议
+    - 这是一种新的失败模式: 语义理解绕过了工具使用
+    - INDEXED-CORRUPTED: 打乱索引后性能崩溃到 FLAT 以下，证明模型确实在使用索引
 
 ## 实验关键数据
 

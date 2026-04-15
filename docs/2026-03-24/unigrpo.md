@@ -29,24 +29,24 @@
 ### 关键设计
 
 1. **统一 MDP 建模**:
-   - 做什么：将文本推理 + 图像生成统一为一个 MDP，状态空间在文本阶段是 $(c, y_{<k})$，图像阶段是 $(c, y, x_{t_k}, t_k)$
-   - 核心思路：文本 action 是离散 token，图像 action 是连续去噪 latent，但共享同一个 advantage $\hat{A}_i$。总目标 $\mathcal{J} = \mathcal{J}_{\text{Text}} + \lambda \mathcal{J}_{\text{Flow}}$，$\lambda=1$
-   - 设计动机：让推理文本直接被视觉奖励驱动优化——好的推理应该带来更好的图像
+    - 做什么：将文本推理 + 图像生成统一为一个 MDP，状态空间在文本阶段是 $(c, y_{<k})$，图像阶段是 $(c, y, x_{t_k}, t_k)$
+    - 核心思路：文本 action 是离散 token，图像 action 是连续去噪 latent，但共享同一个 advantage $\hat{A}_i$。总目标 $\mathcal{J} = \mathcal{J}_{\text{Text}} + \lambda \mathcal{J}_{\text{Flow}}$，$\lambda=1$
+    - 设计动机：让推理文本直接被视觉奖励驱动优化——好的推理应该带来更好的图像
 
 2. **去除 CFG（Classifier-Free Guidance）**:
-   - 做什么：训练时完全不用 CFG，保持 rollout 是线性无分支的
-   - 核心思路：标准 CFG 需要对每步做条件/无条件两次前向，多条件时更多。去掉 CFG 后通过 RL 奖励最大化把 prompt 对齐能力内化到策略权重里
-   - 设计动机：多轮多条件生成时 CFG 计算开销会爆炸，且分支计算图让梯度估计变得复杂。实验证明去掉 CFG 训练、推理时再加 CFG 效果不降反升
+    - 做什么：训练时完全不用 CFG，保持 rollout 是线性无分支的
+    - 核心思路：标准 CFG 需要对每步做条件/无条件两次前向，多条件时更多。去掉 CFG 后通过 RL 奖励最大化把 prompt 对齐能力内化到策略权重里
+    - 设计动机：多轮多条件生成时 CFG 计算开销会爆炸，且分支计算图让梯度估计变得复杂。实验证明去掉 CFG 训练、推理时再加 CFG 效果不降反升
 
 3. **速度场 MSE 正则替代 latent KL**:
-   - 做什么：用 $\|\mathbf{v}_\theta - \mathbf{v}_{\text{ref}}\|^2$ 替代标准的 latent KL penalty
-   - 核心思路：标准 latent KL 等价于 $\frac{1}{\sigma_{t_k}^2}\|\Delta\mu\|^2$，在高噪声时间步惩罚极小、低噪声时间步惩罚极大，分布不均匀。直接用未加权的 MSE 在所有时间步均匀约束速度场
-   - 设计动机：latent KL 的不均匀权重在某些时间步留下 "漏洞"，RL 优化器很容易利用这些漏洞做 reward hacking（表现为验证集 reward 先升后降、图像出现伪影）
+    - 做什么：用 $\|\mathbf{v}_\theta - \mathbf{v}_{\text{ref}}\|^2$ 替代标准的 latent KL penalty
+    - 核心思路：标准 latent KL 等价于 $\frac{1}{\sigma_{t_k}^2}\|\Delta\mu\|^2$，在高噪声时间步惩罚极小、低噪声时间步惩罚极大，分布不均匀。直接用未加权的 MSE 在所有时间步均匀约束速度场
+    - 设计动机：latent KL 的不均匀权重在某些时间步留下 "漏洞"，RL 优化器很容易利用这些漏洞做 reward hacking（表现为验证集 reward 先升后降、图像出现伪影）
 
 4. **RatioNorm（来自 GRPO-Guard）**:
-   - 做什么：标准化 importance ratio 的 log 分布，使其中心在 0 附近
-   - 核心思路：diffusion/flow 模型中 importance ratio 天然左偏（均值 <1），标准 clipping 无法约束正方向的过大更新。RatioNorm 通过加入 mean drift 修正项来重新居中
-   - 设计动机：防止过于自信的正更新导致 reward hacking
+    - 做什么：标准化 importance ratio 的 log 分布，使其中心在 0 附近
+    - 核心思路：diffusion/flow 模型中 importance ratio 天然左偏（均值 <1），标准 clipping 无法约束正方向的过大更新。RatioNorm 通过加入 mean drift 修正项来重新居中
+    - 设计动机：防止过于自信的正更新导致 reward hacking
 
 ### 训练策略
 - 基模型：Bagel（ByteDance），先做 SFT 再做 RL

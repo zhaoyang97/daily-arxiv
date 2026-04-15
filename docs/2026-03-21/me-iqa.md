@@ -1,9 +1,9 @@
 # ME-IQA: Memory-Enhanced Image Quality Assessment via Re-Ranking
 
-**日期**: 2026-03-21
-**arXiv**: [2603.20785](https://arxiv.org/abs/2603.20785)
-**代码**: 无
-**领域**: 多模态/VLM
+**日期**: 2026-03-21  
+**arXiv**: [2603.20785](https://arxiv.org/abs/2603.20785)  
+**代码**: 无  
+**领域**: 多模态/VLM  
 **关键词**: Image Quality Assessment, VLM, Memory Bank, Thurstone Model, Test-time Scaling, Discrete Collapse
 
 ## 一句话总结

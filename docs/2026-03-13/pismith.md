@@ -29,20 +29,20 @@
 ### 关键设计
 
 1. **自适应熵正则化**:
-   - 标准 GRPO 的 KL 散度项不足以防止熵坍塌（分析见附录）
-   - 添加熵上限 $\mathcal{H}_{\text{cap}}$：仅当策略熵低于阈值时激活熵奖励，避免过度随机化
-   - 关键：正则化强度 $\beta(\bar{r})$ 随当前平均奖励自适应调节——$\bar{r}$ 低时 $\beta$ 大（强制探索），$\bar{r}$ 高时 $\beta$ 小（允许利用）
-   - 设计动机：固定 $\beta$ 无法捕捉训练过程中的探索-利用动态变化
+    - 标准 GRPO 的 KL 散度项不足以防止熵坍塌（分析见附录）
+    - 添加熵上限 $\mathcal{H}_{\text{cap}}$：仅当策略熵低于阈值时激活熵奖励，避免过度随机化
+    - 关键：正则化强度 $\beta(\bar{r})$ 随当前平均奖励自适应调节——$\bar{r}$ 低时 $\beta$ 大（强制探索），$\bar{r}$ 高时 $\beta$ 小（允许利用）
+    - 设计动机：固定 $\beta$ 无法捕捉训练过程中的探索-利用动态变化
 
 2. **动态优势加权**:
-   - 成功 rollout 的优势被放大：$\tilde{A}_i = A_i \cdot \gamma(\bar{r})$（当 $r_i = 1$）
-   - 放大因子 $\gamma(\bar{r})$ 同样随 $\bar{r}$ 动态调节——成功率低时 $\gamma$ 最大（如 $\gamma_{\max} = 5$），成功率高时 $\gamma \to 1$ 恢复标准 GRPO
-   - 解决问题：标准 GRPO 中稀有成功被绝大多数失败稀释，梯度信号太弱
+    - 成功 rollout 的优势被放大：$\tilde{A}_i = A_i \cdot \gamma(\bar{r})$（当 $r_i = 1$）
+    - 放大因子 $\gamma(\bar{r})$ 同样随 $\bar{r}$ 动态调节——成功率低时 $\gamma$ 最大（如 $\gamma_{\max} = 5$），成功率高时 $\gamma \to 1$ 恢复标准 GRPO
+    - 解决问题：标准 GRPO 中稀有成功被绝大多数失败稀释，梯度信号太弱
 
 3. **协同工作机制**:
-   - 两个机制通过 $\bar{r}$ 耦合：早期（$\bar{r}$ 低）→ 强探索 + 强成功放大
-   - 后期（$\bar{r}$ 高）→ 弱探索 + 标准梯度，自然退化回标准 GRPO
-   - 完整损失：$\mathcal{L}_{\text{PISmith}} = \mathcal{L}_{\text{clip}}(\tilde{A}) + \mathcal{L}_{\text{entropy}}$
+    - 两个机制通过 $\bar{r}$ 耦合：早期（$\bar{r}$ 低）→ 强探索 + 强成功放大
+    - 后期（$\bar{r}$ 高）→ 弱探索 + 标准梯度，自然退化回标准 GRPO
+    - 完整损失：$\mathcal{L}_{\text{PISmith}} = \mathcal{L}_{\text{clip}}(\tilde{A}) + \mathcal{L}_{\text{entropy}}$
 
 ### 训练策略
 - 攻击 LLM：Qwen3-4B-Instruct-2507

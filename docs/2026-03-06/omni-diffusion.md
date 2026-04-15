@@ -29,21 +29,21 @@
 ### 关键设计
 
 1. **统一 mask token 预测**:
-   - 做什么：在一个框架下对所有模态执行相同的 mask-unmask 训练
-   - 核心思路：对统一序列 $x_0$ 按随机比率 $r$（从时间步 $t \sim [0,1]$ 导出）替换为 [MASK]，模型预测原始 token。Loss: $L = -\mathbb{E}[\sum_i \mathbb{I}[x_t^i = \text{MASK}] \log p_\theta(x_0^i | x_t)]$
-   - 设计动机：无模态特定优化，所有模态在同一表示空间中自动对齐
+    - 做什么：在一个框架下对所有模态执行相同的 mask-unmask 训练
+    - 核心思路：对统一序列 $x_0$ 按随机比率 $r$（从时间步 $t \sim [0,1]$ 导出）替换为 [MASK]，模型预测原始 token。Loss: $L = -\mathbb{E}[\sum_i \mathbb{I}[x_t^i = \text{MASK}] \log p_\theta(x_0^i | x_t)]$
+    - 设计动机：无模态特定优化，所有模态在同一表示空间中自动对齐
 
 2. **三阶段渐进训练**:
-   - Stage 1（视觉-语言预对齐）：文本↔图像任务（T2I + captioning）
-   - Stage 2（语音-视觉-语言联合对齐）：加入 ASR + TTS 数据
-   - Stage 3（语音驱动视觉交互）：用构造的 SDVI 数据集（>30K spoken VQA + 30K speech-to-image）
-   - 设计动机：不同模态的数据分布差异大，渐进扩展保证训练稳定性
+    - Stage 1（视觉-语言预对齐）：文本↔图像任务（T2I + captioning）
+    - Stage 2（语音-视觉-语言联合对齐）：加入 ASR + TTS 数据
+    - Stage 3（语音驱动视觉交互）：用构造的 SDVI 数据集（>30K spoken VQA + 30K speech-to-image）
+    - 设计动机：不同模态的数据分布差异大，渐进扩展保证训练稳定性
 
 3. **推理优化策略**:
-   - **Position Penalty**：早期推理阶段降低序列尾部 token 的 logits，防止首尾同时解码导致图像重复模式
-   - **Special Token Pre-infilling**：在初始 mask 序列的 0.25L 处填入 [begin-of-speech]，使模型前段生成文本、后段生成语音，实现文本语义引导语音生成
-   - **Adaptive Token Length**：根据文本/语音长度相关性自适应分配初始序列长度（TTS: 3.5×文本长, ASR: 0.2×语音长）
-   - **Attenuated Tail-Pad Masking**：训练时对 pad token 降低 mask 比率（γ<1），防止模型过拟合到生成 pad
+    - **Position Penalty**：早期推理阶段降低序列尾部 token 的 logits，防止首尾同时解码导致图像重复模式
+    - **Special Token Pre-infilling**：在初始 mask 序列的 0.25L 处填入 [begin-of-speech]，使模型前段生成文本、后段生成语音，实现文本语义引导语音生成
+    - **Adaptive Token Length**：根据文本/语音长度相关性自适应分配初始序列长度（TTS: 3.5×文本长, ASR: 0.2×语音长）
+    - **Attenuated Tail-Pad Masking**：训练时对 pad token 降低 mask 比率（γ<1），防止模型过拟合到生成 pad
 
 ### 损失函数
 标准 cross-entropy mask token 预测 loss，无模态特定 loss。

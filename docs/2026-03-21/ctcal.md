@@ -27,25 +27,25 @@
 ### 关键设计
 
 1. **词性感知注意力图选择**:
-   - 只选名词 token 的 attention map（如 "cat", "dog"），忽略冠词/连词
-   - 名词编码清晰的空间语义信息，而 "the"、"and" 的 attention map 无意义
-   - 减少噪声干扰，聚焦有效监督信号
+    - 只选名词 token 的 attention map（如 "cat", "dog"），忽略冠词/连词
+    - 名词编码清晰的空间语义信息，而 "the"、"and" 的 attention map 无意义
+    - 减少噪声干扰，聚焦有效监督信号
 
 2. **像素-语义空间联合优化**:
-   - 像素级 loss：直接对比 $\mathbf{A}_{stu}$ 和 $\mathbf{A}_{tea}$ 的 MSE
-   - 语义级 loss：通过轻量自编码器将 attention map 投影到语义空间后对比
-   - 重建代理任务防止自编码器过拟合导致模式坍缩
-   - 联合优化比单独任一维度效果更好
+    - 像素级 loss：直接对比 $\mathbf{A}_{stu}$ 和 $\mathbf{A}_{tea}$ 的 MSE
+    - 语义级 loss：通过轻量自编码器将 attention map 投影到语义空间后对比
+    - 重建代理任务防止自编码器过拟合导致模式坍缩
+    - 联合优化比单独任一维度效果更好
 
 3. **主体响应对齐正则化**:
-   - 对齐所有主体（名词）的 cross-attention 响应到最高响应主体
-   - 防止响应高的主体压制低响应主体，导致后者生成不充分
-   - $\mathcal{R}_{subject}$ 用 ReLU 和阈值 $\tau$ 控制，避免响应无限制增长
+    - 对齐所有主体（名词）的 cross-attention 响应到最高响应主体
+    - 防止响应高的主体压制低响应主体，导致后者生成不充分
+    - $\mathcal{R}_{subject}$ 用 ReLU 和阈值 $\tau$ 控制，避免响应无限制增长
 
 4. **时间步感知自适应加权**:
-   - CTCal loss 与 diffusion loss 通过时间步相关权重整合
-   - 大时间步给 CTCal 更多权重（此时 diffusion loss 隐式监督不足）
-   - 小时间步给 diffusion loss 更多权重（attention 已较准确）
+    - CTCal loss 与 diffusion loss 通过时间步相关权重整合
+    - 大时间步给 CTCal 更多权重（此时 diffusion loss 隐式监督不足）
+    - 小时间步给 diffusion loss 更多权重（attention 已较准确）
 
 ### 模型无关性
 CTCal 兼容 cross-attention 模型（SD 2.1）和 MM-DiT 模型（SD 3），后者在联合 self-attention 的 image-to-text 子块 $\mathbf{A}^{IT}$ 上操作。

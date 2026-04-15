@@ -30,8 +30,8 @@
 ### 关键设计
 
 1. **Physics-Guided Rectified Flow Matching（物理引导的 flow 生成）**:
-   - 做什么：在 VAE 隐空间用 rectified flow 生成文本条件运动，同时用物理约束引导采样方向
-   - 核心思路：训练标准 rectified flow velocity field $v_\theta$，推理时添加物理引导梯度 $\tilde{v}_\theta = v_\theta - \alpha(u) \nabla_{\mathbf{z}} \mathcal{C}(\text{Dec}(\mathbf{z}))$，其中物理代价 $\mathcal{C}$ 包含四项：
+    - 做什么：在 VAE 隐空间用 rectified flow 生成文本条件运动，同时用物理约束引导采样方向
+    - 核心思路：训练标准 rectified flow velocity field $v_\theta$，推理时添加物理引导梯度 $\tilde{v}_\theta = v_\theta - \alpha(u) \nabla_{\mathbf{z}} \mathcal{C}(\text{Dec}(\mathbf{z}))$，其中物理代价 $\mathcal{C}$ 包含四项：
      - 关节限位 $\mathcal{C}_{lim}$：ReLU² 惩罚超出硬件极限的关节角度
      - 自碰撞 $\mathcal{C}_{col}$：14 对链接球体距离约束
      - 平滑性 $\mathcal{C}_{sm}$：关节速度和加速度的正则化
@@ -39,15 +39,15 @@
    - 设计动机：纯运动学生成器的 JV（关节违规率）高达 43.14%（TextOp），物理引导降到 6.32%
 
 2. **Reflow 蒸馏（NFE=1 实时推理）**:
-   - 做什么：将需要多步 ODE 积分的物理引导轨迹蒸馏为直线路径，实现单步生成
-   - 核心思路：用物理引导的 teacher（NFE=10）生成配对数据 $(\mathbf{z}_0, \mathbf{z}_1^{guided})$，重新训练 velocity field 直接拟合直线路径
-   - 设计动机：在线物理引导需要每步计算梯度 $\nabla_{\mathbf{z}}\mathcal{C}$，延迟大；reflow 把物理约束"烘焙"进网络权重，实现 NFE=1 且 JV 进一步降到 3.08%
+    - 做什么：将需要多步 ODE 积分的物理引导轨迹蒸馏为直线路径，实现单步生成
+    - 核心思路：用物理引导的 teacher（NFE=10）生成配对数据 $(\mathbf{z}_0, \mathbf{z}_1^{guided})$，重新训练 velocity field 直接拟合直线路径
+    - 设计动机：在线物理引导需要每步计算梯度 $\nabla_{\mathbf{z}}\mathcal{C}$，延迟大；reflow 把物理约束"烘焙"进网络权重，实现 NFE=1 且 JV 进一步降到 3.08%
 
 3. **3-Stage Safety Gate（三阶段安全门控）**:
-   - **Stage 1 — 语义 OOD 过滤**：在 CLIP 文本嵌入空间计算 Mahalanobis 距离 $d^2(\mathbf{e}_t) = (\mathbf{e}_t - \boldsymbol{\mu})^\top \boldsymbol{\Sigma}^{-1}(\mathbf{e}_t - \boldsymbol{\mu})$，超出阈值的 prompt 立即拒绝。AUROC 达 0.9872/0.9715
-   - **Stage 2 — 生成不稳定性过滤**：提出方向敏感性差异指标 $\mathcal{R}$——沿 M=16 个随机方向探测 Jacobian $J = \partial v_\theta / \partial \mathbf{z}$，计算方向灵敏度标准差。高 $\mathcal{R}$ 表明 flow field 高度各向异性（不稳定），触发拒绝
-   - **Stage 3 — 运动学硬约束**：检查关节位置/速度/加速度是否超出硬件极限，作为最后防线
-   - 设计动机：三级递进：输入级过滤处理语义偏移，模型级过滤处理生成过程异常，输出级过滤兜底硬件安全。全程无需额外训练
+    - **Stage 1 — 语义 OOD 过滤**：在 CLIP 文本嵌入空间计算 Mahalanobis 距离 $d^2(\mathbf{e}_t) = (\mathbf{e}_t - \boldsymbol{\mu})^\top \boldsymbol{\Sigma}^{-1}(\mathbf{e}_t - \boldsymbol{\mu})$，超出阈值的 prompt 立即拒绝。AUROC 达 0.9872/0.9715
+    - **Stage 2 — 生成不稳定性过滤**：提出方向敏感性差异指标 $\mathcal{R}$——沿 M=16 个随机方向探测 Jacobian $J = \partial v_\theta / \partial \mathbf{z}$，计算方向灵敏度标准差。高 $\mathcal{R}$ 表明 flow field 高度各向异性（不稳定），触发拒绝
+    - **Stage 3 — 运动学硬约束**：检查关节位置/速度/加速度是否超出硬件极限，作为最后防线
+    - 设计动机：三级递进：输入级过滤处理语义偏移，模型级过滤处理生成过程异常，输出级过滤兜底硬件安全。全程无需额外训练
 
 ### 训练策略
 - VAE 学习紧凑运动隐空间 → rectified flow 200K 迭代 → 物理引导生成配对数据 → reflow 蒸馏 200K 迭代

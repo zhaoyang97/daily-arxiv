@@ -1,6 +1,8 @@
 # VCoT-Bench: Can LLMs Reason Like Automated Theorem Provers for Rust Verification?
 
-**日期**: 2026-03-18 | **arXiv**: [2603.18334](https://arxiv.org/abs/2603.18334) | **领域**: LLM推理/形式验证  
+**日期**: 2026-03-18  
+**arXiv**: [2603.18334](https://arxiv.org/abs/2603.18334)  
+**领域**: LLM推理/形式验证  
 **关键词**: 自动定理证明, Rust验证, 思维链, 形式推理, Verus, 评估基准
 
 ## 一句话总结
@@ -23,9 +25,9 @@
 ### VCoT-Lift 四阶段提升管道
 
 1. **证明转换器 (Proof Transformer)**: 
-   - 做什么：将 Z3 低层推理转换为 Verus 高层验证步骤
-   - 核心思路：引入 Z3 规则层次结构（8 条高层/12 条中层/16 条低层），引导 LLM 聚焦于高层规则（如 unit-resolution）中的语义信息性步骤，忽略低层平凡推理
-   - 设计动机：Z3 证明全局互连，无法简单分解——必须端到端处理，但规则层次结构显式引导注意力
+    - 做什么：将 Z3 低层推理转换为 Verus 高层验证步骤
+    - 核心思路：引入 Z3 规则层次结构（8 条高层/12 条中层/16 条低层），引导 LLM 聚焦于高层规则（如 unit-resolution）中的语义信息性步骤，忽略低层平凡推理
+    - 设计动机：Z3 证明全局互连，无法简单分解——必须端到端处理，但规则层次结构显式引导注意力
 
 2. **证明检查器 (Proof Checker)**: 5 个专用 agent（lemma/theory-lemma/modus-ponens/quantifier/unit-resolution）做局部验证——按规则类别聚合 Z3 证明片段批量检查，既避免冗余 LLM 调用又保持完整性
 

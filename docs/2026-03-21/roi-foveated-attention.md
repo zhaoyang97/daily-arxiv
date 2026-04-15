@@ -1,9 +1,9 @@
 # ROI-Driven Foveated Attention for Unified Egocentric Representations in Vision-Language-Action Systems
 
-**日期**: 2026-03-21
-**arXiv**: [2603.20668](https://arxiv.org/abs/2603.20668)
-**代码**: 无
-**领域**: 机器人
+**日期**: 2026-03-21  
+**arXiv**: [2603.20668](https://arxiv.org/abs/2603.20668)  
+**代码**: 无  
+**领域**: 机器人  
 **关键词**: VLA, ROI, Forward Kinematics, Foveated Attention, Egocentric Perception, Cross-Embodiment, Data Engineering
 
 ## 一句话总结

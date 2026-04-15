@@ -27,28 +27,28 @@
 ### 关键设计
 
 1. **Stratified Multimodal Interaction (SMI) 分类体系**:
-   - 将多模态仇恨言论按 $(y^{text}, y^{image}, y^{combined}) \in \{0,1\}^3$ 分为 8 种交互模式
-   - Easy（显式一致）：至少一个模态本身有害，组合结果一致
-   - Normal（语境中和）：单模态有害但被另一模态中和（如反讽/教育语境）
-   - Hard（隐式涌现/反转）：两个模态均无害但组合产生仇恨，或两个有害但组合无害
-   - 这个分类体系为模型评估提供了清晰的难度梯度
+    - 将多模态仇恨言论按 $(y^{text}, y^{image}, y^{combined}) \in \{0,1\}^3$ 分为 8 种交互模式
+    - Easy（显式一致）：至少一个模态本身有害，组合结果一致
+    - Normal（语境中和）：单模态有害但被另一模态中和（如反讽/教育语境）
+    - Hard（隐式涌现/反转）：两个模态均无害但组合产生仇恨，或两个有害但组合无害
+    - 这个分类体系为模型评估提供了清晰的难度梯度
 
 2. **H-VLI Benchmark 构建**:
-   - Hybrid pipeline: 从 MMHS150K 共识过滤 + 生成式注入（用 Qwen3-VL-Plus 和 Gemini-2.5-Pro 合成隐式样本）
-   - Human-in-the-loop 标注：心理学/社会学背景的专家在定制平台上审核
-   - 最终 5,569 样本，inter-annotator agreement $\kappa = 0.94$（远超 MMHS150K 的 0.15）
+    - Hybrid pipeline: 从 MMHS150K 共识过滤 + 生成式注入（用 Qwen3-VL-Plus 和 Gemini-2.5-Pro 合成隐式样本）
+    - Human-in-the-loop 标注：心理学/社会学背景的专家在定制平台上审核
+    - 最终 5,569 样本，inter-annotator agreement $\kappa = 0.94$（远超 MMHS150K 的 0.15）
 
 3. **ARCADE 对抗辩论框架**:
-   - **Prosecutor（控方）**: 持"有罪推定"，主动假设恶意，挖掘视觉符号与文本隐喻的映射关系
-   - **Defender（辩方）**: 持"无罪推定"，寻找良性解释（讽刺、自嘲、教育目的），反驳控方论点
-   - **Judge（法官）**: 综合辩论历史做最终裁决，不参与论证过程
-   - 这种不对称设计迫使模型从两个极端方向深度审视跨模态语义
+    - **Prosecutor（控方）**: 持"有罪推定"，主动假设恶意，挖掘视觉符号与文本隐喻的映射关系
+    - **Defender（辩方）**: 持"无罪推定"，寻找良性解释（讽刺、自嘲、教育目的），反驳控方论点
+    - **Judge（法官）**: 综合辩论历史做最终裁决，不参与论证过程
+    - 这种不对称设计迫使模型从两个极端方向深度审视跨模态语义
 
 4. **Gated Dual-Track 分流机制**:
-   - Prosecutor 先做快速扫描，门控函数 $\Phi(S_i)$ 判断是否有显式仇恨线索
-   - 显式 → Fast-Track：单轮控辩（效率优先）
-   - 隐式 → Deep-Dive：多轮迭代辩论 $u_k^{pros}, u_k^{def}$，逐步深化推理
-   - 无证据 → Summary Dismissal 直接驳回
+    - Prosecutor 先做快速扫描，门控函数 $\Phi(S_i)$ 判断是否有显式仇恨线索
+    - 显式 → Fast-Track：单轮控辩（效率优先）
+    - 隐式 → Deep-Dive：多轮迭代辩论 $u_k^{pros}, u_k^{def}$，逐步深化推理
+    - 无证据 → Summary Dismissal 直接驳回
 
 ## 实验关键数据
 

@@ -27,20 +27,20 @@
 ### 关键设计
 
 1. **Iterative Thought Guidance（迭代思维引导）**:
-   - 做什么：在 MLLM 的隐空间中迭代更新思维状态 $\mathbf{h}_\tau$
-   - 核心思路：第 $\tau$ 步将上一步的隐状态 $\mathbf{h}_{\tau-1}$ 拼接到 prefix 后面送入 MLLM，提取新位置的隐状态作为 $\mathbf{h}_\tau$：$\mathbf{h}_\tau = \mathbf{e}_{L+1}^\top f_\phi([\mathbf{P}; \mathbf{h}_{\tau-1}])$。关键是 $\mathbf{h}_{\tau-1}$ 直接作为高维输入送入 MLLM 第一层，绕过离散 embedding 查找表
-   - 每一步推理产生的 $\mathbf{h}_\tau$ 条件化一次完整的 DiT 去噪轨迹（从噪声到图像），而非共享同一次去噪
-   - 设计动机：模拟人类解题——不试图一次生成完整方案，而是逐步精炼
+    - 做什么：在 MLLM 的隐空间中迭代更新思维状态 $\mathbf{h}_\tau$
+    - 核心思路：第 $\tau$ 步将上一步的隐状态 $\mathbf{h}_{\tau-1}$ 拼接到 prefix 后面送入 MLLM，提取新位置的隐状态作为 $\mathbf{h}_\tau$：$\mathbf{h}_\tau = \mathbf{e}_{L+1}^\top f_\phi([\mathbf{P}; \mathbf{h}_{\tau-1}])$。关键是 $\mathbf{h}_{\tau-1}$ 直接作为高维输入送入 MLLM 第一层，绕过离散 embedding 查找表
+    - 每一步推理产生的 $\mathbf{h}_\tau$ 条件化一次完整的 DiT 去噪轨迹（从噪声到图像），而非共享同一次去噪
+    - 设计动机：模拟人类解题——不试图一次生成完整方案，而是逐步精炼
 
 2. **Terminal Thought Grounding（终端思维锚定）**:
-   - 做什么：将最终推理状态与文本监督对齐，防止推理轨迹漂移
-   - 核心思路：用 ground-truth 推理步骤的文本编码得到参考状态 $\mathbf{h}_\text{ref}$，通过 L2 loss 对齐最终状态：$\mathcal{L}_\text{align} = \|\mathbf{h}_\mathcal{T} - \mathbf{h}_\text{ref}\|^2$
-   - 只在最终步 $\tau=\mathcal{T}$ 激活对齐 loss，避免过早约束中间探索
-   - 设计动机：纯视觉监督存在模态鸿沟，需要文本锚点防止累积漂移
+    - 做什么：将最终推理状态与文本监督对齐，防止推理轨迹漂移
+    - 核心思路：用 ground-truth 推理步骤的文本编码得到参考状态 $\mathbf{h}_\text{ref}$，通过 L2 loss 对齐最终状态：$\mathcal{L}_\text{align} = \|\mathbf{h}_\mathcal{T} - \mathbf{h}_\text{ref}\|^2$
+    - 只在最终步 $\tau=\mathcal{T}$ 激活对齐 loss，避免过早约束中间探索
+    - 设计动机：纯视觉监督存在模态鸿沟，需要文本锚点防止累积漂移
 
 3. **Progressive Training（渐进训练）**:
-   - **Stage 1 (Reasoning Development)**: 监督所有推理步 $\tau=1,...,\mathcal{T}$ 的中间输出，学习逐步推理轨迹
-   - **Stage 2 (Terminal Consolidation)**: 冻结中间步梯度，只优化最终输出，短周期微调以保留已学到的推理链
+    - **Stage 1 (Reasoning Development)**: 监督所有推理步 $\tau=1,...,\mathcal{T}$ 的中间输出，学习逐步推理轨迹
+    - **Stage 2 (Terminal Consolidation)**: 冻结中间步梯度，只优化最终输出，短周期微调以保留已学到的推理链
 
 ### 损失函数 / 训练策略
 - Stage 1: $\mathcal{L}_\text{stage1} = \sum_\tau (\mathcal{L}_\text{FM}^\tau + \mathbb{I}_{\{\tau=\mathcal{T}\}} \lambda_\text{align} \mathcal{L}_\text{align})$

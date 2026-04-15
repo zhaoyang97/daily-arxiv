@@ -25,23 +25,23 @@
 ### 关键设计
 
 1. **Plackett-Luce 分布建模**:
-   - $P(\pi|\theta) = \prod_i \frac{\exp(\theta_{\pi(i)})}{\sum_{j \geq i} \exp(\theta_{\pi(j)})}$
-   - 把排列优化从离散搜索变成连续参数优化
-   - 满足"无关选项独立性"公理，理论性质好
+    - $P(\pi|\theta) = \prod_i \frac{\exp(\theta_{\pi(i)})}{\sum_{j \geq i} \exp(\theta_{\pi(j)})}$
+    - 把排列优化从离散搜索变成连续参数优化
+    - 满足"无关选项独立性"公理，理论性质好
 
 2. **Gumbel Perturb-and-Sort 采样**:
-   - $s_i = \theta_i + g_i$（$g_i \sim \text{Gumbel}(0,1)$），按 $s_i$ 降序排列
-   - 将序贯 softmax 采样转化为单次扰动排序，数值稳定且高效
+    - $s_i = \theta_i + g_i$（$g_i \sim \text{Gumbel}(0,1)$），按 $s_i$ 降序排列
+    - 将序贯 softmax 采样转化为单次扰动排序，数值稳定且高效
 
 3. **混合 PL 扩展**:
-   - 单 PL 受 IIA 约束限制表达力
-   - 扩展为 K 组分混合 PL，可建模多模态的高性能排列分布
-   - 定理证明: 混合 PL 在分布空间上是稠密的
+    - 单 PL 受 IIA 约束限制表达力
+    - 扩展为 K 组分混合 PL，可建模多模态的高性能排列分布
+    - 定理证明: 混合 PL 在分布空间上是稠密的
 
 4. **三种参数更新策略**:
-   - EMA 启发式更新（最简单、最鲁棒）
-   - MLE 最大似然（更原则化）
-   - EM 算法（用于混合 PL）
+    - EMA 启发式更新（最简单、最鲁棒）
+    - MLE 最大似然（更原则化）
+    - EM 算法（用于混合 PL）
 
 ### PL 分布数学形式
 $$Pr(\pi|\theta) = \prod_{r=1}^{n} \frac{\exp(\theta_{\pi_r})}{\sum_{j \in R_r} \exp(\theta_j)}$$

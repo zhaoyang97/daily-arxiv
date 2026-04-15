@@ -1,9 +1,9 @@
 # Attention in Space: Functional Roles of VLM Heads for Spatial Reasoning
 
-**日期**: 2026-03-21
-**arXiv**: [2603.20662](https://arxiv.org/abs/2603.20662)
-**代码**: 无
-**领域**: 多模态/VLM
+**日期**: 2026-03-21  
+**arXiv**: [2603.20662](https://arxiv.org/abs/2603.20662)  
+**代码**: 无  
+**领域**: 多模态/VLM  
 **关键词**: Spatial Reasoning, Attention Head, Mechanistic Interpretability, Cognitive Function, VLM, Probing, Head Intervention
 
 ## 一句话总结

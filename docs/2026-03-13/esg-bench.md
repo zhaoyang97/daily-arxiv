@@ -16,6 +16,7 @@
 4. **核心 idea**: 构建带幻觉标注（添加型 + 遗漏型）的 ESG QA benchmark + CoT 策略引导 LLM 先定位证据再回答
 
 ## 方法详解
+
 ### 数据集构建
 1. **报告收集**: 94 份真实 ESG 报告（2020-2024），来自 ResponsibilityReports.com，覆盖金融、能源、科技、医疗、消费品、制造等行业
 2. **问题来源**: 学术研究 + CDP/GRI/Invest Europe 等国际标准 + GPT-4o 生成，分 E/S/G 三大类共 270 个问题

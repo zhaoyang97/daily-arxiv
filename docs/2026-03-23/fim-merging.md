@@ -29,19 +29,19 @@
 ### 关键设计
 
 1. **合并误差 Hessian 上界（Proposition 1）**:
-   - 证明 $\mathcal{E}(\alpha) \leq \frac{\alpha(1-\alpha)}{2} \|\delta\|^2 \sup_t \|H_f\|_2$
-   - Taylor 展开后一阶项对消，误差由二阶 Hessian 控制
-   - 层 Hessian 范数大 → 合并误差大 → 应保守合并
+    - 证明 $\mathcal{E}(\alpha) \leq \frac{\alpha(1-\alpha)}{2} \|\delta\|^2 \sup_t \|H_f\|_2$
+    - Taylor 展开后一阶项对消，误差由二阶 Hessian 控制
+    - 层 Hessian 范数大 → 合并误差大 → 应保守合并
 
 2. **Fisher-Hessian 等价性**:
-   - 在局部最优附近 $\mathcal{F}(\theta^*) = -\mathbb{E}[H_{\log p}(\theta^*)]$
-   - 对角 FIM 是 Hessian 的低成本可计算代理
-   - 只需 N=8 条随机输入即可估计，无需领域数据
+    - 在局部最优附近 $\mathcal{F}(\theta^*) = -\mathbb{E}[H_{\log p}(\theta^*)]$
+    - 对角 FIM 是 Hessian 的低成本可计算代理
+    - 只需 N=8 条随机输入即可估计，无需领域数据
 
 3. **FIM-TIES 增强工程**:
-   - TIES 剪枝阈值随模型规模调整：1.5B 保留 top-20%，7B 保留 top-40%
-   - Gate 投影额外保护：$\alpha_{gate}^l = 0.7 \cdot \alpha^l$
-   - 残差范数校准：合并后 norm 偏差 >5% 的层做重缩放
+    - TIES 剪枝阈值随模型规模调整：1.5B 保留 top-20%，7B 保留 top-40%
+    - Gate 投影额外保护：$\alpha_{gate}^l = 0.7 \cdot \alpha^l$
+    - 残差范数校准：合并后 norm 偏差 >5% 的层做重缩放
 
 ### 训练策略
 完全 training-free、data-free。仅需 8 次前向+反向传播计算 FIM。

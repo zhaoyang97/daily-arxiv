@@ -24,22 +24,22 @@
 ### 关键设计
 
 1. **AEPC-QA 基准（核心数据贡献）**:
-   - 做什么：807 道四选一选择题，来自魁北克保险从业认证考试的官方备考手册
-   - 核心特点：(a) **纸质来源——近零数据污染**：手册仅以纸质形式存在，未被网络索引，排除了模型见过题目的可能；(b) **监管权威**：每题有唯一正确答案（AMF 金融市场管理局认定），非主观评估；(c) **专业深度**：涉及复杂责任判定（如多车事故的过错比例、保险合同条款解释），Flesch-Kincaid 可读性 64.55
-   - 局限：版权限制无法公开发布（但方法论和评估框架可复用）
+    - 做什么：807 道四选一选择题，来自魁北克保险从业认证考试的官方备考手册
+    - 核心特点：(a) **纸质来源——近零数据污染**：手册仅以纸质形式存在，未被网络索引，排除了模型见过题目的可能；(b) **监管权威**：每题有唯一正确答案（AMF 金融市场管理局认定），非主观评估；(c) **专业深度**：涉及复杂责任判定（如多车事故的过错比例、保险合同条款解释），Flesch-Kincaid 可读性 64.55
+    - 局限：版权限制无法公开发布（但方法论和评估框架可复用）
 
 2. **RAG 管线（检索增强评估）**:
-   - 做什么：为 LLM 提供魁北克保险法规上下文，评估 RAG 在高风险专业领域的真实效果
-   - 知识库：QAIERC（Quebec Automobile Insurance Expertise Reference Corpus）——魁北克汽车保险专家参考语料库
-   - 检索策略：dense retrieval（text-embedding-ada-002）而非 BM25——因为非专业用户查询通常缺乏精确法律术语，语义匹配能缓解词汇不匹配
-   - 管线：查询 → dense retrieval top-5 chunks → context compressor 降噪 → 注入 LLM prompt
-   - 设计动机：**不假设 RAG 总是有益**——实验恰恰揭示 RAG 可以摧毁某些强模型（见下方关键发现）
+    - 做什么：为 LLM 提供魁北克保险法规上下文，评估 RAG 在高风险专业领域的真实效果
+    - 知识库：QAIERC（Quebec Automobile Insurance Expertise Reference Corpus）——魁北克汽车保险专家参考语料库
+    - 检索策略：dense retrieval（text-embedding-ada-002）而非 BM25——因为非专业用户查询通常缺乏精确法律术语，语义匹配能缓解词汇不匹配
+    - 管线：查询 → dense retrieval top-5 chunks → context compressor 降噪 → 注入 LLM prompt
+    - 设计动机：**不假设 RAG 总是有益**——实验恰恰揭示 RAG 可以摧毁某些强模型（见下方关键发现）
 
 3. **51 个 LLM 的系统评估**:
-   - 模型覆盖：闭源（GPT-4o/o1/o3, Claude Opus 4, Gemini 2.5 Pro/flash, Grok 4）+ 开源（Llama 3.3, Qwen, DeepSeek, Mistral, Pixtral）
-   - 规模覆盖：7B → 70B + MoE 架构
-   - 排除标准：法律特化模型（SaulLM, LawGPT）被排除——因为训练在英语 Common Law 上，对法语民法体系有**管辖权偏差**
-   - 评估方式：闭卷（直接回答）vs RAG（检索增强回答），每条件多次运行取均值±标准差
+    - 模型覆盖：闭源（GPT-4o/o1/o3, Claude Opus 4, Gemini 2.5 Pro/flash, Grok 4）+ 开源（Llama 3.3, Qwen, DeepSeek, Mistral, Pixtral）
+    - 规模覆盖：7B → 70B + MoE 架构
+    - 排除标准：法律特化模型（SaulLM, LawGPT）被排除——因为训练在英语 Common Law 上，对法语民法体系有**管辖权偏差**
+    - 评估方式：闭卷（直接回答）vs RAG（检索增强回答），每条件多次运行取均值±标准差
 
 ## 实验关键数据
 

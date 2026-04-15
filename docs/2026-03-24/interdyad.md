@@ -29,20 +29,20 @@
 ### 关键设计
 
 1. **Interactivity Injector（交互注入器）**:
-   - 做什么：从参考视频中提取身份无关的交互运动 latent $\mathbf{m}_k$，注入到扩散生成过程
-   - 核心思路：用预训练 motion encoder 提取运动先验，关键trick——**Lips-Masking Strategy**：编码前遮住嘴部区域，确保提取的动态只包含非语言行为（头部运动、姿态），不干扰音频驱动的唇同步。通过 **Spatial-Masking Cross-Attention** 将 Speaker 和 Listener 的运动先验分别注入各自的空间区域
-   - 设计动机：将"交互"建模为显式可控的模态，而非隐式 latent
+    - 做什么：从参考视频中提取身份无关的交互运动 latent $\mathbf{m}_k$，注入到扩散生成过程
+    - 核心思路：用预训练 motion encoder 提取运动先验，关键trick——**Lips-Masking Strategy**：编码前遮住嘴部区域，确保提取的动态只包含非语言行为（头部运动、姿态），不干扰音频驱动的唇同步。通过 **Spatial-Masking Cross-Attention** 将 Speaker 和 Listener 的运动先验分别注入各自的空间区域
+    - 设计动机：将"交互"建模为显式可控的模态，而非隐式 latent
 
 2. **MetaQuery 模态对齐**:
-   - 做什么：将对话音频映射到 Stage 1 优化好的运动先验空间
-   - 核心思路：用冻结的 Qwen3-Omni 作为多模态编码器，输入双轨音频、参考图和文本描述。引入时间对齐的可学习 **MetaQuery** 序列 $\mathcal{Q} \in \mathbb{R}^{N \times D}$（每个 query 严格对应一个音频帧），经过 1D Conv + Transformer Encoder + Linear 组成的 Temporal Connector 网络，输出预测的交互模式 $\hat{\mathbf{m}}$
-   - 损失函数：$\mathcal{L}_{\text{align}} = \|\mathbf{m} - \hat{\mathbf{m}}\|_2^2 + \|\Delta\mathbf{m} - \Delta\hat{\mathbf{m}}\|_2^2$（MSE + 时间差分平滑）
-   - 设计动机：MLLM 能理解语音中的语义意图和韵律强调，MetaQuery 作为可学习接口桥接高层语义和细粒度运动
+    - 做什么：将对话音频映射到 Stage 1 优化好的运动先验空间
+    - 核心思路：用冻结的 Qwen3-Omni 作为多模态编码器，输入双轨音频、参考图和文本描述。引入时间对齐的可学习 **MetaQuery** 序列 $\mathcal{Q} \in \mathbb{R}^{N \times D}$（每个 query 严格对应一个音频帧），经过 1D Conv + Transformer Encoder + Linear 组成的 Temporal Connector 网络，输出预测的交互模式 $\hat{\mathbf{m}}$
+    - 损失函数：$\mathcal{L}_{\text{align}} = \|\mathbf{m} - \hat{\mathbf{m}}\|_2^2 + \|\Delta\mathbf{m} - \Delta\hat{\mathbf{m}}\|_2^2$（MSE + 时间差分平滑）
+    - 设计动机：MLLM 能理解语音中的语义意图和韵律强调，MetaQuery 作为可学习接口桥接高层语义和细粒度运动
 
 3. **Role-aware Dyadic Gaussian Guidance (RoDG)**:
-   - 做什么：推理时自适应增强说话者嘴部区域的音频 CFG 引导
-   - 核心思路：用 VAD 确定每帧的说话者/听者角色，在说话者嘴部位置构建 2D 高斯图 $\mathbf{G}_k$，将音频 CFG 强度空间调制为 $w_a(\mathbf{x},t) = w_{\text{base}} + \alpha_t \cdot \mathbb{I}(k=S_t) \cdot \mathbf{G}_k$，听者嘴部区域不加音频引导
-   - 设计动机：避免音频引导"泄漏"到非说话者的嘴上，同时在说话者的嘴部区域加强引导以抵抗极端姿态带来的唇同步退化
+    - 做什么：推理时自适应增强说话者嘴部区域的音频 CFG 引导
+    - 核心思路：用 VAD 确定每帧的说话者/听者角色，在说话者嘴部位置构建 2D 高斯图 $\mathbf{G}_k$，将音频 CFG 强度空间调制为 $w_a(\mathbf{x},t) = w_{\text{base}} + \alpha_t \cdot \mathbb{I}(k=S_t) \cdot \mathbf{G}_k$，听者嘴部区域不加音频引导
+    - 设计动机：避免音频引导"泄漏"到非说话者的嘴上，同时在说话者的嘴部区域加强引导以抵抗极端姿态带来的唇同步退化
 
 ### 训练策略
 - 训练数据：从海量视频中过滤出 70 万条高质量双人对话视频（720P+, 25fps, 3-10秒）

@@ -23,11 +23,11 @@
 
 双分支并行设计：
 1. **FCI (Face-Centric Interaction)**: 两阶段面部引导交互
-   - Stage-I: 面部特征分别与音频、视觉做多头注意力交互 → $F_v^{(f)}, F_a^{(f)}$
-   - Stage-II: 融合后的面部-音频/视觉特征再次交互 → $F_v^{(af)}, F_a^{(vf)}$，拼接得 $F_{mix}$
+    - Stage-I: 面部特征分别与音频、视觉做多头注意力交互 → $F_v^{(f)}, F_a^{(f)}$
+    - Stage-II: 融合后的面部-音频/视觉特征再次交互 → $F_v^{(af)}, F_a^{(vf)}$，拼接得 $F_{mix}$
 
 2. **GSP (Global Sentiment Perception)**: 全局情感权重
-   - 拼接三种模态特征 → 卷积 → 回归头 + sigmoid → $W_{sent} \in [0,1]^T$
+    - 拼接三种模态特征 → 卷积 → 回归头 + sigmoid → $W_{sent} \in [0,1]^T$
 
 ### PSSC: Point-aware Sentiment Semantics Contrast
 

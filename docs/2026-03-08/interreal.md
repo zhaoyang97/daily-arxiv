@@ -24,23 +24,23 @@ InterReal 分三阶段：(1) 运动预处理——SMPL mocap 重定向到 G1 机
 ### 关键设计
 
 1. **HOI 运动增广（Motion Augmentation）**:
-   - 做什么：从单条锚点 HOI 轨迹生成多种物体位置变体的训练轨迹
-   - 核心思路：对锚点运动 $\mathcal{M}$ 施加物体位置偏移 $\Delta\mathbf{p}_{xy} = [\Delta x, \Delta y, 0]^\top$（XY 平面），将末端执行器位置变换到骨盆坐标系后用 Ipopt 非线性优化器求解新的 7-DoF 手臂关节角，保持手-物接触细节不变。遍历 $\Delta x, \Delta y \in \text{linspace}(-\epsilon, \epsilon, \sqrt{c_3})$ 生成 $c_3$ 条增广轨迹
-   - 设计动机：真实部署中物体位置的传感器扰动会导致策略出分布。通过保持接触不变量的增广，策略学会在不同物体位置下完成同一交互任务
+    - 做什么：从单条锚点 HOI 轨迹生成多种物体位置变体的训练轨迹
+    - 核心思路：对锚点运动 $\mathcal{M}$ 施加物体位置偏移 $\Delta\mathbf{p}_{xy} = [\Delta x, \Delta y, 0]^\top$（XY 平面），将末端执行器位置变换到骨盆坐标系后用 Ipopt 非线性优化器求解新的 7-DoF 手臂关节角，保持手-物接触细节不变。遍历 $\Delta x, \Delta y \in \text{linspace}(-\epsilon, \epsilon, \sqrt{c_3})$ 生成 $c_3$ 条增广轨迹
+    - 设计动机：真实部署中物体位置的传感器扰动会导致策略出分布。通过保持接触不变量的增广，策略学会在不同物体位置下完成同一交互任务
 
 2. **双循环自动奖励学习（Automatic Reward Learning）**:
-   - 做什么：外循环 meta-policy 自动学习内循环 PPO 的多维奖励权重 $\Theta = \{\theta^k\}_{k=1}^K$
-   - 核心思路：每 $N$ 个 PPO epoch 定义为一个潜在子任务 $\mathcal{T}_i$。外循环用 SAC 训练 meta-policy $\mu^{meta}_\psi$，其状态 $u_t$ 包含 HOI 任务特征和学习进度，动作是输出权重 $\Theta_t$，奖励是关键跟踪误差（关节位置 $e_{jp}$、物体位置 $e_{op}$、link 位置 $e_{lp}$）的时间梯度 $G_t = \Delta(e_{jp} + e_{op} + e_{lp})/\Delta t$。权重更新 $\Theta' = \Theta^0 \cdot \sigma(t) \cdot \mu^{meta}(\Theta_t | u_t)$，其中 $\sigma(t)$ 是递减缩放因子
-   - 设计动机：HOI 任务的子奖励异质性高（位姿跟踪、物体位置、交互图、平衡惩罚等），且最优权重随任务阶段变化（如搬箱初期重平衡、中期重手臂跟踪、末期重物体位置）。手动固定权重无法捕捉这种动态，meta-policy 通过误差梯度信号自动适应
+    - 做什么：外循环 meta-policy 自动学习内循环 PPO 的多维奖励权重 $\Theta = \{\theta^k\}_{k=1}^K$
+    - 核心思路：每 $N$ 个 PPO epoch 定义为一个潜在子任务 $\mathcal{T}_i$。外循环用 SAC 训练 meta-policy $\mu^{meta}_\psi$，其状态 $u_t$ 包含 HOI 任务特征和学习进度，动作是输出权重 $\Theta_t$，奖励是关键跟踪误差（关节位置 $e_{jp}$、物体位置 $e_{op}$、link 位置 $e_{lp}$）的时间梯度 $G_t = \Delta(e_{jp} + e_{op} + e_{lp})/\Delta t$。权重更新 $\Theta' = \Theta^0 \cdot \sigma(t) \cdot \mu^{meta}(\Theta_t | u_t)$，其中 $\sigma(t)$ 是递减缩放因子
+    - 设计动机：HOI 任务的子奖励异质性高（位姿跟踪、物体位置、交互图、平衡惩罚等），且最优权重随任务阶段变化（如搬箱初期重平衡、中期重手臂跟踪、末期重物体位置）。手动固定权重无法捕捉这种动态，meta-policy 通过误差梯度信号自动适应
 
 3. **交互图奖励（Interaction-Aware Reward）**:
-   - 做什么：监督机器人关键 link 与物体特征点之间的距离关系
-   - 核心思路：交互图特征 $s_t^{ig}$ 编码 $c_2$ 个 link-物体特征点对的距离，奖励 $r_t^{ig} = \exp(-\theta_t^{ig} \cdot \|s_t^{ig} - s_{ref,t}^{ig}\|^2)$
-   - 设计动机：纯粹跟踪关节角度不够，需要显式监督接触几何关系才能实现精确的手-物交互
+    - 做什么：监督机器人关键 link 与物体特征点之间的距离关系
+    - 核心思路：交互图特征 $s_t^{ig}$ 编码 $c_2$ 个 link-物体特征点对的距离，奖励 $r_t^{ig} = \exp(-\theta_t^{ig} \cdot \|s_t^{ig} - s_{ref,t}^{ig}\|^2)$
+    - 设计动机：纯粹跟踪关节角度不够，需要显式监督接触几何关系才能实现精确的手-物交互
 
 4. **非对称 Actor-Critic**:
-   - 做什么：Actor 只接收不完美状态（排除交互图、物体速度/旋转），Critic 获得完整状态
-   - 设计动机：真实部署中物体速度和旋转的传感噪声大（FoundationPose 只提供位置），不稳定特征会放大 sim-to-real gap。训练时让 Actor 学会仅从有限观测中做决策
+    - 做什么：Actor 只接收不完美状态（排除交互图、物体速度/旋转），Critic 获得完整状态
+    - 设计动机：真实部署中物体速度和旋转的传感噪声大（FoundationPose 只提供位置），不稳定特征会放大 sim-to-real gap。训练时让 Actor 学会仅从有限观测中做决策
 
 ### 损失函数 / 训练策略
 - **内循环**：PPO 优化，加权奖励 $f_t(\Theta) = \sum_{k=1}^K \theta_t^k r^k(t)$，含关节位姿、link 位置、物体位姿、交互图、力矩惩罚等多维子奖励

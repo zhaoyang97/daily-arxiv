@@ -14,9 +14,9 @@
 
 1. **领域现状**: 合成数据（如 GTA-V、CARLA）广泛用于训练计算机视觉算法，但合成-真实之间的外观差距（sim2real gap）限制了模型泛化能力。Image-to-Image (Im2Im) 翻译是缩小该差距的主流方法。
 2. **现有痛点**: 
-   - **非配对方法**（如 EPE）需要 G-Buffer（深度、法线、语义分割图）作为额外输入，架构复杂，推理速度 ≤10 FPS，无法实时运行；且容易引入幻觉伪影（如天空长出植被、水面几何失真）。
-   - **配对方法**（如 REGEN）虽然不需要 G-Buffer，但在 1080p 下仍不到 30 FPS；且由于直接学习非配对模型的输出，会继承其伪影。
-   - **扩散模型**（如 COSMOS Transfer1）计算代价更高，且容易产生物体幻觉。
+    - **非配对方法**（如 EPE）需要 G-Buffer（深度、法线、语义分割图）作为额外输入，架构复杂，推理速度 ≤10 FPS，无法实时运行；且容易引入幻觉伪影（如天空长出植被、水面几何失真）。
+    - **配对方法**（如 REGEN）虽然不需要 G-Buffer，但在 1080p 下仍不到 30 FPS；且由于直接学习非配对模型的输出，会继承其伪影。
+    - **扩散模型**（如 COSMOS Transfer1）计算代价更高，且容易产生物体幻觉。
 3. **核心矛盾**: 视觉真实感 vs. 推理效率 vs. 语义一致性——三者难以同时满足。现有方法要么质量高但太慢（EPE），要么快但质量不足且会继承伪影（REGEN）。
 4. **切入角度**: 在 REGEN 的配对翻译框架基础上，设计更轻量的生成器以实现实时推理，并引入真实世界图像 patch 匹配的混合训练策略来避免学习伪影。
 5. **核心 idea 一句话**: 用轻量 U-Net 生成器做配对翻译保证速度，用 FAISS 检索匹配的真实图像 patch 参与对抗训练来避免继承非配对模型的伪影。
@@ -35,25 +35,25 @@ HyPER-GAN 包含四个阶段：
 ### 关键设计
 
 1. **轻量 U-Net 生成器 $G$**:
-   - **编码器**: 3 个下采样阶段（4×4 strided conv），通道数 3→64→128→256，除第一层外均使用 Instance Normalization + ReLU。
-   - **瓶颈层**: 4 个残差块（ResBlock），每个含两层 3×3 卷积 + IN + 恒等跳连，保持空间信息。
-   - **解码器**: 3 个上采样阶段（转置卷积），通过 skip connection 与编码器对应层拼接，最终 Tanh 激活输出 $\hat{X} \in \mathbb{R}^{3 \times H \times W}$。
-   - **设计动机**: U-Net 结构参数量小、推理快，skip connection 保留细节信息。
+    - **编码器**: 3 个下采样阶段（4×4 strided conv），通道数 3→64→128→256，除第一层外均使用 Instance Normalization + ReLU。
+    - **瓶颈层**: 4 个残差块（ResBlock），每个含两层 3×3 卷积 + IN + 恒等跳连，保持空间信息。
+    - **解码器**: 3 个上采样阶段（转置卷积），通过 skip connection 与编码器对应层拼接，最终 Tanh 激活输出 $\hat{X} \in \mathbb{R}^{3 \times H \times W}$。
+    - **设计动机**: U-Net 结构参数量小、推理快，skip connection 保留细节信息。
 
 2. **PatchGAN 判别器 $D$**:
-   - 输入 patch $p \in \mathbb{R}^{3 \times H \times W}$，经 3 层 4×4 strided conv（通道 64→128→256）+ LeakyReLU(0.2) + IN，最终 1×1 conv 输出逐 patch 真实性得分。
-   - 在 patch 级别评估真实性，适合局部纹理质量判断。
+    - 输入 patch $p \in \mathbb{R}^{3 \times H \times W}$，经 3 层 4×4 strided conv（通道 64→128→256）+ LeakyReLU(0.2) + IN，最终 1×1 conv 输出逐 patch 真实性得分。
+    - 在 patch 级别评估真实性，适合局部纹理质量判断。
 
 3. **混合 Patch 训练策略（核心创新）**:
-   - 对每张生成图像 $\hat{X}$ 提取 4 个 196×196 patch $\hat{p}$。
-   - 从 target（EPE 增强图像）提取对应位置 patch $p^{target}$。
-   - 用 FAISS 从真实数据库检索与 $\hat{p}$ 最相近的真实 patch $p^{matched} = \arg\min_{p^{real} \in \mathcal{R}} \|\phi(\hat{p}) - \phi(p^{real})\|_2^2$。
-   - 构造混合批次：生成集 $\mathcal{P}_{generated} = [\hat{p}, \hat{p}]$，真实集 $\mathcal{P}_{real} = [p^{target}, p^{matched}]$。
-   - **关键洞察**: 判别器需同时区分生成 patch 与 target patch 和真实 patch，迫使生成器不仅模仿 EPE 输出，还要接近真实世界分布，从而避免学习 EPE 引入的伪影（如幻觉植被、不自然光泽）。
+    - 对每张生成图像 $\hat{X}$ 提取 4 个 196×196 patch $\hat{p}$。
+    - 从 target（EPE 增强图像）提取对应位置 patch $p^{target}$。
+    - 用 FAISS 从真实数据库检索与 $\hat{p}$ 最相近的真实 patch $p^{matched} = \arg\min_{p^{real} \in \mathcal{R}} \|\phi(\hat{p}) - \phi(p^{real})\|_2^2$。
+    - 构造混合批次：生成集 $\mathcal{P}_{generated} = [\hat{p}, \hat{p}]$，真实集 $\mathcal{P}_{real} = [p^{target}, p^{matched}]$。
+    - **关键洞察**: 判别器需同时区分生成 patch 与 target patch 和真实 patch，迫使生成器不仅模仿 EPE 输出，还要接近真实世界分布，从而避免学习 EPE 引入的伪影（如幻觉植被、不自然光泽）。
 
 4. **对比变体 HyPER-GAN-EO（Enhanced Only）**:
-   - 仅用配对的合成-增强图像训练，不引入真实 patch 匹配。
-   - 作为消融对照，验证混合训练策略的有效性。
+    - 仅用配对的合成-增强图像训练，不引入真实 patch 匹配。
+    - 作为消融对照，验证混合训练策略的有效性。
 
 ### 损失函数 / 训练策略
 

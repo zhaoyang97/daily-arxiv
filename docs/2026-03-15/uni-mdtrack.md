@@ -22,16 +22,16 @@
 
 ### 关键设计
 1. **MCP (Memory-Aware Compression Prompt)**:
-   - 做什么：将可变长记忆库压缩为固定 16 个 memory token
-   - 核心思路：$N_M$ 个可学习 query token $\mathbf{q}$ 通过 cross-attention 对记忆库 $\mathbf{F}_m$ 做动态聚合：$\mathbf{Attn} = \text{Softmax}[\mathbf{Q} \cdot \mathbf{K} / \sqrt{d} + \text{ALiBi}(\mathbf{F}_m)]$，输出 memory-aware token concat 到输入序列在全层参与自注意力
-   - ALiBi 位置偏置: $-\mathbf{m}_h \times |j - N_{mb}|$，赋予近帧更高权重，同时实现推理时记忆长度免训练外推（理论证明尾部质量指数衰减，不影响已训练分布）
-   - 设计动机：传统记忆库在 prediction head 前融合太浅，MCP 让记忆信息在每一层深度影响特征学习
+    - 做什么：将可变长记忆库压缩为固定 16 个 memory token
+    - 核心思路：$N_M$ 个可学习 query token $\mathbf{q}$ 通过 cross-attention 对记忆库 $\mathbf{F}_m$ 做动态聚合：$\mathbf{Attn} = \text{Softmax}[\mathbf{Q} \cdot \mathbf{K} / \sqrt{d} + \text{ALiBi}(\mathbf{F}_m)]$，输出 memory-aware token concat 到输入序列在全层参与自注意力
+    - ALiBi 位置偏置: $-\mathbf{m}_h \times |j - N_{mb}|$，赋予近帧更高权重，同时实现推理时记忆长度免训练外推（理论证明尾部质量指数衰减，不影响已训练分布）
+    - 设计动机：传统记忆库在 prediction head 前融合太浅，MCP 让记忆信息在每一层深度影响特征学习
 
 2. **DSF (Dynamic State Fusion)**:
-   - 做什么：持续捕捉目标的连续动态状态变化
-   - 核心思路：基于 Mamba SSM 的状态更新 $h(t) = \bar{\mathbf{A}} \odot h(t-1) + \bar{\mathbf{B}} \odot \mathbf{S}_1$，只用搜索区域特征更新（排除模板干扰）。4 个 DSF 模块分布在 backbone 的 4 个阶段，通过 input/output fusion layer (cross-attention) 实现渐进融合
-   - 设计动机：现有时间传播 token 同时关注模板和搜索区域，更像"模板增强器"而非动态状态。DSF 专注搜索区域的状态演化
-   - 与先前 SSM tracker 的区别: MambaVT/MCITrack 用 SSM 作 backbone（需设计扫描策略），DSF 用 SSM 作 PEFT 适配器（首创）
+    - 做什么：持续捕捉目标的连续动态状态变化
+    - 核心思路：基于 Mamba SSM 的状态更新 $h(t) = \bar{\mathbf{A}} \odot h(t-1) + \bar{\mathbf{B}} \odot \mathbf{S}_1$，只用搜索区域特征更新（排除模板干扰）。4 个 DSF 模块分布在 backbone 的 4 个阶段，通过 input/output fusion layer (cross-attention) 实现渐进融合
+    - 设计动机：现有时间传播 token 同时关注模板和搜索区域，更像"模板增强器"而非动态状态。DSF 专注搜索区域的状态演化
+    - 与先前 SSM tracker 的区别: MambaVT/MCITrack 用 SSM 作 backbone（需设计扫描策略），DSF 用 SSM 作 PEFT 适配器（首创）
 
 3. **统一多模态设计**: 6 通道输入（RGB 3ch + D/T/E 3ch），对纯 RGB 任务复制 RGB 通道。文本通过 CLIP-L 提取 [cls] token。一个模型覆盖 RGB/RGB-D/T/E/Language 五种模态。
 

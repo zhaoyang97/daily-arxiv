@@ -30,19 +30,19 @@
 ### 关键设计
 
 1. **DINOv3 Semantic Prior Adaptation**:
-   - 做什么：用预训练的 DINOv3 ViT 做通用特征提取
-   - 核心思路：冻结 DINOv3 backbone，提取 4 个中间层的特征 $f^{(l_2)}, f^{(l_5)}, f^{(l_8)}, f^{(l_{11})}$，通过 hierarchical adapter 做渐进式特征校准和上采样
-   - 设计动机：DINOv3 在大规模自然图像上预训练，具备 object-centric 和长程依赖建模能力，是理想的跨模态通用 backbone。adapter 弥补了预训练域和特定模态之间的 gap
+    - 做什么：用预训练的 DINOv3 ViT 做通用特征提取
+    - 核心思路：冻结 DINOv3 backbone，提取 4 个中间层的特征 $f^{(l_2)}, f^{(l_5)}, f^{(l_8)}, f^{(l_{11})}$，通过 hierarchical adapter 做渐进式特征校准和上采样
+    - 设计动机：DINOv3 在大规模自然图像上预训练，具备 object-centric 和长程依赖建模能力，是理想的跨模态通用 backbone。adapter 弥补了预训练域和特定模态之间的 gap
 
 2. **Reconstruction Alignment**:
-   - 做什么：确保编码特征保留足够的源图像信息
-   - 核心思路：每个 adapter 的输出 $\hat{\mathbf{F}}_m$ 经轻量 Transformer blocks + projection head 重建原图 $\bar{I}_m = R_m(\hat{\mathbf{F}}_m)$，用 L1 loss 监督
-   - 设计动机：直接融合可能导致模态特有信息丢失（如红外的热辐射、可见光的纹理）。重建约束迫使编码保留完整信息，比 pixel-level 融合 loss 更能保持语义一致性
+    - 做什么：确保编码特征保留足够的源图像信息
+    - 核心思路：每个 adapter 的输出 $\hat{\mathbf{F}}_m$ 经轻量 Transformer blocks + projection head 重建原图 $\bar{I}_m = R_m(\hat{\mathbf{F}}_m)$，用 L1 loss 监督
+    - 设计动机：直接融合可能导致模态特有信息丢失（如红外的热辐射、可见光的纹理）。重建约束迫使编码保留完整信息，比 pixel-level 融合 loss 更能保持语义一致性
 
 3. **Bilevel Optimization**:
-   - 做什么：解耦并联合优化重建和融合目标
-   - 核心思路：inner loop 快速更新 adapter+reconstruction 参数 $\phi$（学好特征表示）；outer loop 慢速更新 fusion 参数 $\theta$（学好融合策略）。学习率 $\eta_L > \eta_U$，加 EMA 稳定
-   - 设计动机：重建和融合有耦合关系——如果 joint optimize 可能互相干扰。bilevel 让特征表示先稳定下来，再基于好的特征学融合策略
+    - 做什么：解耦并联合优化重建和融合目标
+    - 核心思路：inner loop 快速更新 adapter+reconstruction 参数 $\phi$（学好特征表示）；outer loop 慢速更新 fusion 参数 $\theta$（学好融合策略）。学习率 $\eta_L > \eta_U$，加 EMA 稳定
+    - 设计动机：重建和融合有耦合关系——如果 joint optimize 可能互相干扰。bilevel 让特征表示先稳定下来，再基于好的特征学融合策略
 
 ### 损失函数
 - Inner level: $\mathcal{L}_\text{rec}$ (L1 reconstruction loss)

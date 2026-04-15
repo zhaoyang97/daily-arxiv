@@ -29,25 +29,25 @@
 ### 关键设计
 
 1. **TexBlender 合成数据集**:
-   - 做什么：提供配对的（编辑前, 编辑后）图像，几何完全相同仅纹理变化
-   - 核心思路：用 3D-Front 室内场景 + Blender 渲染，两种编辑模式：(a) 属性调整（粗糙度/金属度/透明度）通过 Principled BSDF shader；(b) 全局纹理替换（用 MatSynth 纹理）
-   - 关键区别：不是单物体而是场景级，对物体组编辑（不同粒度），加入复杂背景和遮挡
-   - 指令生成：记录纹理修改元数据 → Qwen3-VL 生成自然语言指令 → SAM3 视觉引导精化
+    - 做什么：提供配对的（编辑前, 编辑后）图像，几何完全相同仅纹理变化
+    - 核心思路：用 3D-Front 室内场景 + Blender 渲染，两种编辑模式：(a) 属性调整（粗糙度/金属度/透明度）通过 Principled BSDF shader；(b) 全局纹理替换（用 MatSynth 纹理）
+    - 关键区别：不是单物体而是场景级，对物体组编辑（不同粒度），加入复杂背景和遮挡
+    - 指令生成：记录纹理修改元数据 → Qwen3-VL 生成自然语言指令 → SAM3 视觉引导精化
 
 2. **StructureNFT（结构感知 RL）**:
-   - 做什么：在真实图像上通过 RL 平衡指令遵循和结构保持
-   - 奖励函数：$Reward = Score_{ins} + Score_{struct}$
-   - 指令奖励：$Score_{ins} = MLLM(I_e, I, P, P_{sys})$，用 Gemini 3 Flash 评分
-   - 结构奖励：比较三种方案后选 SSIM on SAUGE wireframe
+    - 做什么：在真实图像上通过 RL 平衡指令遵循和结构保持
+    - 奖励函数：$Reward = Score_{ins} + Score_{struct}$
+    - 指令奖励：$Score_{ins} = MLLM(I_e, I, P, P_{sys})$，用 Gemini 3 Flash 评分
+    - 结构奖励：比较三种方案后选 SSIM on SAUGE wireframe
      - SAM3 mask IoU：太粗粒度
      - Wireframe IoU：对像素扰动过敏
      - **Wireframe SSIM**（最终选择）：$s = SSIM(SAUGE(I_e), SAUGE(I))$，对小位移鲁棒
    - 经验归一化：原始 SSIM 值范围窄，为纹理替换和属性编辑分别设 $\tau_{min}, \tau_{max}$ 做分段线性映射
 
 3. **TexEval 评估指标**:
-   - 做什么：联合评估指令遵循和结构保持
-   - $TexEval = \alpha \cdot Score_{Ins} + (1-\alpha) \cdot Score_{struct}$
-   - 500 对样本的人类偏好研究验证其与人类判断对齐度最高
+    - 做什么：联合评估指令遵循和结构保持
+    - $TexEval = \alpha \cdot Score_{Ins} + (1-\alpha) \cdot Score_{struct}$
+    - 500 对样本的人类偏好研究验证其与人类判断对齐度最高
 
 ## 实验关键数据
 

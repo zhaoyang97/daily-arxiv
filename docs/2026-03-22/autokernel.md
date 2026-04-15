@@ -25,24 +25,24 @@ PyTorch 模型 → torch.profiler 逐 kernel 分析 GPU 时间 → Amdahl 定律
 ### 关键设计
 
 1. **模型级 Profiler + Amdahl 排序**:
-   - torch.profiler 捕获每个 kernel 的 GPU 时间占比
-   - 按 $S = 1/((1-f) + f/s)$ 排序优先级——60% 占比的 kernel 1.5× 加速 → 整体 1.25×，5% 的 kernel 同样加速只有 1.03×
-   - 自动分配优化预算到高收益 kernel
+    - torch.profiler 捕获每个 kernel 的 GPU 时间占比
+    - 按 $S = 1/((1-f) + f/s)$ 排序优先级——60% 占比的 kernel 1.5× 加速 → 整体 1.25×，5% 的 kernel 同样加速只有 1.03×
+    - 自动分配优化预算到高收益 kernel
 
 2. **五阶段正确性验证**:
-   - Smoke test（编译通过）→ Shape sweep（8-10 配置 × 3 dtype）→ 数值稳定性（对抗输入）→ 确定性验证（bitwise 一致）→ 边界情况（非 power-of-2）
-   - 每个阶段捕获不同类别的 bug，缺一不可
-   - dtype 特定容差: FP16 atol=1e-2, BF16 2e-2, FP32 1e-4
+    - Smoke test（编译通过）→ Shape sweep（8-10 配置 × 3 dtype）→ 数值稳定性（对抗输入）→ 确定性验证（bitwise 一致）→ 边界情况（非 power-of-2）
+    - 每个阶段捕获不同类别的 bug，缺一不可
+    - dtype 特定容差: FP16 atol=1e-2, BF16 2e-2, FP32 1e-4
 
 3. **双后端支持**:
-   - **Triton**: 快速迭代（1-5s 编译），9 种 kernel 类型，调 block_size/num_warps/num_stages
-   - **CUDA C++**: 显式控制 tensor core/warp shuffle/shared memory layout
-   - 每次迭代 ~90s（30s 正确性 + 30s 性能 + 30s 推理）
+    - **Triton**: 快速迭代（1-5s 编译），9 种 kernel 类型，调 block_size/num_warps/num_stages
+    - **CUDA C++**: 显式控制 tensor core/warp shuffle/shared memory layout
+    - 每次迭代 ~90s（30s 正确性 + 30s 性能 + 30s 推理）
 
 4. **Agent 指令工程**:
-   - 909 行 program.md 编码 6 层优化 Playbook: block sizing → 内存访问 → 计算 → 高级 → 架构特定 → kernel 特定
-   - 单文件不变量: Agent 只编辑一个 kernel 文件，保持 diff 小、回退干净
-   - 收敛条件: 连续 5 次回退 / 达到 GPU 峰值 90% / 超 2 小时 / 2× 加速
+    - 909 行 program.md 编码 6 层优化 Playbook: block sizing → 内存访问 → 计算 → 高级 → 架构特定 → kernel 特定
+    - 单文件不变量: Agent 只编辑一个 kernel 文件，保持 diff 小、回退干净
+    - 收敛条件: 连续 5 次回退 / 达到 GPU 峰值 90% / 超 2 小时 / 2× 加速
 
 ## 实验关键数据
 

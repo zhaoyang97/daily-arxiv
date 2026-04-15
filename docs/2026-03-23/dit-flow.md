@@ -1,9 +1,9 @@
 # DiT-Flow: Speech Enhancement Robust to Multiple Distortions based on Flow Matching in Latent Space and Diffusion Transformers
 
-**日期**: 2026-03-23
-**arXiv**: [2603.21608](https://arxiv.org/abs/2603.21608)
-**代码**: 无
-**领域**: 音频处理 / 模型效率
+**日期**: 2026-03-23  
+**arXiv**: [2603.21608](https://arxiv.org/abs/2603.21608)  
+**代码**: 无  
+**领域**: 音频处理 / 模型效率  
 **关键词**: 语音增强, Flow Matching, Diffusion Transformer, MoELoRA, 多失真鲁棒性, VAE潜空间
 
 ## 一句话总结
@@ -136,25 +136,25 @@
 ### 关键设计
 
 1. **VAE 音频压缩器**:
-   - 做什么：将语音压缩到低维潜空间 $D=128$，降低后续 DiT 的计算量
-   - 架构：复值 Conv2D + Group Norm + 3 个 TF-GridNet 块 + 双向 LSTM（256 hidden/方向）+ 自注意力（4 头，512 通道）
-   - 训练：多分辨率 STFT 重建损失 + 对抗损失（5 个卷积判别器）+ KL 散度（权重 1e-4）
-   - 参数量：49.3M
+    - 做什么：将语音压缩到低维潜空间 $D=128$，降低后续 DiT 的计算量
+    - 架构：复值 Conv2D + Group Norm + 3 个 TF-GridNet 块 + 双向 LSTM（256 hidden/方向）+ 自注意力（4 头，512 通道）
+    - 训练：多分辨率 STFT 重建损失 + 对抗损失（5 个卷积判别器）+ KL 散度（权重 1e-4）
+    - 参数量：49.3M
 
 2. **DiT-Flow 主模块**:
-   - 做什么：在潜空间学习从噪声到干净语音的连续映射 $\frac{d}{dt}\phi_t(x_0) = v_\theta(\phi_t(x_0), t)$
-   - 训练目标：条件 flow matching (CFM) 损失 $\mathcal{L}_{CFM} = \mathbb{E}\|v_\theta(x_t, t) - v_t(x_t|x_1)\|^2$
-   - 架构：12 层 transformer，embedding dim=384，6 attention heads
-   - 优化器：AdamW，lr=2e-4
-   - 参数量：50.6M
-   - 推理：50 步 ODE solver（比扩散模型的多步随机去噪更确定性）
+    - 做什么：在潜空间学习从噪声到干净语音的连续映射 $\frac{d}{dt}\phi_t(x_0) = v_\theta(\phi_t(x_0), t)$
+    - 训练目标：条件 flow matching (CFM) 损失 $\mathcal{L}_{CFM} = \mathbb{E}\|v_\theta(x_t, t) - v_t(x_t|x_1)\|^2$
+    - 架构：12 层 transformer，embedding dim=384，6 attention heads
+    - 优化器：AdamW，lr=2e-4
+    - 参数量：50.6M
+    - 推理：50 步 ODE solver（比扩散模型的多步随机去噪更确定性）
 
 3. **MoE-LoRA 多失真适配**:
-   - 做什么：冻结 DiT backbone，每个 self-attention 块挂载 5 个 LoRA 专家（rank=8）+ 路由网络
-   - 路由策略：top-k=3 稀疏路由，softmax 归一化 + 高斯噪声
-   - 融合公式：$\mathbf{h} = \mathbf{W}_0 \mathbf{x} + \sum_{i \in \mathcal{S}(\mathbf{x})} G_i(\mathbf{x})(A_i B_i \mathbf{x})$
-   - 可训练参数：仅 4.9%
-   - 设计动机：不同失真类型（噪声/混响/压缩）可能需要不同的处理策略，MoE 让专家自动分工
+    - 做什么：冻结 DiT backbone，每个 self-attention 块挂载 5 个 LoRA 专家（rank=8）+ 路由网络
+    - 路由策略：top-k=3 稀疏路由，softmax 归一化 + 高斯噪声
+    - 融合公式：$\mathbf{h} = \mathbf{W}_0 \mathbf{x} + \sum_{i \in \mathcal{S}(\mathbf{x})} G_i(\mathbf{x})(A_i B_i \mathbf{x})$
+    - 可训练参数：仅 4.9%
+    - 设计动机：不同失真类型（噪声/混响/压缩）可能需要不同的处理策略，MoE 让专家自动分工
 
 ### StillSonicSet 数据集
 - 基于 SonicSim 工具构建，使用 LibriSpeech + FSD50K + FMA + 90 个 Matterport3D 场景

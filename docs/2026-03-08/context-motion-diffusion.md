@@ -24,18 +24,18 @@ MMDM 基于自编码器结构：Kinematic Encoder（含 N 对 Structural Attenti
 ### 关键设计
 
 1. **Kinematic Attention Aggregation（KAA）**:
-   - 做什么：高效融合关节级和姿态级运动表示
-   - 核心思路：给每帧关节嵌入 $h_t \in \mathbb{R}^{J \times D}$ 附加一个可学习的姿态级嵌入 $h_t^* \in \mathbb{R}^{1 \times D}$。(1) 拼接后 $[h_t^*; h_t] \in \mathbb{R}^{(1+J) \times D}$ 输入 Structural Attention block 沿关节维度 $J$ 做自注意力 → $h_t^*$ 聚合每帧的骨架结构信息；(2) 只取 $\mathbf{h}^*$ 输入 Temporal Attention block 沿时间维度 $T$ 做自注意力 → 探索轨迹级依赖；(3) $\mathbf{h}^*$ 沿关节维度复制并加回 $\mathbf{h}$。经 $N$ 轮后最终 $\mathbf{h}^*$ 作为运动学条件 $c$
-   - 设计动机：以往 HPE 工作（D-MAE、StridedTransformer）用两个独立 Transformer 分别在 $J$ 和 $T$ 维度做自注意力，复杂度为 $O(J^2 \cdot T + T^2 \cdot J)$。KAA 的 Temporal Attention 只处理 $\mathbf{h}^*$（大小 1×D 而非 J×D），复杂度降为 $O((J+1)^2 \cdot T + T^2)$，大幅降低计算成本同时保持充分的空间-时序信息交换
+    - 做什么：高效融合关节级和姿态级运动表示
+    - 核心思路：给每帧关节嵌入 $h_t \in \mathbb{R}^{J \times D}$ 附加一个可学习的姿态级嵌入 $h_t^* \in \mathbb{R}^{1 \times D}$。(1) 拼接后 $[h_t^*; h_t] \in \mathbb{R}^{(1+J) \times D}$ 输入 Structural Attention block 沿关节维度 $J$ 做自注意力 → $h_t^*$ 聚合每帧的骨架结构信息；(2) 只取 $\mathbf{h}^*$ 输入 Temporal Attention block 沿时间维度 $T$ 做自注意力 → 探索轨迹级依赖；(3) $\mathbf{h}^*$ 沿关节维度复制并加回 $\mathbf{h}$。经 $N$ 轮后最终 $\mathbf{h}^*$ 作为运动学条件 $c$
+    - 设计动机：以往 HPE 工作（D-MAE、StridedTransformer）用两个独立 Transformer 分别在 $J$ 和 $T$ 维度做自注意力，复杂度为 $O(J^2 \cdot T + T^2 \cdot J)$。KAA 的 Temporal Attention 只处理 $\mathbf{h}^*$（大小 1×D 而非 J×D），复杂度降为 $O((J+1)^2 \cdot T + T^2)$，大幅降低计算成本同时保持充分的空间-时序信息交换
 
 2. **掩码扩散过程（Masked Motion Diffusion）**:
-   - 做什么：结合 MAE 的部分输入处理和扩散模型的去噪能力
-   - 核心思路：前向扩散给掩码运动加噪 $\mathbf{d}_k^m = \sqrt{\bar{\alpha}_k}\mathbf{d}_0^m + \sqrt{1-\bar{\alpha}_k}\epsilon$；反向扩散中编码器提取未掩码运动的条件，解码器条件生成掩码运动 $\widehat{\mathbf{d}}_{k-1}^m$，每步恢复未掩码部分。损失 $\ell_k = \mathbb{E}\|\mathbf{d}_k^m - \widehat{\mathbf{d}}_k^m\|_2$
-   - 设计动机：纯 MAE 不能处理噪声输入，纯扩散模型需要完整 token。MMDM 取两者优势：从高质量的部分数据（未掩码+KAA 编码）出发，条件性地生成缺失的低质量部分
+    - 做什么：结合 MAE 的部分输入处理和扩散模型的去噪能力
+    - 核心思路：前向扩散给掩码运动加噪 $\mathbf{d}_k^m = \sqrt{\bar{\alpha}_k}\mathbf{d}_0^m + \sqrt{1-\bar{\alpha}_k}\epsilon$；反向扩散中编码器提取未掩码运动的条件，解码器条件生成掩码运动 $\widehat{\mathbf{d}}_{k-1}^m$，每步恢复未掩码部分。损失 $\ell_k = \mathbb{E}\|\mathbf{d}_k^m - \widehat{\mathbf{d}}_k^m\|_2$
+    - 设计动机：纯 MAE 不能处理噪声输入，纯扩散模型需要完整 token。MMDM 取两者优势：从高质量的部分数据（未掩码+KAA 编码）出发，条件性地生成缺失的低质量部分
 
 3. **自适应掩码过程（Adaptive Masking）**:
-   - 做什么：根据 2D 置信度和三角化误差自适应决定哪些关节需要掩码
-   - 核心思路：掩码权重 $w_{j,t} = \omega \cdot e^{-\sum_v \rho_{j,v}^t} + \sigma_j^t$，置信度越低/误差越高的关节掩码概率越大
+    - 做什么：根据 2D 置信度和三角化误差自适应决定哪些关节需要掩码
+    - 核心思路：掩码权重 $w_{j,t} = \omega \cdot e^{-\sum_v \rho_{j,v}^t} + \sigma_j^t$，置信度越低/误差越高的关节掩码概率越大
 
 ### 三种任务（同一架构，不同运动先验）
 - **运动补全**：从未遮挡的高置信度关节条件性生成遮挡/低置信度的关节

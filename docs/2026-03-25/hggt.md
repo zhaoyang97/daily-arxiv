@@ -31,18 +31,18 @@ Pipeline：VGGT Aggregator 提取多视角 image token + 初始 camera token →
 ### 关键设计
 
 1. **VGGT-based 多视角特征聚合**:
-   - 做什么：利用 VGGT 的交替注意力架构（帧级+全局）编码多视角手部图像
-   - 核心思路：解冻 VGGT 全部层在手部数据上微调，同时初始化 camera token
-   - 设计动机：VGGT 的全局注意力天然支持多视角关联建模，但直接用 off-the-shelf VGGT 在手部图像上失败（点云严重错位），因此必须在任务数据上微调
+    - 做什么：利用 VGGT 的交替注意力架构（帧级+全局）编码多视角手部图像
+    - 核心思路：解冻 VGGT 全部层在手部数据上微调，同时初始化 camera token
+    - 设计动机：VGGT 的全局注意力天然支持多视角关联建模，但直接用 off-the-shelf VGGT 在手部图像上失败（点云严重错位），因此必须在任务数据上微调
 
 2. **Unified Cross-Attention Refinement（统一交叉注意力细化）**:
-   - 做什么：可学习 hand token + camera token 作为 Query，多视角 image token 作为 Key/Value，通过 4 层交叉注意力迭代提取手部几何线索
-   - 设计动机：将手部几何和相机视角的表示解耦为独立的 token 流，各自由专用 head 解码，同时共享同一组视觉特征，实现互监督
+    - 做什么：可学习 hand token + camera token 作为 Query，多视角 image token 作为 Key/Value，通过 4 层交叉注意力迭代提取手部几何线索
+    - 设计动机：将手部几何和相机视角的表示解耦为独立的 token 流，各自由专用 head 解码，同时共享同一组视觉特征，实现互监督
 
 3. **混合数据训练策略**:
-   - 三类数据源互补：大规模 in-the-wild 单目图像（多样性+鲁棒性）+ 真实多视角数据集（精确 3D 标注）+ 合成多视角数据（随机视角避免记忆固定相机配置）
-   - 合成数据来自 GraspXL + Dart 真实感皮肤渲染，85K 训练集每组 10 视角
-   - 梯度累积交替训练单目/多视角数据，动态调整 batch size 保证 GPU 利用率
+    - 三类数据源互补：大规模 in-the-wild 单目图像（多样性+鲁棒性）+ 真实多视角数据集（精确 3D 标注）+ 合成多视角数据（随机视角避免记忆固定相机配置）
+    - 合成数据来自 GraspXL + Dart 真实感皮肤渲染，85K 训练集每组 10 视角
+    - 梯度累积交替训练单目/多视角数据，动态调整 batch size 保证 GPU 利用率
 
 ### 损失函数
 - Hand Loss：MANO 参数 L2 + root-relative 3D 关节 L2（按数据可用性条件激活）

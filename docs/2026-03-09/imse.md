@@ -25,23 +25,23 @@
 ### 关键设计
 
 1. **Intrinsic Mixture of Spectral Experts**:
-   - SVD 分解：$\mathbf{W}^{(l)} = \sum_{i=1}^{r} \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$
-   - 每个 rank-1 成分 $\mathbf{u}_i \mathbf{v}_i^\top$ 是一个"谱专家"，$\sigma_i$ 是其贡献权重
-   - 只更新 spectral code $\mathbf{S} = \{\boldsymbol{\sigma}^{(l)}\}_{l=1}^L$
-   - 设计动机：保持正交基不变 = 保持预训练的特征提取器，只改变混合权重
+    - SVD 分解：$\mathbf{W}^{(l)} = \sum_{i=1}^{r} \sigma_i \mathbf{u}_i \mathbf{v}_i^\top$
+    - 每个 rank-1 成分 $\mathbf{u}_i \mathbf{v}_i^\top$ 是一个"谱专家"，$\sigma_i$ 是其贡献权重
+    - 只更新 spectral code $\mathbf{S} = \{\boldsymbol{\sigma}^{(l)}\}_{l=1}^L$
+    - 设计动机：保持正交基不变 = 保持预训练的特征提取器，只改变混合权重
 
 2. **Diversity Maximization Loss**:
-   - 计算专家-输入对齐统计：$\text{Std}_i^{(l)}$ 衡量第 $i$ 个专家对不同 token 的响应变化
-   - 多样性损失：$\mathcal{L}_{dm} = -\sum_l \frac{1}{r^{(l)}} \sum_i \text{Std}_i^{(l)}$
-   - 鼓励专家对不同输入有多样化的响应，而非都响应域特定模式
-   - 设计动机：熵最小化让少数专家主导输出（特征坍缩），此损失强制均衡利用所有专家
+    - 计算专家-输入对齐统计：$\text{Std}_i^{(l)}$ 衡量第 $i$ 个专家对不同 token 的响应变化
+    - 多样性损失：$\mathcal{L}_{dm} = -\sum_l \frac{1}{r^{(l)}} \sum_i \text{Std}_i^{(l)}$
+    - 鼓励专家对不同输入有多样化的响应，而非都响应域特定模式
+    - 设计动机：熵最小化让少数专家主导输出（特征坍缩），此损失强制均衡利用所有专家
 
 3. **Domain-Aware Spectral Code Retrieval (CTTA)**:
-   - 域描述符：patch embedding 的 channel-wise mean + variance（EMA 累积）
-   - 域银行：存储 {域描述符, 谱码} 对
-   - 域转移检测：对称 KL 散度超过阈值 $\tau$ 则认为新域到来
-   - 检索最相似域的谱码作为新域自适应的初始化
-   - 设计动机：奇异值作为域知识的紧凑表示，存储和检索开销极低
+    - 域描述符：patch embedding 的 channel-wise mean + variance（EMA 累积）
+    - 域银行：存储 {域描述符, 谱码} 对
+    - 域转移检测：对称 KL 散度超过阈值 $\tau$ 则认为新域到来
+    - 检索最相似域的谱码作为新域自适应的初始化
+    - 设计动机：奇异值作为域知识的紧凑表示，存储和检索开销极低
 
 ### 训练策略
 - $\mathcal{L}_{IMSE} = \mathcal{L}_{entmin} + \lambda_{dm} \cdot \mathcal{L}_{dm}$

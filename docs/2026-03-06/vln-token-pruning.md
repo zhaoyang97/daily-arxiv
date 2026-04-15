@@ -29,14 +29,14 @@
 ### 关键设计
 
 1. **Adaptive Maximal Marginal Relevance (A-MMR)**:
-   - 做什么：迭代选择兼顾重要性和多样性的 token 子集
-   - 核心思路：$i^* = \arg\max_{i \in \mathcal{U}} \big(I_{base}^{(i)} \cdot (1 - \max_{j \in \mathcal{S}} \text{sim}(\mathbf{f}_i, \mathbf{f}_j))\big)$
-   - 设计动机：纯 importance-based 选择会保留很多相似 token（冗余）；纯 diversity-based 选择可能保留不重要的 token。A-MMR 通过乘法组合自动平衡——先选高 attention 目标物体，再逐步扩展到语义不同的背景区域
+    - 做什么：迭代选择兼顾重要性和多样性的 token 子集
+    - 核心思路：$i^* = \arg\max_{i \in \mathcal{U}} \big(I_{base}^{(i)} \cdot (1 - \max_{j \in \mathcal{S}} \text{sim}(\mathbf{f}_i, \mathbf{f}_j))\big)$
+    - 设计动机：纯 importance-based 选择会保留很多相似 token（冗余）；纯 diversity-based 选择可能保留不重要的 token。A-MMR 通过乘法组合自动平衡——先选高 attention 目标物体，再逐步扩展到语义不同的背景区域
 
 2. **Query-Guided Re-weighting**:
-   - 做什么：用当前帧选中的 token 作为 query，重新评估历史 token 的重要性
-   - 核心思路：时空相关性 $R^{(i)} = \max_{k \in \mathcal{Q}} \text{sim}(\mathbf{f}_{hist}^{(i)}, \mathbf{f}_{curr}^{(k)})$，最终重要性 $I_{final}^{(i)} = I_{base}^{(i)} \cdot (\alpha + (1-\alpha) \cdot R^{(i)})$，α=0.5
-   - 设计动机：历史帧中与当前视野相关的信息更重要（如导航目标在历史帧中出现过）。不相关的历史信息可以安全丢弃
+    - 做什么：用当前帧选中的 token 作为 query，重新评估历史 token 的重要性
+    - 核心思路：时空相关性 $R^{(i)} = \max_{k \in \mathcal{Q}} \text{sim}(\mathbf{f}_{hist}^{(i)}, \mathbf{f}_{curr}^{(k)})$，最终重要性 $I_{final}^{(i)} = I_{base}^{(i)} \cdot (\alpha + (1-\alpha) \cdot R^{(i)})$，α=0.5
+    - 设计动机：历史帧中与当前视野相关的信息更重要（如导航目标在历史帧中出现过）。不相关的历史信息可以安全丢弃
 
 ### 训练策略
 完全无训练——即插即用应用于预训练 VLA 模型，不修改参数避免分布偏移。

@@ -29,19 +29,19 @@
 ### 关键设计
 
 1. **审计员选择**:
-   - 商用模型: GPT-4o、Claude 3.5 Sonnet
-   - 开源模型: InternVL-2-8B、Qwen2-VL-7B、LLaVA-v1.5-7B
-   - 覆盖不同架构、规模和训练范式
+    - 商用模型: GPT-4o、Claude 3.5 Sonnet
+    - 开源模型: InternVL-2-8B、Qwen2-VL-7B、LLaVA-v1.5-7B
+    - 覆盖不同架构、规模和训练范式
 
 2. **三维评估框架**:
-   - **准确率**: 与基准 ground truth 对比的二元分类正确率
-   - **校准度**: 用 Brier score $\mathrm{Brier}_m = \frac{1}{N}\sum_{i=1}^{N}(p_i^{(m)} - y_i)^2$ 衡量置信度是否反映真实不确定性
-   - **模型间一致性**: Cohen's $\kappa$ 衡量不同审计员判断是否一致
+    - **准确率**: 与基准 ground truth 对比的二元分类正确率
+    - **校准度**: 用 Brier score $\mathrm{Brier}_m = \frac{1}{N}\sum_{i=1}^{N}(p_i^{(m)} - y_i)^2$ 衡量置信度是否反映真实不确定性
+    - **模型间一致性**: Cohen's $\kappa$ 衡量不同审计员判断是否一致
 
 3. **跨平台基准**:
-   - macOSWorld、Windows Agent Arena、OSWorld
-   - 覆盖 macOS、Windows、Linux 三大桌面系统
-   - 所有基准提供二元成功标签作为 ground truth
+    - macOSWorld、Windows Agent Arena、OSWorld
+    - 覆盖 macOS、Windows、Linux 三大桌面系统
+    - 所有基准提供二元成功标签作为 ground truth
 
 ## 实验关键数据
 

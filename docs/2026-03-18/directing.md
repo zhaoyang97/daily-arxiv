@@ -1,6 +1,8 @@
 # Directing the Narrative: Controlling Coherence and Style in Story Generation
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17295](https://arxiv.org/abs/2603.17295) | **领域**: 图像生成 / 视频理解  
+**日期**: 2026-03-18  
+**arXiv**: [2603.17295](https://arxiv.org/abs/2603.17295)  
+**领域**: 图像生成 / 视频理解  
 **关键词**: 故事可视化, 角色一致性, Group-Shared Attention, DPO, FLUX.1
 
 ## 一句话总结
@@ -24,21 +26,21 @@
 ### 关键设计
 
 1. **Group-Shared Attention (GSA)**:
-   - 做什么：在不依赖外部编码器的情况下实现跨图像身份保持
-   - 核心思路：扩展 DiT 自注意力的上下文窗口。对于目标图（index 0），将 batch 内其他参考图的**视觉 token**（不含文本 token）拼接到 Key/Value 中。具体地，$\tilde{K}^{(0)} = [K_{txt}^{(0)}, K_{img}^{(0)}] \oplus \bigcup_{j=1}^{N-1}[K_{img}^{(j)}]$，然后做标准 scaled dot-product attention。关键设计：只共享视觉 token 不共享文本 token（非对称多模态共享），避免文本语义冲突
-   - 设计动机：IP-Adapter 要把参考图压缩成 CLIP 嵌入再注入交叉注意力，信息损失严重；GSA 直接让目标图 attend 到参考图的高分辨率空间特征，实现无损信息流
-   - **非对称时间步采样**：训练时目标图用随机噪声时间步 $t \sim \text{Sigmoid}(\mathcal{N}(0,1))$，参考图强制 $t=0$（无噪声），确保参考图提供干净的视觉特征池。损失只在目标图上计算
+    - 做什么：在不依赖外部编码器的情况下实现跨图像身份保持
+    - 核心思路：扩展 DiT 自注意力的上下文窗口。对于目标图（index 0），将 batch 内其他参考图的**视觉 token**（不含文本 token）拼接到 Key/Value 中。具体地，$\tilde{K}^{(0)} = [K_{txt}^{(0)}, K_{img}^{(0)}] \oplus \bigcup_{j=1}^{N-1}[K_{img}^{(j)}]$，然后做标准 scaled dot-product attention。关键设计：只共享视觉 token 不共享文本 token（非对称多模态共享），避免文本语义冲突
+    - 设计动机：IP-Adapter 要把参考图压缩成 CLIP 嵌入再注入交叉注意力，信息损失严重；GSA 直接让目标图 attend 到参考图的高分辨率空间特征，实现无损信息流
+    - **非对称时间步采样**：训练时目标图用随机噪声时间步 $t \sim \text{Sigmoid}(\mathcal{N}(0,1))$，参考图强制 $t=0$（无噪声），确保参考图提供干净的视觉特征池。损失只在目标图上计算
 
 2. **DPO 审美对齐 (Stage 2)**:
-   - 做什么：消除 Stage 1 标准重建目标产生的解剖学伪影，对齐人类审美标准
-   - 偏好数据构建：用 Stage 1 模型生成多样候选 → 专家按三级标准（角色一致性 > 解剖完整性 > 视觉美感）手工标注 winner/loser → 组合采样策略动态构建偏好对
-   - DPO 损失：适配 Flow Matching 框架，用流匹配误差差值近似 log-likelihood ratio：$\log\frac{\pi_\theta(I)}{\pi_{ref}(I)} \approx \|v_t - v_{ref}\|^2 - \|v_t - v_\theta\|^2$
-   - 设计动机：GSA 只保证结构对应，DPO 将整体偏好信号注入模型，同时因为 $\Phi^c$ 冻结，不会破坏一致性能力。温度参数 $\beta_{DPO}=1800$
+    - 做什么：消除 Stage 1 标准重建目标产生的解剖学伪影，对齐人类审美标准
+    - 偏好数据构建：用 Stage 1 模型生成多样候选 → 专家按三级标准（角色一致性 > 解剖完整性 > 视觉美感）手工标注 winner/loser → 组合采样策略动态构建偏好对
+    - DPO 损失：适配 Flow Matching 框架，用流匹配误差差值近似 log-likelihood ratio：$\log\frac{\pi_\theta(I)}{\pi_{ref}(I)} \approx \|v_t - v_{ref}\|^2 - \|v_t - v_\theta\|^2$
+    - 设计动机：GSA 只保证结构对应，DPO 将整体偏好信号注入模型，同时因为 $\Phi^c$ 冻结，不会破坏一致性能力。温度参数 $\beta_{DPO}=1800$
 
 3. **数据构建流水线**:
-   - Pipeline A（绘本）：10K+ 开源绘本 → 微调 CLIP 做语义过滤（阈值 0.9，需手动标注 1K 样本训练）→ OCR 检测 + 结构感知修复去除页面文字 → 感知哈希去重 → 保留 ≥4 帧的书 → 4,000 张干净叙事图
-   - Pipeline B（视频）：100+ 视频 → 镜头边界检测 + 帧质量过滤（排除强光/运动模糊/远景/侧脸）→ GroundingDINO 角色定位 → DINOv2 + Louvain 粗聚类 → Qwen-VL 语义验证精过滤 → 300 个高一致性角色簇（约 1,500 帧）
-   - Florence-2-large 做详细语义标注
+    - Pipeline A（绘本）：10K+ 开源绘本 → 微调 CLIP 做语义过滤（阈值 0.9，需手动标注 1K 样本训练）→ OCR 检测 + 结构感知修复去除页面文字 → 感知哈希去重 → 保留 ≥4 帧的书 → 4,000 张干净叙事图
+    - Pipeline B（视频）：100+ 视频 → 镜头边界检测 + 帧质量过滤（排除强光/运动模糊/远景/侧脸）→ GroundingDINO 角色定位 → DINOv2 + Louvain 粗聚类 → Qwen-VL 语义验证精过滤 → 300 个高一致性角色簇（约 1,500 帧）
+    - Florence-2-large 做详细语义标注
 
 ## 实验关键数据
 

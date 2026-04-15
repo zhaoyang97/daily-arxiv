@@ -31,19 +31,19 @@
 ### 关键设计
 
 1. **多分类公平约束的线性化**:
-   - 做什么：将 demographic parity / equalized odds / predictive parity 等公平定义统一表达为关于分类器预测分布的线性不等式
-   - 核心思路：对 k 类问题，demographic parity 要求 $P(\hat{Y}=c | A=a) \approx P(\hat{Y}=c | A=a')$ 对所有类别 $c$ 和群体 $a, a'$ 成立。这可以写成线性约束 $|\mathbb{E}[\mathbf{1}[\hat{Y}=c | A=a]] - \mathbb{E}[\mathbf{1}[\hat{Y}=c | A=a']]| \leq \epsilon$。Equalized odds 类似但条件在 $Y=y$ 上
-   - 设计动机：线性约束是 EG 框架高效求解的前提——非线性约束需要更复杂的优化技术。通过将各种公平定义统一到线性框架，GEG 可以用同一套算法处理
+    - 做什么：将 demographic parity / equalized odds / predictive parity 等公平定义统一表达为关于分类器预测分布的线性不等式
+    - 核心思路：对 k 类问题，demographic parity 要求 $P(\hat{Y}=c | A=a) \approx P(\hat{Y}=c | A=a')$ 对所有类别 $c$ 和群体 $a, a'$ 成立。这可以写成线性约束 $|\mathbb{E}[\mathbf{1}[\hat{Y}=c | A=a]] - \mathbb{E}[\mathbf{1}[\hat{Y}=c | A=a']]| \leq \epsilon$。Equalized odds 类似但条件在 $Y=y$ 上
+    - 设计动机：线性约束是 EG 框架高效求解的前提——非线性约束需要更复杂的优化技术。通过将各种公平定义统一到线性框架，GEG 可以用同一套算法处理
 
 2. **Generalised Exponentiated Gradient 迭代**:
-   - 做什么：在对偶空间迭代更新 Lagrange 乘子 $\lambda$，指导 base learner 在公平-准确率之间权衡
-   - 核心思路：经典 EG 的乘性更新 $\lambda_j^{(t+1)} = \lambda_j^{(t)} \cdot \exp(\eta \cdot c_j(h^{(t)}))$——约束违反越严重（$c_j > 0$），对应 $\lambda_j$ 增长越快，下一轮 base learner 会更重视该约束
-   - 与原始 EG 的区别：(a) 约束数量从 $O(g)$ 扩展到 $O(kg)$，需要处理高维 $\lambda$ 的稳定性；(b) 支持同时施加多种公平定义（如同时满足 demographic parity 和 equalized odds）；(c) 步长 $\eta$ 需要适配多分类约束的规模
+    - 做什么：在对偶空间迭代更新 Lagrange 乘子 $\lambda$，指导 base learner 在公平-准确率之间权衡
+    - 核心思路：经典 EG 的乘性更新 $\lambda_j^{(t+1)} = \lambda_j^{(t)} \cdot \exp(\eta \cdot c_j(h^{(t)}))$——约束违反越严重（$c_j > 0$），对应 $\lambda_j$ 增长越快，下一轮 base learner 会更重视该约束
+    - 与原始 EG 的区别：(a) 约束数量从 $O(g)$ 扩展到 $O(kg)$，需要处理高维 $\lambda$ 的稳定性；(b) 支持同时施加多种公平定义（如同时满足 demographic parity 和 equalized odds）；(c) 步长 $\eta$ 需要适配多分类约束的规模
 
 3. **多目标均衡机制**:
-   - 做什么：在 effectiveness 和 fairness 之间寻找合理的 trade-off 点
-   - 核心思路：GEG 作为 in-processing 方法，在训练过程中直接将公平约束嵌入优化目标，而非事前（重采样/重加权）或事后（阈值调整）处理。迭代过程自然产生 Pareto 前沿上的解
-   - 设计动机：Pre-processing 方法（如重采样）改变数据分布可能损失信息；Post-processing（如校准阈值）与模型训练脱耦，无法利用训练信号。In-processing 直接在优化目标中编码公平性，理论上可达到更优的 Pareto 前沿
+    - 做什么：在 effectiveness 和 fairness 之间寻找合理的 trade-off 点
+    - 核心思路：GEG 作为 in-processing 方法，在训练过程中直接将公平约束嵌入优化目标，而非事前（重采样/重加权）或事后（阈值调整）处理。迭代过程自然产生 Pareto 前沿上的解
+    - 设计动机：Pre-processing 方法（如重采样）改变数据分布可能损失信息；Post-processing（如校准阈值）与模型训练脱耦，无法利用训练信号。In-processing 直接在优化目标中编码公平性，理论上可达到更优的 Pareto 前沿
 
 ### 损失函数 / 训练策略
 - 主目标: base learner 的标准分类损失（如交叉熵）

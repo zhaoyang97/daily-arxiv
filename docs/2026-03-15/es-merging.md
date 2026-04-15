@@ -30,23 +30,23 @@
 ### 关键设计
 
 1. **Probe Input 设计**:
-   - 做什么：构造一个包含所有模态 token 的探测输入
-   - 核心思路：收集每种模态的样本，用各自 encoder 映射到 embedding space，拼接为 `[text_m1; H_m1; text_m2; H_m2; ...]`
-   - 设计动机：要比较 base 和 specialized 模型的 embedding 差异，需要一个统一输入——probe input 让所有模型处理相同的多模态输入，从而公平比较
+    - 做什么：构造一个包含所有模态 token 的探测输入
+    - 核心思路：收集每种模态的样本，用各自 encoder 映射到 embedding space，拼接为 `[text_m1; H_m1; text_m2; H_m2; ...]`
+    - 设计动机：要比较 base 和 specialized 模型的 embedding 差异，需要一个统一输入——probe input 让所有模型处理相同的多模态输入，从而公平比较
 
 2. **Layer-wise Global Merging Coefficient**:
-   - 做什么：估计每层整体上哪个模型更重要
-   - 核心思路：将各模态 token 的 embedding 做 mean pooling 得到粗粒度表示，用 Sliced Wasserstein Distance (SWD) 衡量 base 和 specialized 模型在每层的分布距离。计算**层间增量** $d^l = \text{SWD}^l - \text{SWD}^{l-1}$（哪些层新引入了更多模态特化），Z-score 归一化后 softmax 得到 $\alpha_{m_j}^l$
-   - 设计动机：SWD 直接度量分布距离，增量形式捕捉"在哪一层发生了关键特化"，比绝对值更有信息量
+    - 做什么：估计每层整体上哪个模型更重要
+    - 核心思路：将各模态 token 的 embedding 做 mean pooling 得到粗粒度表示，用 Sliced Wasserstein Distance (SWD) 衡量 base 和 specialized 模型在每层的分布距离。计算**层间增量** $d^l = \text{SWD}^l - \text{SWD}^{l-1}$（哪些层新引入了更多模态特化），Z-score 归一化后 softmax 得到 $\alpha_{m_j}^l$
+    - 设计动机：SWD 直接度量分布距离，增量形式捕捉"在哪一层发生了关键特化"，比绝对值更有信息量
 
 3. **Element-wise Local Merging Coefficient**:
-   - 做什么：在每层内部，估计每个参数元素的重要性
-   - 核心思路：计算 embedding 距离 $r = \|H_\text{base} - H_\text{specialized}\|_F$ 对每个 LoRA 参数的梯度绝对值，累加所有模态和 probe 样本的梯度，归一化后 softmax 得到 $\beta_{m_j}^{l,n}$
-   - 设计动机：同一层内不同参数对模态特化的贡献差异很大，fine-grained 系数捕捉这种差异
+    - 做什么：在每层内部，估计每个参数元素的重要性
+    - 核心思路：计算 embedding 距离 $r = \|H_\text{base} - H_\text{specialized}\|_F$ 对每个 LoRA 参数的梯度绝对值，累加所有模态和 probe 样本的梯度，归一化后 softmax 得到 $\beta_{m_j}^{l,n}$
+    - 设计动机：同一层内不同参数对模态特化的贡献差异很大，fine-grained 系数捕捉这种差异
 
 4. **系数组合**:
-   - $\lambda_{m_i}^{l,n} = \frac{\alpha_{m_i}^l \cdot \beta_{m_i}^{l,n}}{\sum_m \alpha_m^l \cdot \beta_m^{l,n}}$
-   - 乘积 + 归一化，结合两个粒度的信息
+    - $\lambda_{m_i}^{l,n} = \frac{\alpha_{m_i}^l \cdot \beta_{m_i}^{l,n}}{\sum_m \alpha_m^l \cdot \beta_m^{l,n}}$
+    - 乘积 + 归一化，结合两个粒度的信息
 
 ### 训练策略
 - 无需额外训练！系数估计是基于 forward pass + gradient 计算的，不需要迭代优化

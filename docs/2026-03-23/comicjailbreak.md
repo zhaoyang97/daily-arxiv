@@ -29,31 +29,31 @@
 ### 关键设计
 
 1. **种子目标选择**:
-   - 从 JailbreakBench 取 100 有害 + 100 良性行为（10 类危害）
-   - 从 JailbreakV 的 RedTeam-2K 补充 100 有害查询（每类 10 条）
-   - 良性目标用于衡量过度拒绝
+    - 从 JailbreakBench 取 100 有害 + 100 良性行为（10 类危害）
+    - 从 JailbreakV 的 RedTeam-2K 补充 100 有害查询（每类 10 条）
+    - 良性目标用于衡量过度拒绝
 
 2. **漫画模板设计**:
-   - 5 种任务类型：文章写作、公开演讲、操作指南、社交媒体发帖、代码生成
-   - 每种类型用 GPT-5 生成三格漫画脚本：Panel 1-2 建立角色和场景，Panel 3 留空
-   - Panel 3 的空对话气泡填入改写后的目标文本
-   - 模型被要求续写第四格（符合四格漫画 punchline 的自然模式）
-   - 总计 1167 个攻击实例
+    - 5 种任务类型：文章写作、公开演讲、操作指南、社交媒体发帖、代码生成
+    - 每种类型用 GPT-5 生成三格漫画脚本：Panel 1-2 建立角色和场景，Panel 3 留空
+    - Panel 3 的空对话气泡填入改写后的目标文本
+    - 模型被要求续写第四格（符合四格漫画 punchline 的自然模式）
+    - 总计 1167 个攻击实例
 
 3. **目标改写与过滤**:
-   - 用 LLM 将原始恶意目标改写为适合漫画气泡的简短片段
-   - 保持恶意意图但适配叙事场景
-   - 人工过滤确保前两格不泄露目标特定内容
+    - 用 LLM 将原始恶意目标改写为适合漫画气泡的简短片段
+    - 保持恶意意图但适配叙事场景
+    - 人工过滤确保前两格不泄露目标特定内容
 
 4. **评测指标**:
-   - ASR (Attack Success Rate): 每个模板的攻击成功率
-   - EASR (Ensemble ASR): 同一目标跨模板的集成攻击成功率（比 ASR 更高）
-   - RR (Refusal Rate): 良性目标的拒绝率（衡量过度拒绝）
-   - ERR (Ensemble Refusal Rate): 集成拒绝率
+    - ASR (Attack Success Rate): 每个模板的攻击成功率
+    - EASR (Ensemble ASR): 同一目标跨模板的集成攻击成功率（比 ASR 更高）
+    - RR (Refusal Rate): 良性目标的拒绝率（衡量过度拒绝）
+    - ERR (Ensemble Refusal Rate): 集成拒绝率
 
 5. **防御评估**:
-   - 测试 AdaShield、Attack as Defense (AsD)、多轮自我反思三种防御
-   - 观察防御对 EASR 和 RR 的双向影响
+    - 测试 AdaShield、Attack as Defense (AsD)、多轮自我反思三种防御
+    - 观察防御对 EASR 和 RR 的双向影响
 
 ### 自动评判器可靠性验证
 对 2869 条模型输出做人工标注（双标注 + 仲裁），Cohen's κ=0.751。对比 HarmBench、StrongREJECT、BeaverDam-7B 三个自动评判器，发现它们在良性输出上 FPR 高达 0.437（误判为有害），暴露自动评估在叙事场景下不可靠。

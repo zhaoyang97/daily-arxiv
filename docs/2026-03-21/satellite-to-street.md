@@ -1,9 +1,9 @@
 # Satellite-to-Street: Synthesizing Post-Disaster Views from Satellite Imagery via Generative Vision Models
 
-**日期**: 2026-03-21
-**arXiv**: [2603.20697](https://arxiv.org/abs/2603.20697)
-**代码**: 无
-**领域**: 3D视觉 / 图像生成
+**日期**: 2026-03-21  
+**arXiv**: [2603.20697](https://arxiv.org/abs/2603.20697)  
+**代码**: 无  
+**领域**: 3D视觉 / 图像生成  
 **关键词**: Cross-View Synthesis, Disaster Assessment, ControlNet, Pix2Pix, Mixture-of-Experts, VLM-as-Judge, Realism-Fidelity Tradeoff
 
 ## 一句话总结

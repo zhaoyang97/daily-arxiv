@@ -33,19 +33,19 @@
 ### 关键设计
 
 1. **前瞻线性度探测 (Lookahead Linearity Probe)**:
-   - 做什么：用一次额外 forward pass 估计整条轨迹的曲率
-   - 核心思路：从 $t=0$ 跳到 $t=0.5$ 做一次探测，比较初始速度方向和探测点速度方向的余弦相似度 $\mathcal{S}$。$\mathcal{S} \approx 1$ 说明路径几乎是直线（Euler 一步就够），$\mathcal{S} \ll 1$ 说明路径弯曲（需要密集积分）
-   - 设计动机：Euler 的截断误差 $\|e\| \propto (\Delta t)^2 \|\frac{d\boldsymbol{v}}{dt}\|$，线性阶段 $\frac{d\boldsymbol{v}}{dt} \approx 0$，截断误差结构性趋近零——跳步是安全的
+    - 做什么：用一次额外 forward pass 估计整条轨迹的曲率
+    - 核心思路：从 $t=0$ 跳到 $t=0.5$ 做一次探测，比较初始速度方向和探测点速度方向的余弦相似度 $\mathcal{S}$。$\mathcal{S} \approx 1$ 说明路径几乎是直线（Euler 一步就够），$\mathcal{S} \ll 1$ 说明路径弯曲（需要密集积分）
+    - 设计动机：Euler 的截断误差 $\|e\| \propto (\Delta t)^2 \|\frac{d\boldsymbol{v}}{dt}\|$，线性阶段 $\frac{d\boldsymbol{v}}{dt} \approx 0$，截断误差结构性趋近零——跳步是安全的
 
 2. **动态步数调度器**:
-   - 做什么：将连续的相似度映射到离散步数
-   - 公式：$N = \text{clip}(N_{\min} + \lfloor\frac{1-\mathcal{S}}{\epsilon}\rfloor \times \Delta N, N_{\min}, N_{\max})$
-   - 默认参数：$N_{\min}=2, N_{\max}=10, \Delta N=2, \epsilon=0.008$
-   - 线性区间直接复用探测计算：$\boldsymbol{x}_1 = \boldsymbol{x}_{\text{probe}} + \boldsymbol{v}_{\text{probe}} \cdot (1 - \Delta t_{\text{probe}})$——零额外开销
+    - 做什么：将连续的相似度映射到离散步数
+    - 公式：$N = \text{clip}(N_{\min} + \lfloor\frac{1-\mathcal{S}}{\epsilon}\rfloor \times \Delta N, N_{\min}, N_{\max})$
+    - 默认参数：$N_{\min}=2, N_{\max}=10, \Delta N=2, \epsilon=0.008$
+    - 线性区间直接复用探测计算：$\boldsymbol{x}_1 = \boldsymbol{x}_{\text{probe}} + \boldsymbol{v}_{\text{probe}} \cdot (1 - \Delta t_{\text{probe}})$——零额外开销
 
 3. **状态复用最大化**:
-   - 线性区间 ($N=N_{\min}$)：完全复用初始和探测两次评估，额外成本为零
-   - 曲线区间 ($N > N_{\min}$)：复用初始评估作为第一步，探测评估被丢弃——最多多一次 forward pass
+    - 线性区间 ($N=N_{\min}$)：完全复用初始和探测两次评估，额外成本为零
+    - 曲线区间 ($N > N_{\min}$)：复用初始评估作为第一步，探测评估被丢弃——最多多一次 forward pass
 
 ### 计算开销
 - 最好情况：2 次 forward pass（线性阶段，和探测评估完全复用）

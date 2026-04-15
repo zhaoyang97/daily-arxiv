@@ -29,25 +29,25 @@
 ### 关键设计
 
 1. **端到端 VLA 架构**:
-   - 做什么：统一目标识别和路径规划到单一模型
-   - 核心思路：用 Qwen2.5VL-3B 作为 backbone，处理多视角当前观测（精细 token）+ 历史序列（粗糙 token），通过 Flow Matching action module 生成 5 步轨迹 $w_i = (x, y, \theta)$
-   - 设计动机：多尺度视觉 token 设计平衡了空间精度和时序上下文
+    - 做什么：统一目标识别和路径规划到单一模型
+    - 核心思路：用 Qwen2.5VL-3B 作为 backbone，处理多视角当前观测（精细 token）+ 历史序列（粗糙 token），通过 Flow Matching action module 生成 5 步轨迹 $w_i = (x, y, \theta)$
+    - 设计动机：多尺度视觉 token 设计平衡了空间精度和时序上下文
 
 2. **非对称奖励设计**:
-   - 做什么：tracker 和 opponent 使用不同的奖励函数
-   - 核心思路：
+    - 做什么：tracker 和 opponent 使用不同的奖励函数
+    - 核心思路：
      - Tracker 奖励：高斯距离奖励（最优 2.25m）+ 朝向奖励 + 持续追踪奖励 + 对手安全距离惩罚
      - Opponent 奖励：更激进的距离奖励（最优 1.25m），鼓励更近距离接触目标来制造竞争
    - 设计动机：非对称设计让 opponent 自然形成遮挡、阻挡路径、抢占位置等干扰行为，无需手工设计对抗策略
 
 3. **Multi-Agent GRPO 训练**:
-   - 做什么：两个智能体在同一环境中用各自的 GRPO 目标同时优化
-   - 核心思路：双方都从 SFT checkpoint 初始化，用 LoRA 作为 RL 阶段可训练参数。对方策略的改进自动改变训练分布，形成共同进化
-   - 设计动机：对手策略动态变化 = 环境自动升难，比手工设计 curriculum 更高效且更多样
+    - 做什么：两个智能体在同一环境中用各自的 GRPO 目标同时优化
+    - 核心思路：双方都从 SFT checkpoint 初始化，用 LoRA 作为 RL 阶段可训练参数。对方策略的改进自动改变训练分布，形成共同进化
+    - 设计动机：对手策略动态变化 = 环境自动升难，比手工设计 curriculum 更高效且更多样
 
 4. **CoMaTrack-Bench**:
-   - 做什么：首个对抗式 EVT benchmark
-   - 设计：基于 EVT-Bench STT 数据，引入第二个机器人作为对手，设计 3 级难度
+    - 做什么：首个对抗式 EVT benchmark
+    - 设计：基于 EVT-Bench STT 数据，引入第二个机器人作为对手，设计 3 级难度
      - Static Obstacle: 固定位置遮挡
      - Random Interference: 随机运动干扰
      - Competitive Tracking: 加载同等策略的对手竞争追踪

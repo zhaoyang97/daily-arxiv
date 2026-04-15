@@ -29,19 +29,19 @@
 ### 关键设计
 
 1. **块对齐仿射变换 (BAT)**:
-   - 做什么：将全局变换矩阵 P 分解为块对角结构 $\mathbf{P} = \text{diag}(\mathbf{P}_1, \ldots, \mathbf{P}_k)$，每个 $\mathbf{P}_i \in \mathbb{R}^{32 \times 32}$ 仅在 MXFP 块内变换
-   - 设计动机：防止异常值能量跨块传播。全局旋转虽然均匀化了分布，但破坏了块级缩放因子的准确性。BAT 保持每块统计独立性
-   - 与旋转的关键区别：放弃正交性约束——仿射矩阵的自由度更大，可以不仅分散异常值，还能主动**塑形**分布以适配 MXFP 的量化网格
+    - 做什么：将全局变换矩阵 P 分解为块对角结构 $\mathbf{P} = \text{diag}(\mathbf{P}_1, \ldots, \mathbf{P}_k)$，每个 $\mathbf{P}_i \in \mathbb{R}^{32 \times 32}$ 仅在 MXFP 块内变换
+    - 设计动机：防止异常值能量跨块传播。全局旋转虽然均匀化了分布，但破坏了块级缩放因子的准确性。BAT 保持每块统计独立性
+    - 与旋转的关键区别：放弃正交性约束——仿射矩阵的自由度更大，可以不仅分散异常值，还能主动**塑形**分布以适配 MXFP 的量化网格
 
 2. **Global-Private Kronecker (GPK) 分解**:
-   - 做什么：将每个 $\mathbf{P}_i$ 分解为 $\mathbf{P}_i = \mathbf{B}_i \otimes \mathbf{A}$，A 全局共享，$\mathbf{B}_i$ 块私有
-   - 参数量：从 131,072 降至 2,112（降低 98.4%），比 FlatQuant 少 74%，比朴素 Kronecker 少 79%
-   - 设计动机：纯块对角矩阵的参数量 $N \times g$ 对大模型仍然显著。GPK 用一个全局共享的基变换捕获通用模式，各块仅需少量私有参数捕获局部差异
+    - 做什么：将每个 $\mathbf{P}_i$ 分解为 $\mathbf{P}_i = \mathbf{B}_i \otimes \mathbf{A}$，A 全局共享，$\mathbf{B}_i$ 块私有
+    - 参数量：从 131,072 降至 2,112（降低 98.4%），比 FlatQuant 少 74%，比朴素 Kronecker 少 79%
+    - 设计动机：纯块对角矩阵的参数量 $N \times g$ 对大模型仍然显著。GPK 用一个全局共享的基变换捕获通用模式，各块仅需少量私有参数捕获局部差异
 
 3. **块级可学习裁剪**:
-   - 做什么：自适应裁剪每个量化块的异常值
-   - 核心思路：$\hat{\mathbf{x}}_i = \text{clip}(\mathbf{x}_i, \sigma(\alpha_i^{\min}) \cdot \min(\mathbf{x}_i), \sigma(\alpha_i^{\max}) \cdot \max(\mathbf{x}_i))$，sigmoid 约束裁剪比例在 (0,1)
-   - 设计动机：仿射变换后仍可能有残余异常值，裁剪是最后的安全网
+    - 做什么：自适应裁剪每个量化块的异常值
+    - 核心思路：$\hat{\mathbf{x}}_i = \text{clip}(\mathbf{x}_i, \sigma(\alpha_i^{\min}) \cdot \min(\mathbf{x}_i), \sigma(\alpha_i^{\max}) \cdot \max(\mathbf{x}_i))$，sigmoid 约束裁剪比例在 (0,1)
+    - 设计动机：仿射变换后仍可能有残余异常值，裁剪是最后的安全网
 
 ### 训练
 - 校准集：MLLM 用 128 GQA 图文对，LLM 用 128 自生成数学序列

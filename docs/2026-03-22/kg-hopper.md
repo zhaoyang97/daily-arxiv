@@ -29,26 +29,26 @@
 ### 关键设计
 
 1. **KG 检索工具**:
-   - 两阶段检索：先查实体的所有 predicate，再根据问题语义选择最相关的 predicate 获取尾实体
-   - 模型通过生成 `<search>entity</search>` 特殊 token 自动触发工具调用
-   - 检索结果以 `<searched_triples>` 标签注入上下文，模型可基于此继续推理
+    - 两阶段检索：先查实体的所有 predicate，再根据问题语义选择最相关的 predicate 获取尾实体
+    - 模型通过生成 `<search>entity</search>` 特殊 token 自动触发工具调用
+    - 检索结果以 `<searched_triples>` 标签注入上下文，模型可基于此继续推理
 
 2. **Cold Start SFT**:
-   - 用强 LLM few-shot 生成 500 条高质量 CoT 示例（含正确的工具调用格式和推理链）
-   - 对基座 LLM 做 SFT 学习基本的工具调用模式和输出格式
-   - 训练时 mask 掉 `<triples>` 内的检索内容，防止模型记忆 KG 事实而非学推理策略
+    - 用强 LLM few-shot 生成 500 条高质量 CoT 示例（含正确的工具调用格式和推理链）
+    - 对基座 LLM 做 SFT 学习基本的工具调用模式和输出格式
+    - 训练时 mask 掉 `<triples>` 内的检索内容，防止模型记忆 KG 事实而非学推理策略
 
 3. **四分量复合奖励函数**:
-   - $R_{search} = \min(0.5 \cdot n, 0.8)$：鼓励使用 KG 工具但设上限防止滥用
-   - $R_{format}$：检查 `<think>/<search>/<answer>` 格式是否正确（0.5 or 0）
-   - $R_{reason}$：用外部 LLM (Llama-3.3-70B) 评估推理过程质量，分数 ∈ (0,1)
-   - $R_{answer}$：用 LLM 判断预测答案是否语义匹配 ground truth（0 or 1）
-   - 总奖励 $R_{final} = R_{search} + R_{format} + R_{reason} + R_{answer}$
+    - $R_{search} = \min(0.5 \cdot n, 0.8)$：鼓励使用 KG 工具但设上限防止滥用
+    - $R_{format}$：检查 `<think>/<search>/<answer>` 格式是否正确（0.5 or 0）
+    - $R_{reason}$：用外部 LLM (Llama-3.3-70B) 评估推理过程质量，分数 ∈ (0,1)
+    - $R_{answer}$：用 LLM 判断预测答案是否语义匹配 ground truth（0 or 1）
+    - 总奖励 $R_{final} = R_{search} + R_{format} + R_{reason} + R_{answer}$
 
 4. **GRPO 优化 + History Resampling**:
-   - 用 Group Relative Policy Optimization 训练，每个问题采样 16 个 rollout
-   - 从第 2 个 epoch 开始移除简单的单跳问题（课程学习），让模型专注多跳推理
-   - Mask 检索三元组 token 在 loss 计算中的贡献
+    - 用 Group Relative Policy Optimization 训练，每个问题采样 16 个 rollout
+    - 从第 2 个 epoch 开始移除简单的单跳问题（课程学习），让模型专注多跳推理
+    - Mask 检索三元组 token 在 loss 计算中的贡献
 
 ## 实验关键数据
 

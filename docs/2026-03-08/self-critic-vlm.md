@@ -25,24 +25,24 @@ SCI = 文本反事实（TC）+ 视觉反事实（VC），通过 $p_{SCI}(y) \pro
 ### 关键设计
 
 1. **VCD 的因果解读**:
-   - 揭示 VCD 本质是 TIE logit 重加权：$p(y) \propto \exp(Z(v,q)) \cdot \exp(TIE/\tau)$
-   - $\alpha = 1/\tau$ 是温度参数，不是简单的权重
-   - 这一洞察统一了 VCD 和 CF-VQA 的框架
+    - 揭示 VCD 本质是 TIE logit 重加权：$p(y) \propto \exp(Z(v,q)) \cdot \exp(TIE/\tau)$
+    - $\alpha = 1/\tau$ 是温度参数，不是简单的权重
+    - 这一洞察统一了 VCD 和 CF-VQA 的框架
 
 2. **文本反事实（TC）**:
-   - 对原始 prompt 生成 N 个语义等价但词汇不同的变体
-   - $TC_k = \max_i(Z_k(v^0, q^i))$，取所有变体中 logit 的逐元素最大值
-   - 确保一致性：对不同 prompt 给出相同答案
+    - 对原始 prompt 生成 N 个语义等价但词汇不同的变体
+    - $TC_k = \max_i(Z_k(v^0, q^i))$，取所有变体中 logit 的逐元素最大值
+    - 确保一致性：对不同 prompt 给出相同答案
 
 3. **视觉反事实（VC）**:
-   - 生成 M 个去除内容的假图像的视觉 token
-   - $VC = Z(v^0, q^0) - \mathbb{E}[Z(v^j, q^0)]$
-   - 多个 dummy 图像取平均提供更稳定的偏差估计
+    - 生成 M 个去除内容的假图像的视觉 token
+    - $VC = Z(v^0, q^0) - \mathbb{E}[Z(v^j, q^0)]$
+    - 多个 dummy 图像取平均提供更稳定的偏差估计
 
 4. **DRBench 动态基准**:
-   - Bias Subset：原始和 dummy 图像都给错误答案的样本（依赖语言先验）
-   - Sensitivity Subset：prompt 微变后答案改变的样本
-   - 模型自适应构建，避免固定 benchmark 的过拟合问题
+    - Bias Subset：原始和 dummy 图像都给错误答案的样本（依赖语言先验）
+    - Sensitivity Subset：prompt 微变后答案改变的样本
+    - 模型自适应构建，避免固定 benchmark 的过拟合问题
 
 ### 配置
 SCI3 (M=N=1), SCI5 (M=N=2), SCI7 (M=N=3)，轮数增加 → 鲁棒性持续提升。

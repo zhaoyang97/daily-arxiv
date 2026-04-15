@@ -24,18 +24,18 @@
 ### 关键设计
 
 1. **PolicyRecall Reward**:
-   - 做什么：评估模型是否在 CoT 中回忆了正确的策略规则
-   - 核心思路：用 Jaccard similarity 衡量模型 CoT 中提及的策略集合与 ground truth 之间的重叠
-   - 设计动机：直接奖励策略回忆而非仅奖励最终回答正确
+    - 做什么：评估模型是否在 CoT 中回忆了正确的策略规则
+    - 核心思路：用 Jaccard similarity 衡量模型 CoT 中提及的策略集合与 ground truth 之间的重叠
+    - 设计动机：直接奖励策略回忆而非仅奖励最终回答正确
 
 2. **Hallucination Penalty**:
-   - 做什么：惩罚模型在 CoT 中编造不存在的策略
-   - 核心思路：检测 CoT 中引用的策略是否在策略库中存在
-   - 设计动机：防止模型为了获得高 recall 而胡编策略
+    - 做什么：惩罚模型在 CoT 中编造不存在的策略
+    - 核心思路：检测 CoT 中引用的策略是否在策略库中存在
+    - 设计动机：防止模型为了获得高 recall 而胡编策略
 
 3. **多阶段训练**:
-   - SFT 阶段：用标注的策略回忆 + 应用 CoT 样本训练基本模式
-   - GRPO 阶段：用 PolicyRecall + Hallucination Penalty 的组合奖励做在线强化学习
+    - SFT 阶段：用标注的策略回忆 + 应用 CoT 样本训练基本模式
+    - GRPO 阶段：用 PolicyRecall + Hallucination Penalty 的组合奖励做在线强化学习
 
 ## 实验关键数据
 

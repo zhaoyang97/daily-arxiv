@@ -26,19 +26,19 @@ ORTrack 三阶段：(1) 语言引导检测——LVLM（Qwen2.5-VL-7B）根据自
 ### 关键设计
 
 1. **ORSet 数据集**：
-   - 27 个全向场景（基于 JRDB），17 训练 / 10 测试
-   - 848 个自然语言描述，3401 个标注物体
-   - 全向特有描述符：边界穿越、周向方向、投影感知、FoV 转换
+    - 27 个全向场景（基于 JRDB），17 训练 / 10 测试
+    - 848 个自然语言描述，3401 个标注物体
+    - 全向特有描述符：边界穿越、周向方向、投影感知、FoV 转换
 
 2. **LVLM 引导检测**：
-   - 使用 Qwen2.5-VL-7B 做开放词汇物体检测：$\{b_t^i\} = \text{LVLM}(I_t, L)$
-   - 无需预定义类别，直接根据自然语言描述定位
+    - 使用 Qwen2.5-VL-7B 做开放词汇物体检测：$\{b_t^i\} = \text{LVLM}(I_t, L)$
+    - 无需预定义类别，直接根据自然语言描述定位
 
 3. **双层裁剪特征**：
-   - 全局上下文裁剪：$I_t^{i,\text{global}} = \text{Crop}(I_t, 1.2 \cdot b_t^i)$
-   - 细粒度目标裁剪：$I_t^{i,\text{local}} = \text{Crop}(I_t, b_t^i)$
-   - 融合：$\mathbf{f}_t^i = \mathbf{f}_{\text{local}}^i + 0.5 \cdot \mathbf{f}_{\text{global}}^i$
-   - 设计动机：全向图像中目标小（84.7% 是小目标），需要上下文辅助
+    - 全局上下文裁剪：$I_t^{i,\text{global}} = \text{Crop}(I_t, 1.2 \cdot b_t^i)$
+    - 细粒度目标裁剪：$I_t^{i,\text{local}} = \text{Crop}(I_t, b_t^i)$
+    - 融合：$\mathbf{f}_t^i = \mathbf{f}_{\text{local}}^i + 0.5 \cdot \mathbf{f}_{\text{global}}^i$
+    - 设计动机：全向图像中目标小（84.7% 是小目标），需要上下文辅助
 
 ## 实验关键数据
 

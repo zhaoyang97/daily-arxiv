@@ -31,24 +31,24 @@ FlashU 包含共享组件和两条专用加速路径：
 ### 关键设计
 
 1. **参数特化发现与 Task-Specific FFN Pruning**:
-   - 做什么：用 OBD 启发的灵敏度分析量化每个神经元对不同任务的重要性 $\Delta_i = \mathbb{E}[\|FFN(x) - FFN_{-i}(x)\|_2^2]$
-   - 核心思路：分别在生成数据和理解数据上计算 $\Delta_i^G$ 和 $\Delta_i^U$，发现大量神经元仅对某一任务关键。构建 Hybrid FFN——保留完整路径 $FFN_f$ 和剪枝路径 $FFN_p$，生成任务早期用完整路径（高精度），后期切换到剪枝路径（加速）
-   - 重要性评分：$I_j = \|\mathbf{x}_j\|_2 \cdot \sum_i |W_{i,j}|$，Wanda 风格聚合权重量级和激活范数
-   - 切换阈值 $\tau = 0.2$，即最初 20% 步用完整 FFN
+    - 做什么：用 OBD 启发的灵敏度分析量化每个神经元对不同任务的重要性 $\Delta_i = \mathbb{E}[\|FFN(x) - FFN_{-i}(x)\|_2^2]$
+    - 核心思路：分别在生成数据和理解数据上计算 $\Delta_i^G$ 和 $\Delta_i^U$，发现大量神经元仅对某一任务关键。构建 Hybrid FFN——保留完整路径 $FFN_f$ 和剪枝路径 $FFN_p$，生成任务早期用完整路径（高精度），后期切换到剪枝路径（加速）
+    - 重要性评分：$I_j = \|\mathbf{x}_j\|_2 \cdot \sum_i |W_{i,j}|$，Wanda 风格聚合权重量级和激活范数
+    - 切换阈值 $\tau = 0.2$，即最初 20% 步用完整 FFN
 
 2. **Dynamic Layer Skipping**:
-   - 做什么：周期性识别并跳过冗余层
-   - 核心思路：计算每层输入输出的余弦相似度 $S_i$，相似度接近 1 说明该层几乎没有变换功能。每 $T_{LS}$ 步重新评估跳过列表
-   - 设计动机：生成任务的层间冗余随去噪步动态变化，静态跳过不如周期性重评估
+    - 做什么：周期性识别并跳过冗余层
+    - 核心思路：计算每层输入输出的余弦相似度 $S_i$，相似度接近 1 说明该层几乎没有变换功能。每 $T_{LS}$ 步重新评估跳过列表
+    - 设计动机：生成任务的层间冗余随去噪步动态变化，静态跳过不如周期性重评估
 
 3. **Adaptive Guidance Scale**:
-   - 做什么：将静态 guidance scale 替换为时变调度
-   - 核心思路：$s(t) = s_{low} \cdot \mathbf{1}(t > t_{switch}) + s_{high} \cdot \mathbf{1}(t \leq t_{switch})$——早期低增益（保全局多样性），后期高增益（细化保真度）
-   - 基于 Mode Selection → Concentration 两阶段理论，早期强 guidance 会过早折叠到单一模式
+    - 做什么：将静态 guidance scale 替换为时变调度
+    - 核心思路：$s(t) = s_{low} \cdot \mathbf{1}(t > t_{switch}) + s_{high} \cdot \mathbf{1}(t \leq t_{switch})$——早期低增益（保全局多样性），后期高增益（细化保真度）
+    - 基于 Mode Selection → Concentration 两阶段理论，早期强 guidance 会过早折叠到单一模式
 
 4. **Dynamic Token Pruning via V-Norm Proxy**:
-   - 做什么：无需显式注意力矩阵实现视觉 token 剪枝
-   - 核心思路：发现 token 注意力分数与其 Value 向量 L2 范数呈负相关——高注意力 token 的 V-norm 更小。在浅层（第 2 层）用 V-norm 作为代理指标剪枝，兼容 Flash Attention
+    - 做什么：无需显式注意力矩阵实现视觉 token 剪枝
+    - 核心思路：发现 token 注意力分数与其 Value 向量 L2 范数呈负相关——高注意力 token 的 V-norm 更小。在浅层（第 2 层）用 V-norm 作为代理指标剪枝，兼容 Flash Attention
 
 ## 实验关键数据
 

@@ -17,14 +17,15 @@
 5. **核心idea一句话**: RePO 用 GRPO 更新驱动化学空间探索，同时用参考分子作为答案锚点减轻奖励稀疏并稳定训练。
 
 ## 方法详解
+
 ### 整体框架
 给定查询 $q = (x, m_0)$（指令 + 输入分子），模型输出 $o = [t; \hat{m}]$（推理 token + 优化后分子）。RePO 在每次更新时采样候选分子，用可验证奖励评分，然后同时做三件事：RL 更新（探索）、参考引导（锚定）、KL 正则化（稳定）。
 
 ### 关键设计
 1. **三观察揭示监督不匹配**:
-   - Observation 3.1: GRPO 在竞争目标下趋于保守编辑（相似度高但成功率低）
-   - Observation 3.2: Answer-only SFT 坍缩为短回答（无推理过程），相似度控制差
-   - Observation 3.3: GRPO (SFT-init) 继承 SFT 的短回答风格，无法恢复多步推理
+    - Observation 3.1: GRPO 在竞争目标下趋于保守编辑（相似度高但成功率低）
+    - Observation 3.2: Answer-only SFT 坍缩为短回答（无推理过程），相似度控制差
+    - Observation 3.3: GRPO (SFT-init) 继承 SFT 的短回答风格，无法恢复多步推理
 
 2. **RePO 目标函数**:
    $$\mathcal{J}_{\mathrm{RePO}}(\pi_\theta) = \mathbb{E}\left[\frac{1}{G}\sum_{i=1}^{G}\left(\underbrace{\text{clipped PPO}}_{\text{Exploration}} + \beta \underbrace{\log \pi_\theta(m_{\mathrm{ref}} | q, t_i)}_{\text{Reference guidance}} - \gamma \underbrace{\mathbb{D}_{\mathrm{KL}}(\pi_\theta \| \pi_{\mathrm{ref}})}_{\text{KL regularization}}\right)\right]$$
@@ -33,14 +34,14 @@
    - **KL 正则项**：稳定更新
 
 3. **奖励设计**:
-   - 结构相似度奖励：Tanimoto 相似度 $r_{\text{struct}} = \frac{|FP(m) \cap FP(m_0)|}{|FP(m) \cup FP(m_0)|}$
-   - 属性奖励：二值判断属性是否改善 $r_{\text{prop}} \in \{0, 1\}$
-   - 总奖励 $r = r_{\text{prop}} + r_{\text{struct}}$
+    - 结构相似度奖励：Tanimoto 相似度 $r_{\text{struct}} = \frac{|FP(m) \cap FP(m_0)|}{|FP(m) \cup FP(m_0)|}$
+    - 属性奖励：二值判断属性是否改善 $r_{\text{prop}} \in \{0, 1\}$
+    - 总奖励 $r = r_{\text{prop}} + r_{\text{struct}}$
 
 4. **关键设计洞察**:
-   - 参考引导不模仿推理 token，只在答案层面锚定
-   - 不同于 SFT 的 token 级模仿，允许多种有效推理路径
-   - 早期训练时参考引导减少奖励稀疏，加速有意义的 RL 更新
+    - 参考引导不模仿推理 token，只在答案层面锚定
+    - 不同于 SFT 的 token 级模仿，允许多种有效推理路径
+    - 早期训练时参考引导减少奖励稀疏，加速有意义的 RL 更新
 
 ### 损失函数 / 训练策略
 - 基于 Qwen-2.5-3B Instruct 作为基础模型
@@ -49,6 +50,7 @@
 - 梯度仅在答案 token 上施加参考引导，推理 token 由 RL 更新
 
 ## 实验关键数据
+
 ### 主实验（TOMG-Bench 单目标优化）
 
 | 任务 | 指标 | Base | SFT | GRPO | GRPO(SFT) | **RePO** |

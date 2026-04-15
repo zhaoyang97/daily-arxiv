@@ -29,24 +29,24 @@
 ### 关键设计
 
 1. **Margin-Aware Logit Calibration（离线阶段）**:
-   - 做什么：在训练时给余弦相似度加角度 margin（类似 ArcFace），增大类间距、增强类内紧凑性
-   - 核心思路：对 ground-truth 类别的 logit 加角度偏移 $\ell_{i,c} = s \cos(\theta_{i,y_i} + m)$，迫使模型学到更紧凑的特征分布
-   - 设计动机：OCD 需要在嵌入空间中为未来的新类别预留空间。类间分离越大，新类别越容易被正确区分而不是被错误合并到已知类
+    - 做什么：在训练时给余弦相似度加角度 margin（类似 ArcFace），增大类间距、增强类内紧凑性
+    - 核心思路：对 ground-truth 类别的 logit 加角度偏移 $\ell_{i,c} = s \cos(\theta_{i,y_i} + m)$，迫使模型学到更紧凑的特征分布
+    - 设计动机：OCD 需要在嵌入空间中为未来的新类别预留空间。类间分离越大，新类别越容易被正确区分而不是被错误合并到已知类
 
 2. **Hash-Free 连续特征原型**:
-   - 做什么：直接用 L2 归一化的连续特征向量作为类原型，替代二值 hash 码
-   - 核心思路：每个已知类的原型 $\mu_c$ 初始化为该类所有训练样本特征的归一化均值
-   - 设计动机：hash 量化的信息损失是 category explosion 的根本原因，连续表示保留了完整语义信息
+    - 做什么：直接用 L2 归一化的连续特征向量作为类原型，替代二值 hash 码
+    - 核心思路：每个已知类的原型 $\mu_c$ 初始化为该类所有训练样本特征的归一化均值
+    - 设计动机：hash 量化的信息损失是 category explosion 的根本原因，连续表示保留了完整语义信息
 
 3. **Semantic-Aware Prototype Update（在线阶段）**:
-   - 做什么：根据分配到每个原型的样本特征动态更新原型
-   - 核心思路：自适应 EMA 更新 $\mu_j \leftarrow \text{normalize}((1-\alpha_j)\mu_j + \alpha_j \bar{z}_j)$，步长 $\alpha_j = \eta \cdot \text{conf}_j \cdot \frac{n_j}{n_j + \kappa}$
-   - 设计动机：高置信度 + 大量样本支持时才积极更新，避免离群点或噪声样本导致原型漂移。少样本或低置信度时自动保守更新
+    - 做什么：根据分配到每个原型的样本特征动态更新原型
+    - 核心思路：自适应 EMA 更新 $\mu_j \leftarrow \text{normalize}((1-\alpha_j)\mu_j + \alpha_j \bar{z}_j)$，步长 $\alpha_j = \eta \cdot \text{conf}_j \cdot \frac{n_j}{n_j + \kappa}$
+    - 设计动机：高置信度 + 大量样本支持时才积极更新，避免离群点或噪声样本导致原型漂移。少样本或低置信度时自动保守更新
 
 4. **Stable Test-Time Encoder Update（在线阶段）**:
-   - 做什么：用无监督目标微调编码器参数
-   - 核心思路：$\mathcal{L}_{TTA} = \mathcal{L}_{ent} + \beta_1 \mathcal{L}_{align} + \beta_2 \mathcal{L}_{sep}$，分别是熵最小化（鼓励确定性预测）、特征-原型对齐正则化（保持语义一致性）、原型间分离正则化
-   - 设计动机：纯熵最小化容易导致模型坍缩（所有样本预测为同一类），加入对齐和分离约束确保编码器更新方向正确
+    - 做什么：用无监督目标微调编码器参数
+    - 核心思路：$\mathcal{L}_{TTA} = \mathcal{L}_{ent} + \beta_1 \mathcal{L}_{align} + \beta_2 \mathcal{L}_{sep}$，分别是熵最小化（鼓励确定性预测）、特征-原型对齐正则化（保持语义一致性）、原型间分离正则化
+    - 设计动机：纯熵最小化容易导致模型坍缩（所有样本预测为同一类），加入对齐和分离约束确保编码器更新方向正确
 
 ### 训练策略
 - 离线：$\mathcal{L}_{labeled} = \mathcal{L}^{sup} + \lambda \mathcal{L}^{ce-m}$（有监督对比损失 + margin 交叉熵）

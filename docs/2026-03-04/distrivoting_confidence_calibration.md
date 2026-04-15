@@ -28,18 +28,18 @@ DistriVoting 利用大推理模型（LRM）生成多条轨迹时正确/错误答
 ### 关键设计
 
 1. **轨迹置信度计算**:
-   - 对每条轨迹的生成 token 计算负对数概率的平均：$C_{traj} = -\frac{1}{N_G \times k}\sum_{i \in G}\sum_{j=1}^{k}\log P_i(j)$
-   - 其中 $G$ 为生成 token 位置，$k$ 为 top-k logprob（使值可比较）
+    - 对每条轨迹的生成 token 计算负对数概率的平均：$C_{traj} = -\frac{1}{N_G \times k}\sum_{i \in G}\sum_{j=1}^{k}\log P_i(j)$
+    - 其中 $G$ 为生成 token 位置，$k$ 为 top-k logprob（使值可比较）
 
 2. **DistriVoting — 两阶段过滤投票**:
-   - **GMM Filter**：将 N 条轨迹的置信度拟合二成分 GMM，分解为正分布（均值较高，可能正确）和负分布（均值较低，可能错误），只保留正分布对应的轨迹
-   - **Reject Filter**：用负分布轨迹的投票答案作为"拒绝集"，从正分布中进一步移除投向拒绝答案的轨迹，消除残余的高置信度错误
-   - **HierVoting**：将置信度区间分为 $N_C=10$ 个子区间，在每个区间内加权多数投票，再聚合各区间的答案——减少极端置信值的主导效应
+    - **GMM Filter**：将 N 条轨迹的置信度拟合二成分 GMM，分解为正分布（均值较高，可能正确）和负分布（均值较低，可能错误），只保留正分布对应的轨迹
+    - **Reject Filter**：用负分布轨迹的投票答案作为"拒绝集"，从正分布中进一步移除投向拒绝答案的轨迹，消除残余的高置信度错误
+    - **HierVoting**：将置信度区间分为 $N_C=10$ 个子区间，在每个区间内加权多数投票，再聚合各区间的答案——减少极端置信值的主导效应
 
 3. **SelfStepConf (SSC) — 动态推理干预**:
-   - 做什么：在 token 生成过程中监控逐步置信度，在置信度骤降时注入 reflection token（如 "wait"）
-   - 核心思路：用 EMA 维护自适应阈值 $\tau_{conf}$，当 $\Delta_{conf} < \delta$ 且呈下降趋势时，通过 swap logit probabilities 注入反思 token
-   - 设计动机：增大正/负分布的分离度，使下游 GMM 过滤更精确；运行时仅增加 2.31% 开销
+    - 做什么：在 token 生成过程中监控逐步置信度，在置信度骤降时注入 reflection token（如 "wait"）
+    - 核心思路：用 EMA 维护自适应阈值 $\tau_{conf}$，当 $\Delta_{conf} < \delta$ 且呈下降趋势时，通过 swap logit probabilities 注入反思 token
+    - 设计动机：增大正/负分布的分离度，使下游 GMM 过滤更精确；运行时仅增加 2.31% 开销
 
 ### 损失函数 / 训练策略
 

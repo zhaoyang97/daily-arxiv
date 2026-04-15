@@ -28,18 +28,18 @@
 ### 关键设计
 
 1. **Gated MLP 反馈模块**:
-   - $\sigma(W_g \cdot x) \odot W_p(\text{Dropout}(W_2 \cdot \text{GELU}(W_1 \cdot x)))$
-   - 将 LLM 维度的 hidden states 投影到视觉编码器输入维度，门控机制控制信息流量
-   - 参数量 <1.7% of 原模型
+    - $\sigma(W_g \cdot x) \odot W_p(\text{Dropout}(W_2 \cdot \text{GELU}(W_1 \cdot x)))$
+    - 将 LLM 维度的 hidden states 投影到视觉编码器输入维度，门控机制控制信息流量
+    - 参数量 <1.7% of 原模型
 
 2. **两次前传训练**:
-   - 第一次前传：LLM 和视觉编码器**冻结**，可选 LoRA 仅在第一次启用
-   - 第二次前传：反馈增强后的完整推理，损失只从此处反传
-   - 训练数据：Visual-CoT（通用数据集，非机器人专用），1 epoch 即可
+    - 第一次前传：LLM 和视觉编码器**冻结**，可选 LoRA 仅在第一次启用
+    - 第二次前传：反馈增强后的完整推理，损失只从此处反传
+    - 训练数据：Visual-CoT（通用数据集，非机器人专用），1 epoch 即可
 
 3. **多 VLM 兼容**:
-   - 适用于 LLaVA-OneVision (4B)、Qwen 2.5 VL (7B)、Gemma 3 (4B)
-   - 无需修改基础模型架构
+    - 适用于 LLaVA-OneVision (4B)、Qwen 2.5 VL (7B)、Gemma 3 (4B)
+    - 无需修改基础模型架构
 
 ## 实验关键数据
 

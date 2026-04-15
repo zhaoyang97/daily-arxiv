@@ -28,24 +28,24 @@ DISC 提出全 GPU 加速的 3D 语义建图架构，通过单次前传的距离
 ### 关键设计
 
 1. **单次前传密集 CLIP 特征提取**:
-   - 做什么：从 CLIP ViT 倒数第二层直接提取 dense patch-level 特征，无需裁剪
-   - 核心思路：计算空间显著性图 $D_{i,j} = \|f_{i,j} - \bar{f}\|_2 / (\frac{1}{HW}\sum_{i,j}\|f_{i,j}-\bar{f}\|_2 + \epsilon)$，对纹理丰富的 patch 赋予更高权重，抑制均匀背景
-   - 设计动机：ViT 的 intermediate tokens 保持较强的语义-文本对齐（与 CNN 不同），直接用它们做 mask-aligned 聚合可兼顾全局上下文和实例隔离
-   - 与裁剪方法的区别：裁剪造成 domain shift + 特征 bleeding（邻近实例污染），DISC 完全避免
+    - 做什么：从 CLIP ViT 倒数第二层直接提取 dense patch-level 特征，无需裁剪
+    - 核心思路：计算空间显著性图 $D_{i,j} = \|f_{i,j} - \bar{f}\|_2 / (\frac{1}{HW}\sum_{i,j}\|f_{i,j}-\bar{f}\|_2 + \epsilon)$，对纹理丰富的 patch 赋予更高权重，抑制均匀背景
+    - 设计动机：ViT 的 intermediate tokens 保持较强的语义-文本对齐（与 CNN 不同），直接用它们做 mask-aligned 聚合可兼顾全局上下文和实例隔离
+    - 与裁剪方法的区别：裁剪造成 domain shift + 特征 bleeding（邻近实例污染），DISC 完全避免
 
 2. **增量视角质量融合**:
-   - 做什么：跨帧更新实例的 CLIP 特征时，选择最佳观测而非平均
-   - 质量评分：$Q = S_{geo} \cdot S_{sem} \cdot S_{dist}$
+    - 做什么：跨帧更新实例的 CLIP 特征时，选择最佳观测而非平均
+    - 质量评分：$Q = S_{geo} \cdot S_{sem} \cdot S_{dist}$
      - $S_{geo} = S_{size} \cdot S_{angle}$：物理观测质量（面积占比 + 法线朝向）
      - $S_{sem}$：语义门控（局部-全局特征余弦相似度，滤除语义不一致的片段）
      - $S_{dist} = 0.5 + 0.5 \cdot \bar{D}_{mask}$：空间显著性置信度
    - 当两个实例融合时，保留 $Q$ 更高的特征，避免质量稀释
 
 3. **全 GPU 体素级在线精炼**:
-   - 做什么：取消离线精炼步骤，每帧实时合并过分割实例
-   - 核心思路：用 BVH（Bounding Volume Hierarchy）快速碰撞检测找 active 候选集 → 精确计算体素交集 → 满足几何重叠 + DINO 视觉相似度阈值时合并
-   - 设计动机：AABB heuristic 粗糙且需要定期离线修复；体素交集精确度高且 GPU 实现后开销可控
-   - 最终仅需轻量级后处理：合并残余碎片 + 过滤小于阈值的噪声实例
+    - 做什么：取消离线精炼步骤，每帧实时合并过分割实例
+    - 核心思路：用 BVH（Bounding Volume Hierarchy）快速碰撞检测找 active 候选集 → 精确计算体素交集 → 满足几何重叠 + DINO 视觉相似度阈值时合并
+    - 设计动机：AABB heuristic 粗糙且需要定期离线修复；体素交集精确度高且 GPU 实现后开销可控
+    - 最终仅需轻量级后处理：合并残余碎片 + 过滤小于阈值的噪声实例
 
 ### 损失函数 / 训练策略
 

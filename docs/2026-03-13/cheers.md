@@ -14,9 +14,9 @@
 1. **领域现状**: MLLM 在视觉理解上成熟，扩散模型在图像生成上领先。将两者统一到单一模型（Unified Multimodal Model, UMM）是前沿方向。
 
 2. **现有痛点**: 理解和生成对视觉表示的需求根本不同——理解需要语义丰富的特征（SigLIP/CLIP），生成需要保留细节的重建型表示（VAE latents）。现有 UMM 的解决方案：
-   - 分离双空间：理解和生成各用一套 → 无法共享信息
-   - 单一语义空间：丢失结构细节 → 生成质量差
-   - 融合特征：理解和生成的优化目标互相干扰
+    - 分离双空间：理解和生成各用一套 → 无法共享信息
+    - 单一语义空间：丢失结构细节 → 生成质量差
+    - 融合特征：理解和生成的优化目标互相干扰
 
 3. **核心矛盾**: 语义压缩有利于理解但损害生成细节，保留细节有利于生成但引入噪声干扰理解——两者在共享特征空间中难以兼容。
 
@@ -32,22 +32,22 @@ VAE 编码器 → VAE 解码器 → SigLIP2-ViT 提取语义 token → Pixel-Uns
 ### 关键设计
 
 1. **统一视觉 Tokenizer**:
-   - VAE latent $\mathbf{z}_t$ → 先通过 VAE 解码器重建像素 → 再用 SigLIP2-ViT 提取语义 token
-   - 关键发现：直接在 latent 上做 patch embedding 会丢失细粒度特征、损害 OCR 能力
-   - Pixel-Unshuffle 做 2×2 空间压缩，实现 4× token 压缩——首次在 UMM 中引入 2D token 压缩
-   - 任务依赖的 time step：理解 $t=1$（clean），生成 $t \in (0,1)$（noisy），纯文本 $t=0$（noise）
+    - VAE latent $\mathbf{z}_t$ → 先通过 VAE 解码器重建像素 → 再用 SigLIP2-ViT 提取语义 token
+    - 关键发现：直接在 latent 上做 patch embedding 会丢失细粒度特征、损害 OCR 能力
+    - Pixel-Unshuffle 做 2×2 空间压缩，实现 4× token 压缩——首次在 UMM 中引入 2D token 压缩
+    - 任务依赖的 time step：理解 $t=1$（clean），生成 $t \in (0,1)$（noisy），纯文本 $t=0$（noise）
 
 2. **级联 Flow Matching 头（CFM Head）**:
-   - **第一阶段**（7 DiT blocks）：在压缩分辨率 $(h/2 \times w/2)$ 上做语义生成 → PixelShuffle 上采样到原始分辨率
-   - **第二阶段**（3 DiT blocks）：门控注入高频 detail residual
-   - 门控机制：$\mathbf{Z'} \leftarrow G(\mathbf{Z'}) \odot S(D(\mathbf{z}_t)) + \mathbf{Z'}$
-   - 关键观察：即使没有显式监督，高频注入强度随 $t$ 推进自然增强——模型自学到"先结构后细节"
-   - AdaLN-Zero 架构融入时间步调制
+    - **第一阶段**（7 DiT blocks）：在压缩分辨率 $(h/2 \times w/2)$ 上做语义生成 → PixelShuffle 上采样到原始分辨率
+    - **第二阶段**（3 DiT blocks）：门控注入高频 detail residual
+    - 门控机制：$\mathbf{Z'} \leftarrow G(\mathbf{Z'}) \odot S(D(\mathbf{z}_t)) + \mathbf{Z'}$
+    - 关键观察：即使没有显式监督，高频注入强度随 $t$ 推进自然增强——模型自学到"先结构后细节"
+    - AdaLN-Zero 架构融入时间步调制
 
 3. **混合解码**:
-   - LLM 中视觉 token 用双向注意力（全局视觉上下文），文本 token 用因果注意力（自回归生成）
-   - 文本生成：标准 AR + cross-entropy loss
-   - 图像生成：flow matching + 连续时间 ODE 积分
+    - LLM 中视觉 token 用双向注意力（全局视觉上下文），文本 token 用因果注意力（自回归生成）
+    - 文本生成：标准 AR + cross-entropy loss
+    - 图像生成：flow matching + 连续时间 ODE 积分
 
 ### 训练策略
 - 四阶段渐进训练（128×A100）：

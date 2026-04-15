@@ -30,20 +30,20 @@
 ### 关键设计
 
 1. **查询分解（Orchestrator）**:
-   - 做什么：将自由文本指令解析为结构化 Spatial Description Clauses
-   - 例如 "Where is 2m to the right of the fridge?" → 锚: fridge, 谓词: right-of, 度量: 2.0m
-   - 复杂指令可提取多个子句，形成空间约束的联合
+    - 做什么：将自由文本指令解析为结构化 Spatial Description Clauses
+    - 例如 "Where is 2m to the right of the fridge?" → 锚: fridge, 谓词: right-of, 度量: 2.0m
+    - 复杂指令可提取多个子句，形成空间约束的联合
 
 2. **概率核组合（Spatial Agent）**:
-   - 方向核：von Mises-Fisher 分布 $P_{\text{dir}}(x) \propto \exp(\kappa (R_o m(\theta_0,\phi_0))^\top \widehat{(x-t_o)})$，在物体局部坐标系中定义空间谓词（left/right/front/behind）
-   - 度量核：径向高斯 $\ell_{\text{met}}(x) = -\frac{1}{2\sigma_m^2}(\|x-t_o\|-d_0)^2$，建模距离约束
-   - 组合：log 空间相加 → $\log P(x) = \ell_{\text{met}} + \ell_{\text{pred}}$，等价于概率相乘（Product of Experts）
-   - 设计动机：参数化核可解析计算，比 VLM 逐帧评分高效几个数量级
+    - 方向核：von Mises-Fisher 分布 $P_{\text{dir}}(x) \propto \exp(\kappa (R_o m(\theta_0,\phi_0))^\top \widehat{(x-t_o)})$，在物体局部坐标系中定义空间谓词（left/right/front/behind）
+    - 度量核：径向高斯 $\ell_{\text{met}}(x) = -\frac{1}{2\sigma_m^2}(\|x-t_o\|-d_0)^2$，建模距离约束
+    - 组合：log 空间相加 → $\log P(x) = \ell_{\text{met}} + \ell_{\text{pred}}$，等价于概率相乘（Product of Experts）
+    - 设计动机：参数化核可解析计算，比 VLM 逐帧评分高效几个数量级
 
 3. **级联空间核（多约束）**:
-   - 做什么：处理复合指令如"把杯子放在水槽旁边、微波炉左边"
-   - 核心思路：每个约束生成独立核，在全局坐标系中 log 空间相加后归一化
-   - 若两核一致则增强，若冲突则在满足区域间分配概率
+    - 做什么：处理复合指令如"把杯子放在水槽旁边、微波炉左边"
+    - 核心思路：每个约束生成独立核，在全局坐标系中 log 空间相加后归一化
+    - 若两核一致则增强，若冲突则在满足区域间分配概率
 
 ### 目标选择与规划接口
 从 $P(x)$ 中重要性采样 top-k 路径点，输入 RRT* 规划器生成可执行轨迹。

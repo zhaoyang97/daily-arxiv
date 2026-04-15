@@ -16,6 +16,7 @@
 4. **可复现性差**: 论文省略 seed、episode 数、归一化统计等，构成隐性复现障碍
 
 ## 方法详解
+
 ### 整体框架
 Client-Server 架构：
 
@@ -39,6 +40,7 @@ Client-Server 架构：
     - 社区可通过 PR 贡献修正和缺失结果，并有自动化 schema 验证
 
 ## 实验关键数据
+
 ### 支持的 Benchmarks 和模型
 - **13 个 Benchmark**: LIBERO、CALVIN、SimplerEnv、ManiSkill2、RoboCasa、VLABench、RLBench 等（Docker 镜像 4.7–35.6 GB，动作空间 6D–14D）
 - **6 个模型服务器**: CogACT、OpenVLA、OpenVLA-OFT、π₀/π₀-FAST、GR00T N1、X-VLA

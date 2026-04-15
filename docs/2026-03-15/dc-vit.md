@@ -24,16 +24,16 @@
 ### 关键设计
 
 1. **Decoupled Self-Attention (DSA)**:
-   - 做什么：分离空间和通道维度的注意力计算
-   - 核心思路：空间注意力 $\text{Attn}_{sp}$ 只在同一通道的 $N$ 个 patch 间计算；通道注意力 $\text{Attn}_{ch}$ 在同一空间位置的 $C$ 个通道间计算。通过可学习权重 $\alpha$ 混合两路: $\text{DSA}(\mathbf{x}) = W_O(\alpha \cdot \text{Attn}_{ch} + (1-\alpha) \cdot \text{Attn}_{sp})$
-   - 选择性层级: 通道注意力只在指定层 $\mathcal{M}=\{4,6,8\}$ 启用——先让各通道独立建立低级特征，再在中间层引入跨通道交互
-   - 设计动机：保留通道特异性的同时允许受控的跨通道信息流
-   - 计算复杂度：DSA $O(CN^2 + NC^2)$ vs 标准 MSA $O(C^2N^2)$，当 $C \ll N$ 时近线性
+    - 做什么：分离空间和通道维度的注意力计算
+    - 核心思路：空间注意力 $\text{Attn}_{sp}$ 只在同一通道的 $N$ 个 patch 间计算；通道注意力 $\text{Attn}_{ch}$ 在同一空间位置的 $C$ 个通道间计算。通过可学习权重 $\alpha$ 混合两路: $\text{DSA}(\mathbf{x}) = W_O(\alpha \cdot \text{Attn}_{ch} + (1-\alpha) \cdot \text{Attn}_{sp})$
+    - 选择性层级: 通道注意力只在指定层 $\mathcal{M}=\{4,6,8\}$ 启用——先让各通道独立建立低级特征，再在中间层引入跨通道交互
+    - 设计动机：保留通道特异性的同时允许受控的跨通道信息流
+    - 计算复杂度：DSA $O(CN^2 + NC^2)$ vs 标准 MSA $O(C^2N^2)$，当 $C \ll N$ 时近线性
 
 2. **Decoupled Aggregation (DAG)**:
-   - 做什么：学习任务特定的通道重要性
-   - 核心思路：先对每个通道用 ABMIL 注意力池化得到通道级表示 $\mathbf{y}_{spac,c} = g_{sp}(\mathbf{x}_{L,c})$，再跨通道聚合 $\mathbf{z} = g_{ch}(\mathbf{y}_{spac})$
-   - 设计动机：不同任务对不同通道依赖不同（DNA 通道在 perturbation 分类中可能不如 AGP 通道重要）
+    - 做什么：学习任务特定的通道重要性
+    - 核心思路：先对每个通道用 ABMIL 注意力池化得到通道级表示 $\mathbf{y}_{spac,c} = g_{sp}(\mathbf{x}_{L,c})$，再跨通道聚合 $\mathbf{z} = g_{ch}(\mathbf{y}_{spac})$
+    - 设计动机：不同任务对不同通道依赖不同（DNA 通道在 perturbation 分类中可能不如 AGP 通道重要）
 
 ## 实验关键数据
 

@@ -1,9 +1,9 @@
 # Democratizing AI: A Comparative Study in Deep Learning Efficiency and Future Trends in Computational Processing
 
-**日期**: 2026-03-21
-**arXiv**: [2603.20920](https://arxiv.org/abs/2603.20920)
-**代码**: 无
-**领域**: 模型压缩 / 系统 / 深度学习基准测试
+**日期**: 2026-03-21  
+**arXiv**: [2603.20920](https://arxiv.org/abs/2603.20920)  
+**代码**: 无  
+**领域**: 模型压缩 / 系统 / 深度学习基准测试  
 **关键词**: GPU Benchmarking, CPU vs GPU, TensorFlow, PyTorch, Conv6, VGG16, ResNet18, CycleGAN, GPU Memory Trends
 
 ## 一句话总结

@@ -33,17 +33,17 @@ DyACE 采用 Receding Horizon Control 架构，将算法设计从一次性合成
 ### 关键设计
 
 1. **Look-Ahead Rollout Search（前瞻搜索感知）**: 在每个决策步创建并行影子环境，从当前种群 $\mathcal{P}_t$ 出发执行短期 rollout（30代 vs 静态方法的150代完整rollout），信息分为两个并行流：
-   - **Landscape Feature Extraction**：提取景观运动学特征（fitness轨迹的速度/加速度衡量优化动量，多样性损失率判断探索/开发状态）和算子遥测特征（Operator Precision = 后代严格优于父代的比例，Operator Impact = 成功更新的平均fitness增益）
-   - **Iso-State Rollout Evaluation**：对每个算法 $h_k$ 从相同 $\mathcal{P}_t$ 出发运行 $M$ 次独立 Monte Carlo rollout，计算平均最优性gap $J(h_k) = \frac{1}{M}\sum_{m=1}^{M} g(\mathcal{P}_{t+\tau}^{(m)} | h_k)$
+    - **Landscape Feature Extraction**：提取景观运动学特征（fitness轨迹的速度/加速度衡量优化动量，多样性损失率判断探索/开发状态）和算子遥测特征（Operator Precision = 后代严格优于父代的比例，Operator Impact = 成功更新的平均fitness增益）
+    - **Iso-State Rollout Evaluation**：对每个算法 $h_k$ 从相同 $\mathcal{P}_t$ 出发运行 $M$ 次独立 Monte Carlo rollout，计算平均最优性gap $J(h_k) = \frac{1}{M}\sum_{m=1}^{M} g(\mathcal{P}_{t+\tau}^{(m)} | h_k)$
 
 2. **Decoupled Meta-Reasoning（解耦元推理）**: 采用"Think-then-Code"的两阶段诊断-处方架构：
-   - **Phase I - Diagnosis Agent**：仅分析搜索轨迹特征，禁止写代码，将景观动态翻译为自然语言"Verbal Gradients"（如"单块交叉限制了混合，需重构为两点交叉以交换不相邻段提升结构多样性"）
-   - **Phase II - Coding Agent**：基于 Verbal Gradients 合成新算法，算法定义为三元组 $S = \langle \mathcal{D}, \mathcal{C}, \Theta \rangle$（语义描述、可执行代码、演化超参数），允许同时调整逻辑和参数
+    - **Phase I - Diagnosis Agent**：仅分析搜索轨迹特征，禁止写代码，将景观动态翻译为自然语言"Verbal Gradients"（如"单块交叉限制了混合，需重构为两点交叉以交换不相邻段提升结构多样性"）
+    - **Phase II - Coding Agent**：基于 Verbal Gradients 合成新算法，算法定义为三元组 $S = \langle \mathcal{D}, \mathcal{C}, \Theta \rangle$（语义描述、可执行代码、演化超参数），允许同时调整逻辑和参数
 
 3. **Three Reasoning Modes（三种推理模式）**:
-   - **Combine**：通过 Structure-Aware Sampling 选择一对父代（主选适应度最高、副选按 AST Tree-Edit Distance 最远），LLM 融合两者逻辑创建连贯的混合算法
-   - **Mutate**：对单一父代进行局部优化，重构代码或微调参数，不改变基本算法结构
-   - **Explore**：使用高温采样诱导最大逻辑发散，创建与父代显著不同的算法结构，扩展搜索范围
+    - **Combine**：通过 Structure-Aware Sampling 选择一对父代（主选适应度最高、副选按 AST Tree-Edit Distance 最远），LLM 融合两者逻辑创建连贯的混合算法
+    - **Mutate**：对单一父代进行局部优化，重构代码或微调参数，不改变基本算法结构
+    - **Explore**：使用高温采样诱导最大逻辑发散，创建与父代显著不同的算法结构，扩展搜索范围
 
 ### 损失函数 / 训练策略
 

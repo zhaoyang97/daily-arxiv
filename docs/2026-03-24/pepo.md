@@ -25,22 +25,22 @@
 ### 关键设计
 
 1. **视觉相似度（感知先验）**:
-   - $\text{VS}_t=\frac{1}{L}\sum_{l=1}^{L}\frac{1}{N}\sum_{n=1}^{N}\frac{\langle h_{l,t}, v_{l,n}\rangle}{\|h_{l,t}\|\|v_{l,n}\|}$
-   - 跨所有层、所有 vision token 的余弦相似度均值
-   - 高 VS token 是"看图说话"型——移除图像后隐状态偏移 2-3 倍大
-   - 无需标注，直接从模型隐状态中提取
+    - $\text{VS}_t=\frac{1}{L}\sum_{l=1}^{L}\frac{1}{N}\sum_{n=1}^{N}\frac{\langle h_{l,t}, v_{l,n}\rangle}{\|h_{l,t}\|\|v_{l,n}\|}$
+    - 跨所有层、所有 vision token 的余弦相似度均值
+    - 高 VS token 是"看图说话"型——移除图像后隐状态偏移 2-3 倍大
+    - 无需标注，直接从模型隐状态中提取
 
 2. **熵引导探索信号**:
-   - $H_t=-\sum_{x\in\mathcal{V}} p_\theta(x|s_t)\log p_\theta(x|s_t)$
-   - 高熵 token 通常是推理转折点（"但是""因此""检查"等）
-   - 仅用熵做 RL 在视觉定位任务上崩溃，说明感知先验是必要的
+    - $H_t=-\sum_{x\in\mathcal{V}} p_\theta(x|s_t)\log p_\theta(x|s_t)$
+    - 高熵 token 通常是推理转折点（"但是""因此""检查"等）
+    - 仅用熵做 RL 在视觉定位任务上崩溃，说明感知先验是必要的
 
 3. **感知-探索融合门控**:
-   - 均值中心化得分：$g_t=\hat{\text{VS}}_t+\hat{H}_t-\text{mean}_t(\hat{\text{VS}}+\hat{H})$
-   - 权重：$w_t=T\cdot\text{Softmax}((1+\alpha\tanh(g_t))\cdot\text{VS}_t)$
-   - 门控乘以 VS 保持感知主导（α=0.05 最优）
-   - Token 级 advantage：$A_t^{(i)}=[(1-\lambda)+\lambda w_t^{(i)}]A^{(i)}$
-   - λ 从 0→1 线性 schedule，避免早期训练不稳定
+    - 均值中心化得分：$g_t=\hat{\text{VS}}_t+\hat{H}_t-\text{mean}_t(\hat{\text{VS}}+\hat{H})$
+    - 权重：$w_t=T\cdot\text{Softmax}((1+\alpha\tanh(g_t))\cdot\text{VS}_t)$
+    - 门控乘以 VS 保持感知主导（α=0.05 最优）
+    - Token 级 advantage：$A_t^{(i)}=[(1-\lambda)+\lambda w_t^{(i)}]A^{(i)}$
+    - λ 从 0→1 线性 schedule，避免早期训练不稳定
 
 4. **即插即用**: 无缝集成到 GRPO（PEPOG 变体）和 DAPO（PEPOD 变体），计算开销 <1%
 

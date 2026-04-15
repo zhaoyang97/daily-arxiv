@@ -1,9 +1,9 @@
 # Omni-WorldBench: Towards a Comprehensive Interaction-Centric Evaluation for World Models
 
-**日期**: 2026-03-23
-**arXiv**: [2603.22212](https://arxiv.org/abs/2603.22212)
-**代码**: 无
-**领域**: 视频理解 / 多模态VLM
+**日期**: 2026-03-23  
+**arXiv**: [2603.22212](https://arxiv.org/abs/2603.22212)  
+**代码**: 无  
+**领域**: 视频理解 / 多模态VLM  
 **关键词**: 世界模型评估, 4D生成, 交互响应, 视频生成基准, AgenticScore
 
 ## 一句话总结

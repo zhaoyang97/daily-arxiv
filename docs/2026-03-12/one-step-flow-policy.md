@@ -13,9 +13,9 @@
 
 1. **领域现状**: 基于 flow/diffusion 的机器人策略（如 Diffusion Policy、FM Policy）能有效建模多模态动作分布，但采样需要 10-100 步 ODE 求解，每次动作生成需要数秒。
 2. **现有加速方案的不足**:
-   - Consistency Policy (CP): 依赖预训练 teacher 做蒸馏，且 mode-covering 特性导致单步预测过于平滑，精度不足
-   - OneDP: 使用 score distillation，mode-seeking 产生尖锐但多样性不足的动作，且只支持单步推理无法灵活调整
-   - MeanFlow (MP1): 训练中引入 Jacobian-vector products (JVPs)，内存开销大且优化不稳定
+    - Consistency Policy (CP): 依赖预训练 teacher 做蒸馏，且 mode-covering 特性导致单步预测过于平滑，精度不足
+    - OneDP: 使用 score distillation，mode-seeking 产生尖锐但多样性不足的动作，且只支持单步推理无法灵活调整
+    - MeanFlow (MP1): 训练中引入 Jacobian-vector products (JVPs)，内存开销大且优化不稳定
 3. **核心动机**: 能否设计一个无需预训练教师、从零训练的自蒸馏框架，同时兼顾单步精度和多步灵活性？
 
 ## 方法详解

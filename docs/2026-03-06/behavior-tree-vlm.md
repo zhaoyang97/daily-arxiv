@@ -17,31 +17,32 @@
 5. **核心idea一句话**: 大模型做教师生成数据 + 小模型做学生执行规划，填补"紧凑视觉语言模型 + 行为树生成"的空白。
 
 ## 方法详解
+
 ### 整体框架
 三阶段流程：(1) 从 Open X-Embodiment 提取 RGB-指令对 → (2) 多阶段教师管线（GPT-5-mini）生成行为树数据集 → (3) QLoRA 微调紧凑 VLM → (4) OmniGibson 仿真执行评估。
 
 ### 关键设计
 1. **数据集构建**:
-   - 源数据：Open X-Embodiment 中 23 个数据集、1,622 个机器人操作 episode
-   - 帧选择：MobileNetV2 编码 + K-center greedy 采样 9 帧 → 拼成 $3 \times 3$ 帧表作为教师输入
-   - 学生输入仅使用首帧单张 RGB 图像
-   - 教师管线两阶段：Scene Analysis（YAML 格式场景分析）→ Architect（生成 BT XML）
-   - 对合规性验证：BehaviorTree.CPP 解析 + 动作库 $\mathcal{P}$（22 个原语）检查
-   - 结构增强（50%，811 条）：增加控制流结构（RetryUntilSuccessful 等）
-   - 词汇增强：以 0.5 概率替换同义动作名（GRASP → GRAB）
-   - 最终数据集：2,433 条（2,205 训练 / 228 评估）
+    - 源数据：Open X-Embodiment 中 23 个数据集、1,622 个机器人操作 episode
+    - 帧选择：MobileNetV2 编码 + K-center greedy 采样 9 帧 → 拼成 $3 \times 3$ 帧表作为教师输入
+    - 学生输入仅使用首帧单张 RGB 图像
+    - 教师管线两阶段：Scene Analysis（YAML 格式场景分析）→ Architect（生成 BT XML）
+    - 对合规性验证：BehaviorTree.CPP 解析 + 动作库 $\mathcal{P}$（22 个原语）检查
+    - 结构增强（50%，811 条）：增加控制流结构（RetryUntilSuccessful 等）
+    - 词汇增强：以 0.5 概率替换同义动作名（GRASP → GRAB）
+    - 最终数据集：2,433 条（2,205 训练 / 228 评估）
 
 2. **模型微调**:
-   - 三个紧凑 VLM：SmolVLM2-500M、Qwen2.5-VL-3B、Gemma 3 4B Vision
-   - QLoRA：4-bit NF4 量化冻结权重 + BFloat16 低秩适配器（$r=16, \alpha=16$）
-   - LoRA 注入所有线性层（语言骨干 + 视觉编码器 + 投影模块）
-   - 单张 NVIDIA L4 GPU 训练 3 个 epoch，LR = $2 \times 10^{-4}$，有效 batch size = 16
+    - 三个紧凑 VLM：SmolVLM2-500M、Qwen2.5-VL-3B、Gemma 3 4B Vision
+    - QLoRA：4-bit NF4 量化冻结权重 + BFloat16 低秩适配器（$r=16, \alpha=16$）
+    - LoRA 注入所有线性层（语言骨干 + 视觉编码器 + 投影模块）
+    - 单张 NVIDIA L4 GPU 训练 3 个 epoch，LR = $2 \times 10^{-4}$，有效 batch size = 16
 
 3. **仿真执行环境**:
-   - OmniGibson（BEHAVIOR-1K 基准，NVIDIA Isaac Sim）
-   - 机器人 R1：全向底盘 + 4-DOF 躯干 + 两条 6-DOF 手臂
-   - 符号执行：每个 primitive 为瞬时状态变化，排除低层控制噪声
-   - 成功判定：所有 BDDL 目标谓词全部满足，无部分得分
+    - OmniGibson（BEHAVIOR-1K 基准，NVIDIA Isaac Sim）
+    - 机器人 R1：全向底盘 + 4-DOF 躯干 + 两条 6-DOF 手臂
+    - 符号执行：每个 primitive 为瞬时状态变化，排除低层控制噪声
+    - 成功判定：所有 BDDL 目标谓词全部满足，无部分得分
 
 ### 损失函数 / 训练策略
 - 标准自回归语言建模损失
@@ -49,6 +50,7 @@
 - 参数高效微调（PEFT），内存消耗降低约 4 倍
 
 ## 实验关键数据
+
 ### 离线评估
 
 | 模型 | XML 有效率 | BT-CPP 有效率 | 推理时间 (s) |

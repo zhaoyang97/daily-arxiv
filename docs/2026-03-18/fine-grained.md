@@ -1,6 +1,8 @@
 # Fine-Grained Post-Training Quantization for LVLMs with Quantization-aware Integrated Gradients
 
-**日期**: 2026-03-18 | **arXiv**: [2603.17809](https://arxiv.org/abs/2603.17809) | **领域**: 多模态/VLM / 模型压缩  
+**日期**: 2026-03-18  
+**arXiv**: [2603.17809](https://arxiv.org/abs/2603.17809)  
+**领域**: 多模态/VLM / 模型压缩  
 **代码**: [GitHub](https://github.com/ucas-xiang/QIG)  
 **关键词**: 量化, LVLM, token级敏感度, 积分梯度, 后训练量化
 
@@ -25,19 +27,19 @@
 ### 关键设计
 
 1. **量化感知积分梯度 (QIG)**:
-   - 做什么：为每个 token 计算其对整体量化误差的归因分数
-   - 核心思路：标准积分梯度从零基线到实际输入积分，归因模型预测。QIG 做了两个关键修改：(a) 将基线从零改为量化后输入 $x_q$，(b) 将归因目标从 $f(x)$ 改为量化误差函数 $G(x) = f(x,w) - f(x,w_q)$。公式：$QIG_i(x) = (x_i - x_i^q) \cdot \int_0^1 \frac{\partial G(x_\alpha)}{\partial x_i} d\alpha$，其中 $x_\alpha = x_q + \alpha(x - x_q)$
-   - 设计动机：满足完备性公理——所有 token 的 QIG 之和等于总量化误差 $G(x) - G(x_q)$，确保归因无遗漏。作者提供了完整的数学证明
-   - 实现细节：使用 32 步积分近似，定义逐 token 量化失真误差 $E_{b,t}(x) = \frac{1}{H}\sum_{h=1}^H |(y_{fp} - y_q)_{b,t,h}|$，直接在差分函数上计算，无需分别计算全精度和量化模型的梯度
+    - 做什么：为每个 token 计算其对整体量化误差的归因分数
+    - 核心思路：标准积分梯度从零基线到实际输入积分，归因模型预测。QIG 做了两个关键修改：(a) 将基线从零改为量化后输入 $x_q$，(b) 将归因目标从 $f(x)$ 改为量化误差函数 $G(x) = f(x,w) - f(x,w_q)$。公式：$QIG_i(x) = (x_i - x_i^q) \cdot \int_0^1 \frac{\partial G(x_\alpha)}{\partial x_i} d\alpha$，其中 $x_\alpha = x_q + \alpha(x - x_q)$
+    - 设计动机：满足完备性公理——所有 token 的 QIG 之和等于总量化误差 $G(x) - G(x_q)$，确保归因无遗漏。作者提供了完整的数学证明
+    - 实现细节：使用 32 步积分近似，定义逐 token 量化失真误差 $E_{b,t}(x) = \frac{1}{H}\sum_{h=1}^H |(y_{fp} - y_q)_{b,t,h}|$，直接在差分函数上计算，无需分别计算全精度和量化模型的梯度
 
 2. **IQR 截断稳定化**:
-   - 做什么：抑制极端 token 敏感度值，防止少数 token 主导优化
-   - 核心思路：$C(QIG_i) = \text{clip}(QIG_i, Q_1 - 1.5 \cdot IQR, Q_3 + 1.5 \cdot IQR)$，其中 $Q_1$、$Q_3$ 是第一和第三四分位数
-   - 消融验证：无截断 VizWiz 54.32% → Top5 average 57.25% → IQR Clipping 59.10%，仅修改 5 个 token 的权重就导致显著性能差异
+    - 做什么：抑制极端 token 敏感度值，防止少数 token 主导优化
+    - 核心思路：$C(QIG_i) = \text{clip}(QIG_i, Q_1 - 1.5 \cdot IQR, Q_3 + 1.5 \cdot IQR)$，其中 $Q_1$、$Q_3$ 是第一和第三四分位数
+    - 消融验证：无截断 VizWiz 54.32% → Top5 average 57.25% → IQR Clipping 59.10%，仅修改 5 个 token 的权重就导致显著性能差异
 
 3. **敏感度加权校准目标**:
-   - 做什么：将 token 级敏感度整合到 CWE 通道缩放因子优化中
-   - 核心思路：截断后归一化为 $\lambda_i = C(QIG_i) / \sum_j C(QIG_j)$，在 CWE 目标中对不同 token 的重建误差加权：$E^* = \arg\min_E \sum_i \lambda_i \|Q_W(W*E) Q_X(E^{-1} * X_i) - WX_i\|_2^2$
+    - 做什么：将 token 级敏感度整合到 CWE 通道缩放因子优化中
+    - 核心思路：截断后归一化为 $\lambda_i = C(QIG_i) / \sum_j C(QIG_j)$，在 CWE 目标中对不同 token 的重建误差加权：$E^* = \arg\min_E \sum_i \lambda_i \|Q_W(W*E) Q_X(E^{-1} * X_i) - WX_i\|_2^2$
 
 ### 训练策略
 - 校准数据：ShareGPT4V 中采样 128 对图文对

@@ -34,20 +34,20 @@
 ### 关键设计
 
 1. **身份无关的动作空间（Identity-Independent Action Space）**：
-   - 核心思路：将表情生成定义为 FLAME 模型参数空间中的动作预测，而非直接生成图像/视频
-   - 面部参数 $\mathbf{A}_t = [\mathbf{a}_t^{\text{exp}}; \mathbf{a}_t^{\text{pose}}]$ 由表情系数和头部姿态组成，通过固定身份参数 $\mathbf{a}^{\text{shape}}$ 的 FLAME 模型渲染 3D 面部网格
-   - 设计动机：解耦身份与表情，使人类反馈仅评估表情的社交恰当性，避免外观偏差
-   - 公式：$\mathcal{M}_t = \text{FLAME}(\mathbf{a}^{\text{shape}}, \mathbf{a}_t^{\text{exp}}, \mathbf{a}_t^{\text{pose}})$
+    - 核心思路：将表情生成定义为 FLAME 模型参数空间中的动作预测，而非直接生成图像/视频
+    - 面部参数 $\mathbf{A}_t = [\mathbf{a}_t^{\text{exp}}; \mathbf{a}_t^{\text{pose}}]$ 由表情系数和头部姿态组成，通过固定身份参数 $\mathbf{a}^{\text{shape}}$ 的 FLAME 模型渲染 3D 面部网格
+    - 设计动机：解耦身份与表情，使人类反馈仅评估表情的社交恰当性，避免外观偏差
+    - 公式：$\mathcal{M}_t = \text{FLAME}(\mathbf{a}^{\text{shape}}, \mathbf{a}_t^{\text{exp}}, \mathbf{a}_t^{\text{pose}})$
 
 2. **Vision-Language-Action (VLA) 模型**：
-   - **双流视觉编码器**：每帧图像同时经过 DINO（捕捉姿态和细微表情细节）和 SigLIP（编码全局情感语义和社交线索）提取特征，拼接后通过 MLP 映射到 LLM 输入空间
-   - **LLM 骨干**：采用 7B 参数的 LLaMA 2 作为核心推理引擎
-   - **Action De-Tokenizer**：将连续面部动作离散化为 256 个 bin 的 token，先对训练集动作值排序并截取上下 1% 异常值，再在有效范围内均匀划分——集中建模能力于有效运动区间，提升微表情和头部姿态的精度
-   - 设计动机：借鉴 RT-2 的思路，将连续控制问题转化为 LLM 可处理的离散 token 预测问题
+    - **双流视觉编码器**：每帧图像同时经过 DINO（捕捉姿态和细微表情细节）和 SigLIP（编码全局情感语义和社交线索）提取特征，拼接后通过 MLP 映射到 LLM 输入空间
+    - **LLM 骨干**：采用 7B 参数的 LLaMA 2 作为核心推理引擎
+    - **Action De-Tokenizer**：将连续面部动作离散化为 256 个 bin 的 token，先对训练集动作值排序并截取上下 1% 异常值，再在有效范围内均匀划分——集中建模能力于有效运动区间，提升微表情和头部姿态的精度
+    - 设计动机：借鉴 RT-2 的思路，将连续控制问题转化为 LLM 可处理的离散 token 预测问题
 
 3. **人类反馈强化学习（Human-Feedback RL）**：
-   - **偏好数据收集**：对每个说话者输入，用 SFT 策略采样 $N=4$ 个候选听者动作序列，加上 ground-truth 共 5 个候选，渲染为交互视频供标注者评估
-   - **评估维度**（四维加权打分）：
+    - **偏好数据收集**：对每个说话者输入，用 SFT 策略采样 $N=4$ 个候选听者动作序列，加上 ground-truth 共 5 个候选，渲染为交互视频供标注者评估
+    - **评估维度**（四维加权打分）：
      - Empathy（共情）、Appropriateness（恰当性）、Engagement（参与度）、Naturalness（自然度）
      - 最终偏好分：$r(\tau^j) = \alpha_{\text{emp}} \cdot \text{Empathy} + \alpha_{\text{app}} \cdot \text{Appropriateness} + \alpha_{\text{eng}} \cdot \text{Engagement} + \alpha_{\text{nat}} \cdot \text{Naturalness}$
    - **偏好对构建**：每组候选中最高分为 preferred，最低分为 dispreferred，构成 DPO 训练对

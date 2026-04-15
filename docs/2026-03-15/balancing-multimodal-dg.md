@@ -24,14 +24,14 @@
 ### 关键设计
 
 1. **Inter-Modality Gradient Decoupled Modulation (IGDM)**:
-   - 做什么：分离并独立调制分类和域不变性梯度
-   - 核心思路：对每个模态 $m$，分类梯度 $g_c^m$ 用语义信心比 $\rho_t^m$ 调制，域不变梯度 $g_d^m$ 用域信心比 $\sigma_t^m$ 调制。调制系数 $k_t^m = 1 - \tanh(\alpha_k \cdot \rho_t^m)$（当 $\rho_t^m > 1$ 时抑制强模态的分类梯度），域侧类似
-   - 设计动机：传统方法用统一指标（如分类准确率）平衡模态，但忽略了分类强的模态可能域泛化弱。IGDM 分别评估两个维度
+    - 做什么：分离并独立调制分类和域不变性梯度
+    - 核心思路：对每个模态 $m$，分类梯度 $g_c^m$ 用语义信心比 $\rho_t^m$ 调制，域不变梯度 $g_d^m$ 用域信心比 $\sigma_t^m$ 调制。调制系数 $k_t^m = 1 - \tanh(\alpha_k \cdot \rho_t^m)$（当 $\rho_t^m > 1$ 时抑制强模态的分类梯度），域侧类似
+    - 设计动机：传统方法用统一指标（如分类准确率）平衡模态，但忽略了分类强的模态可能域泛化弱。IGDM 分别评估两个维度
 
 2. **Conflict-Adaptive Gradient Projection (CAGP)**:
-   - 做什么：消除分类梯度与域不变梯度之间的冲突
-   - 核心思路：当 $\hat{g}_c^m \cdot \hat{g}_d^m < 0$ 时检测到冲突，用任务强度比 $\Gamma_t^m = \rho_t^m / \sigma_t^m$ 判断强弱，将强任务梯度投影到弱任务梯度的正交补空间: $\tilde{g}_c^m = \hat{g}_c^m - \frac{\hat{g}_c^m \cdot \hat{g}_d^m}{\|\hat{g}_d^m\|^2} \hat{g}_d^m$
-   - 设计动机：保护弱任务的完整梯度方向——如果分类已经很好但域泛化差，应保护域泛化梯度
+    - 做什么：消除分类梯度与域不变梯度之间的冲突
+    - 核心思路：当 $\hat{g}_c^m \cdot \hat{g}_d^m < 0$ 时检测到冲突，用任务强度比 $\Gamma_t^m = \rho_t^m / \sigma_t^m$ 判断强弱，将强任务梯度投影到弱任务梯度的正交补空间: $\tilde{g}_c^m = \hat{g}_c^m - \frac{\hat{g}_c^m \cdot \hat{g}_d^m}{\|\hat{g}_d^m\|^2} \hat{g}_d^m$
+    - 设计动机：保护弱任务的完整梯度方向——如果分类已经很好但域泛化差，应保护域泛化梯度
 
 ## 实验关键数据
 

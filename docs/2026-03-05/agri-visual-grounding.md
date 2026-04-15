@@ -26,18 +26,18 @@ Weed-VG 基于 GroundingDINO 扩展，分为三阶段：(1) 提案生成——Sw
 ### 关键设计
 
 1. **层级相关性评分（HRS）**：
-   - **L0 全局存在性检测**：先判断查询描述的目标是否在图像中存在。池化所有提案分数 $s_{\text{pool}}(k) = \max_j s(v_j, t_k)$，softmax 归一化后做二分类
-   - **L1 实例相关性排序**：结合句子级和词级相似度做对比评分 $S_{\text{ref}} = w_s \cdot S_{\text{sent}} + (1-w_s) \cdot \text{MaxPool}(S_{\text{word}})$
-   - **层级约束**：$L_{\text{lvl1}}^{\text{constrained}} = \max(L_{\text{lvl1}}, L_{\text{lvl0}})$
-   - 设计动机：通用模型对不相关查询几乎不拒绝（Neg-Acc 7.52%），两级分解让模型先学会"说不"
+    - **L0 全局存在性检测**：先判断查询描述的目标是否在图像中存在。池化所有提案分数 $s_{\text{pool}}(k) = \max_j s(v_j, t_k)$，softmax 归一化后做二分类
+    - **L1 实例相关性排序**：结合句子级和词级相似度做对比评分 $S_{\text{ref}} = w_s \cdot S_{\text{sent}} + (1-w_s) \cdot \text{MaxPool}(S_{\text{word}})$
+    - **层级约束**：$L_{\text{lvl1}}^{\text{constrained}} = \max(L_{\text{lvl1}}, L_{\text{lvl0}})$
+    - 设计动机：通用模型对不相关查询几乎不拒绝（Neg-Acc 7.52%），两级分解让模型先学会"说不"
 
 2. **IoU 驱动插值回归（InterpIoU）**：
-   - 构建插值框 $B_{\text{int}} = (1-\alpha)B_{\text{pred}} + \alpha B_{\text{gt}}$，$\alpha=0.99$
-   - 联合损失 $L_{\text{InterpIoU}} = L_{\text{IoU}}(B_{\text{pred}}, B_{\text{gt}}) + L_{\text{IoU}}(B_{\text{int}}, B_{\text{gt}})$
-   - 对微小目标，标准 IoU 损失梯度极小难以优化；插值框提供了更陡峭的梯度信号
+    - 构建插值框 $B_{\text{int}} = (1-\alpha)B_{\text{pred}} + \alpha B_{\text{gt}}$，$\alpha=0.99$
+    - 联合损失 $L_{\text{InterpIoU}} = L_{\text{IoU}}(B_{\text{pred}}, B_{\text{gt}}) + L_{\text{IoU}}(B_{\text{int}}, B_{\text{gt}})$
+    - 对微小目标，标准 IoU 损失梯度极小难以优化；插值框提供了更陡峭的梯度信号
 
 3. **距离和尺度感知匹配**：
-   - 匹配代价 $C_{ij} = (1-\text{IoU}) + \lambda_\text{centre}\|\mathbf{c}(P)-\mathbf{c}(G)\|^2 + \lambda_\text{size}(\frac{|w_P-w_G|}{w_G}+\frac{|h_P-h_G|}{h_G})$
+    - 匹配代价 $C_{ij} = (1-\text{IoU}) + \lambda_\text{centre}\|\mathbf{c}(P)-\mathbf{c}(G)\|^2 + \lambda_\text{size}(\frac{|w_P-w_G|}{w_G}+\frac{|h_P-h_G|}{h_G})$
 
 ### 损失函数 / 训练策略
 

@@ -27,21 +27,21 @@
 ### 关键设计
 
 1. **Neighbor Forcing（邻近强制）**:
-   - 做什么：在 AR 链中传播同一扩散步 $t$ 的前序帧 latent 作为条件
-   - 核心思路：$\mathcal{L}(\theta) = \mathbb{E}_{t}[\|(\epsilon - x) - G_\theta(x_t, t, Mask)\|^2]$，所有块在共享扩散步下优化，用块级因果注意力 mask
-   - 理论支撑：固定扩散步 $t$ 时，时间邻近帧的 latent 在 latent 流形上几何接近且分布统计对齐（噪声语义一致）
-   - 设计动机：避免跨步对齐的困难，直接在单一噪声空间内学习时间依赖，天然支持 KV cache 复用
+    - 做什么：在 AR 链中传播同一扩散步 $t$ 的前序帧 latent 作为条件
+    - 核心思路：$\mathcal{L}(\theta) = \mathbb{E}_{t}[\|(\epsilon - x) - G_\theta(x_t, t, Mask)\|^2]$，所有块在共享扩散步下优化，用块级因果注意力 mask
+    - 理论支撑：固定扩散步 $t$ 时，时间邻近帧的 latent 在 latent 流形上几何接近且分布统计对齐（噪声语义一致）
+    - 设计动机：避免跨步对齐的困难，直接在单一噪声空间内学习时间依赖，天然支持 KV cache 复用
 
 2. **ConvKV Memory（1D 卷积 KV 压缩）**:
-   - 做什么：将历史 KV cache 压缩到固定长度，实现恒定内存的无限长视频生成
-   - 核心思路：用 1D 卷积（kernel=stride=$\lambda$=5）将每 5 个 chunk 的 KV 压缩为 1 个，配合 RoPE 位置编码重置：$M_t^{s:e} = (RoPE(Conv_\theta(k_t^{s:e}), frep^s), RoPE(Conv_\theta(v_t^{s:e}), frep^s))$
-   - 推理时 KV 分三部分：参考图像状态(2 chunks) + 长期记忆(2 chunks 压缩) + 短期记忆(2 chunks 未压缩)
-   - 设计动机：Neighbor Forcing 的步对齐特性使历史 KV 高度可压缩，仅增加 1.9% 推理时间
+    - 做什么：将历史 KV cache 压缩到固定长度，实现恒定内存的无限长视频生成
+    - 核心思路：用 1D 卷积（kernel=stride=$\lambda$=5）将每 5 个 chunk 的 KV 压缩为 1 个，配合 RoPE 位置编码重置：$M_t^{s:e} = (RoPE(Conv_\theta(k_t^{s:e}), frep^s), RoPE(Conv_\theta(v_t^{s:e}), frep^s))$
+    - 推理时 KV 分三部分：参考图像状态(2 chunks) + 长期记忆(2 chunks 压缩) + 短期记忆(2 chunks 未压缩)
+    - 设计动机：Neighbor Forcing 的步对齐特性使历史 KV 高度可压缩，仅增加 1.9% 推理时间
 
 3. **实时推理优化**:
-   - 端到端自适应 FP8 精度 + 序列并行 + 算子融合
-   - 每帧仅需 27.2 TFLOPs（512×512 分辨率）
-   - 2×H100 实现 20 FPS
+    - 端到端自适应 FP8 精度 + 序列并行 + 算子融合
+    - 每帧仅需 27.2 TFLOPs（512×512 分辨率）
+    - 2×H100 实现 20 FPS
 
 ### 训练策略
 - Stage 1: 300 小时多模态配对数据训练音频交叉注意力

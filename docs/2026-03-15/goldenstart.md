@@ -30,17 +30,17 @@
 ### 关键设计
 
 1. **Advantage Noise Selection + CVAE**:
-   - 做什么：找到并学习"golden start"——能产生高 Q 值动作的初始噪声分布
-   - 核心思路：给定 state $s$，用 teacher 从 $N_\text{cand}$ 个随机噪声生成候选动作，用 Q 函数评估选出最佳噪声 $x_\text{adv} = \arg\max_{x_j} Q(s, \pi_\phi(s, x_j))$；然后训练 CVAE 拟合 $p(x_\text{adv}|s)$
-   - 设计动机：CVAE 能拟合多模态分布（关键，因为同一 state 可能有多个高价值动作模式），而且在线训练时持续更新
+    - 做什么：找到并学习"golden start"——能产生高 Q 值动作的初始噪声分布
+    - 核心思路：给定 state $s$，用 teacher 从 $N_\text{cand}$ 个随机噪声生成候选动作，用 Q 函数评估选出最佳噪声 $x_\text{adv} = \arg\max_{x_j} Q(s, \pi_\phi(s, x_j))$；然后训练 CVAE 拟合 $p(x_\text{adv}|s)$
+    - 设计动机：CVAE 能拟合多模态分布（关键，因为同一 state 可能有多个高价值动作模式），而且在线训练时持续更新
 
 2. **Entropy-Regularized Distillation**:
-   - 做什么：将 teacher 知识蒸馏到一个有随机性的 student
-   - 核心思路：student 输出 $\mu_\varphi$ 和 $\sigma_\varphi$，训练loss = $\alpha_1 \mathcal{L}_\text{distill} + \mathcal{L}_Q - \alpha_2 \mathcal{H}(\pi_\varphi)$。蒸馏用 mean 计算（低方差），Q 值和熵用采样动作计算。$\alpha_2$ 通过目标熵自动调节
-   - 设计动机：确定性策略在 offline RL 可以 exploit，但在 online fine-tuning 阶段需要探索能力。从"point-to-point"到"point-to-distribution"的范式转换
+    - 做什么：将 teacher 知识蒸馏到一个有随机性的 student
+    - 核心思路：student 输出 $\mu_\varphi$ 和 $\sigma_\varphi$，训练loss = $\alpha_1 \mathcal{L}_\text{distill} + \mathcal{L}_Q - \alpha_2 \mathcal{H}(\pi_\varphi)$。蒸馏用 mean 计算（低方差），Q 值和熵用采样动作计算。$\alpha_2$ 通过目标熵自动调节
+    - 设计动机：确定性策略在 offline RL 可以 exploit，但在 online fine-tuning 阶段需要探索能力。从"point-to-point"到"point-to-distribution"的范式转换
 
 3. **共享 Advantage Noise**:
-   - 关键细节：teacher 和 student 都用同一个 CVAE 生成的 $\hat{x}_\text{adv}$ 作为输入——这保证蒸馏 loss 低方差、信号稳定
+    - 关键细节：teacher 和 student 都用同一个 CVAE 生成的 $\hat{x}_\text{adv}$ 作为输入——这保证蒸馏 loss 低方差、信号稳定
 
 ### 训练策略
 - Offline 阶段：从 dataset 学 flow teacher + 训练 CVAE + 同步蒸馏 student

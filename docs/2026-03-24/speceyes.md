@@ -27,24 +27,24 @@
 ### 关键设计
 
 1. **Phase I - 工具必要性判断**:
-   - 大模型输出一个二进制判断 $g(q,I)=\mathcal{M}_L(q,I;\mathcal{P}_{\text{judge}})\in\{0,1\}$
-   - 筛选率 $\beta\approx80\%$ 的查询被判为"不需要工具"
-   - 低成本：只需一个 token 的前向传播
+    - 大模型输出一个二进制判断 $g(q,I)=\mathcal{M}_L(q,I;\mathcal{P}_{\text{judge}})\in\{0,1\}$
+    - 筛选率 $\beta\approx80\%$ 的查询被判为"不需要工具"
+    - 低成本：只需一个 token 的前向传播
 
 2. **Phase II - 无状态投机**:
-   - 小模型不调用工具直接生成完整答案 + 每个 token 的 top-K logits
-   - 核心优势：无状态→多查询可batch并行，吞吐量倍增
+    - 小模型不调用工具直接生成完整答案 + 每个 token 的 top-K logits
+    - 核心优势：无状态→多查询可batch并行，吞吐量倍增
 
 3. **Phase III - 答案可分离度门控**:
-   - Token 级可分离度：$S_{\text{sep}}^{(n)}=\frac{\ell_{[1]}^{(n)}-\mu_K^{(n)}}{\sigma_K^{(n)}+\epsilon}$
-   - min-aggregation 做保守把关：$S_{\text{sep}}^{\min}=\min_n S_{\text{sep}}^{(n)}$
-   - 核心 insight：比 softmax 置信度更好——尺度不变、捕捉竞争格局而非绝对分数
-   - 分离度在正确/错误样本上呈双峰分布（峰距 Δ 最大），适合做阈值门控
+    - Token 级可分离度：$S_{\text{sep}}^{(n)}=\frac{\ell_{[1]}^{(n)}-\mu_K^{(n)}}{\sigma_K^{(n)}+\epsilon}$
+    - min-aggregation 做保守把关：$S_{\text{sep}}^{\min}=\min_n S_{\text{sep}}^{(n)}$
+    - 核心 insight：比 softmax 置信度更好——尺度不变、捕捉竞争格局而非绝对分数
+    - 分离度在正确/错误样本上呈双峰分布（峰距 Δ 最大），适合做阈值门控
 
 4. **Phase IV - Agentic 回退**:
-   - 被拒绝的查询走完整 agentic pipeline（迭代工具调用）
-   - 期望延迟：$\mathbb{E}[L]=c_J+\beta c_S+(1-\beta\alpha)L_{\text{agent}}$
-   - 有效加速比：$\Theta/\Theta_{\text{agent}}\approx 1/(1-\beta\alpha)$
+    - 被拒绝的查询走完整 agentic pipeline（迭代工具调用）
+    - 期望延迟：$\mathbb{E}[L]=c_J+\beta c_S+(1-\beta\alpha)L_{\text{agent}}$
+    - 有效加速比：$\Theta/\Theta_{\text{agent}}\approx 1/(1-\beta\alpha)$
 
 ## 实验关键数据
 

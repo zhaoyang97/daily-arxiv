@@ -25,19 +25,19 @@
 ### 关键设计
 
 1. **Gibbs 先验公式化**:
-   - 教师-学生对齐建模为能量函数: $p(a^s | a^t, \beta) \propto \exp[-\beta \cdot \ell(a^s; a^t)]$
-   - $\beta$ 越大，学生越紧密跟随教师；$\beta$ 越小，容忍更大偏差
-   - 统一框架可涵盖 FKL/RKL/Cosine/MSE 等各种蒸馏目标
+    - 教师-学生对齐建模为能量函数: $p(a^s | a^t, \beta) \propto \exp[-\beta \cdot \ell(a^s; a^t)]$
+    - $\beta$ 越大，学生越紧密跟随教师；$\beta$ 越小，容忍更大偏差
+    - 统一框架可涵盖 FKL/RKL/Cosine/MSE 等各种蒸馏目标
 
 2. **Laplace 近似推导闭式权重**:
-   - 对不可解的配分函数做 Laplace 近似
-   - 推导出 MAP 估计: $\hat{\beta} = d / (2 \cdot \ell_{distill})$
-   - 消除网格搜索需求——$\beta$ 随训练自动调节
+    - 对不可解的配分函数做 Laplace 近似
+    - 推导出 MAP 估计: $\hat{\beta} = d / (2 \cdot \ell_{distill})$
+    - 消除网格搜索需求——$\beta$ 随训练自动调节
 
 3. **双粒度不确定性估计**:
-   - **Task-level（同方差）**: 每个 loss 项一个可学习标量 $\beta$，简单高效
-   - **Instance-level（异方差）**: 轻量网络预测每个样本的 $\beta(x)$，更精细
-   - Instance-level 在大规模数据上效果更好
+    - **Task-level（同方差）**: 每个 loss 项一个可学习标量 $\beta$，简单高效
+    - **Instance-level（异方差）**: 轻量网络预测每个样本的 $\beta(x)$，更精细
+    - Instance-level 在大规模数据上效果更好
 
 ### 蒸馏目标选择
 - 实验发现 **Cosine-Probs**（概率级余弦距离）最适合生成式 MLLM

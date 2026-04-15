@@ -33,18 +33,18 @@
 ### 关键设计
 
 1. **Rubric 可迁移性的形式化**:
-   - 做什么：定义什么是"好的 rubric"
-   - 核心思路：$\text{Transferability}(\mathcal{R}) = \mathbf{1}[\phi(q, \mathcal{I}, r_1, r_2, \mathcal{R}) = \mathcal{A}^*]$，即独立代理 $\phi$ 仅凭 rubric 能否做出正确偏好判断
-   - 设计动机：这是一个可计算的二元信号，可以直接作为 RL 奖励——解决了 LLM-as-Judge 不可微分的问题
+    - 做什么：定义什么是"好的 rubric"
+    - 核心思路：$\text{Transferability}(\mathcal{R}) = \mathbf{1}[\phi(q, \mathcal{I}, r_1, r_2, \mathcal{R}) = \mathcal{A}^*]$，即独立代理 $\phi$ 仅凭 rubric 能否做出正确偏好判断
+    - 设计动机：这是一个可计算的二元信号，可以直接作为 RL 奖励——解决了 LLM-as-Judge 不可微分的问题
 
 2. **代理评估器训练（Proxy Agent）**:
-   - 做什么：训练一个专门**消费** rubric（而非生成 rubric）的独立模型
-   - 核心思路：Proxy-SFT 在 55K 正确样本上 SFT 训练，输入 $(q, \mathcal{I}, r_1, r_2, \mathcal{R})$，输出评估 + 判断。Proxy-RL 在 SFT 基础上用准确率 RL 继续训练
-   - **关键发现**：Proxy-SFT 意外地比 Proxy-RL 表现更好。RL 训练的代理可能产生内部不一致的评估过程——用有缺陷的推理得到正确答案——这种不一致使其作为 rubric 验证器时给出噪声信号
+    - 做什么：训练一个专门**消费** rubric（而非生成 rubric）的独立模型
+    - 核心思路：Proxy-SFT 在 55K 正确样本上 SFT 训练，输入 $(q, \mathcal{I}, r_1, r_2, \mathcal{R})$，输出评估 + 判断。Proxy-RL 在 SFT 基础上用准确率 RL 继续训练
+    - **关键发现**：Proxy-SFT 意外地比 Proxy-RL 表现更好。RL 训练的代理可能产生内部不一致的评估过程——用有缺陷的推理得到正确答案——这种不一致使其作为 rubric 验证器时给出噪声信号
 
 3. **三重奖励 GRPO 训练**:
-   - 做什么：闭环优化策略模型的 rubric 质量
-   - 核心思路：$r = r_{\text{acc}} + r_{\text{proxy}} + 0.5 \cdot r_{\text{format}}$
+    - 做什么：闭环优化策略模型的 rubric 质量
+    - 核心思路：$r = r_{\text{acc}} + r_{\text{proxy}} + 0.5 \cdot r_{\text{format}}$
      - $r_{\text{acc}}$: 最终判断是否正确 (±1)
      - $r_{\text{proxy}}$: 冻结代理能否用 rubric 做出正确判断 (±1)
      - $r_{\text{format}}$: 输出格式是否规范 (0/1)

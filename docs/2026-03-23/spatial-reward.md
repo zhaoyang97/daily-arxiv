@@ -29,23 +29,23 @@
 ### 关键设计
 
 1. **Prompt Decomposer**:
-   - 将自由文本 prompt 解析为结构化约束集 $\mathcal{C} = (\text{tag}, \mathcal{C}_{inc}, \mathcal{C}_{exc})$
-   - 每个原子约束包含：物体类别、数量、属性、空间关系、文字内容
-   - 用 100k 元数据-prompt 对训练 Qwen2.5-VL-7B 做分解
+    - 将自由文本 prompt 解析为结构化约束集 $\mathcal{C} = (\text{tag}, \mathcal{C}_{inc}, \mathcal{C}_{exc})$
+    - 每个原子约束包含：物体类别、数量、属性、空间关系、文字内容
+    - 用 100k 元数据-prompt 对训练 Qwen2.5-VL-7B 做分解
 
 2. **细粒度可验证 Reward**:
-   - 存在性 reward: $\mathcal{R}_{presence} = \mathbb{I}(\hat{N}_c > 0)$
-   - 计数 reward: $\mathcal{R}_{count} = \exp(-|\hat{N}_c - N_c^*|)$
-   - 颜色 reward: CLIP 分类器在裁剪区域评估
-   - 朝向 reward: $\mathcal{R}_{ori} = \mathbb{I}(|\theta_{det} - \theta^*| \leq \delta_\theta)$
-   - 深度 reward: 单目深度估计验证前后关系
-   - 文字 reward: OCR 检测 + IoA 定位验证
+    - 存在性 reward: $\mathcal{R}_{presence} = \mathbb{I}(\hat{N}_c > 0)$
+    - 计数 reward: $\mathcal{R}_{count} = \exp(-|\hat{N}_c - N_c^*|)$
+    - 颜色 reward: CLIP 分类器在裁剪区域评估
+    - 朝向 reward: $\mathcal{R}_{ori} = \mathbb{I}(|\theta_{det} - \theta^*| \leq \delta_\theta)$
+    - 深度 reward: 单目深度估计验证前后关系
+    - 文字 reward: OCR 检测 + IoA 定位验证
 
 3. **Spatial CoT 推理**:
-   - 用 Qwen2.5-VL 做 CoT backbone
-   - 输入包括目标关系、检测框、前阶段各属性 reward 分数
-   - VLM 逐步推理：解释属性 reward → 几何分析 → 判断关系是否成立
-   - 包含/排除约束分别给正/负分：$\mathcal{R}_{total} = \sum_{inc} \mathcal{R}^+ - \sum_{exc} \mathcal{R}^-$
+    - 用 Qwen2.5-VL 做 CoT backbone
+    - 输入包括目标关系、检测框、前阶段各属性 reward 分数
+    - VLM 逐步推理：解释属性 reward → 几何分析 → 判断关系是否成立
+    - 包含/排除约束分别给正/负分：$\mathcal{R}_{total} = \sum_{inc} \mathcal{R}^+ - \sum_{exc} \mathcal{R}^-$
 
 ### SpatRelBench 基准
 覆盖 6 个维度：位置-文字 OCR、计数-文字 OCR、复杂空间关系、朝向、3D 空间关系，比 GenEval 和 T2I-CompBench 更全面。

@@ -31,18 +31,18 @@ SandboxEscapeBench 是首个安全量化 LLM 突破容器沙箱能力的 benchma
 ### 关键设计
 
 1. **逃逸路径全覆盖**
-   - 配置错误：不当的 Docker 配置（如挂载宿主文件系统、暴露 Docker socket）
-   - 权限分配：不当的 Linux capabilities（如 CAP_SYS_ADMIN）
-   - 内核缺陷：已知内核漏洞（如 Dirty COW 变种）
-   - 运行时弱点：容器运行时（runc/containerd）的已知 CVE
+    - 配置错误：不当的 Docker 配置（如挂载宿主文件系统、暴露 Docker socket）
+    - 权限分配：不当的 Linux capabilities（如 CAP_SYS_ADMIN）
+    - 内核缺陷：已知内核漏洞（如 Dirty COW 变种）
+    - 运行时弱点：容器运行时（runc/containerd）的已知 CVE
 
 2. **安全评估架构（Inspect AI CTF）**
-   - 基于 Inspect AI 框架的 CTF 评估
-   - 外层容器无已知漏洞 → 即使 LLM 成功逃逸内层，也不会真正影响宿主
-   - 威胁模型：有动机的对抗性 agent + shell 访问权限
+    - 基于 Inspect AI 框架的 CTF 评估
+    - 外层容器无已知漏洞 → 即使 LLM 成功逃逸内层，也不会真正影响宿主
+    - 威胁模型：有动机的对抗性 agent + shell 访问权限
 
 3. **难度分级**
-   - 从简单配置错误（直接挂载 volume）到复杂利用链（多步漏洞组合）
+    - 从简单配置错误（直接挂载 volume）到复杂利用链（多步漏洞组合）
 
 ## 实验关键数据
 

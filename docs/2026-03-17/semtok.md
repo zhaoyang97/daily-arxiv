@@ -32,22 +32,22 @@ SemTok = 编码器 $\mathcal{E}$ + 量化器 $\mathcal{Q}$ + 解码器 $\mathcal
 ### 关键设计
 
 1. **MMDiT 2D→1D 编码器**:
-   - 做什么：将 2D 图像 latent 压缩为 $K$ 个 1D 语义 token
-   - 核心思路：MMDiT 的双分支设计天然适合处理两种"模态"——把 1D token 视为待填充的语义模态，2D patch 视为信息源。双流的 co-attention 让 1D token 从 2D patch 中"提取"所需信息。对 2D 分支用 2D RoPE、1D 分支用 1D RoPE
-   - 设计动机：相比 TiTok 的 ViT 编码器 + 可学习查询方式，MMDiT 双流架构更自然地支持信息从 2D→1D 的流动——1D token 之间通过 self-attention 协作决定"谁编码什么"
+    - 做什么：将 2D 图像 latent 压缩为 $K$ 个 1D 语义 token
+    - 核心思路：MMDiT 的双分支设计天然适合处理两种"模态"——把 1D token 视为待填充的语义模态，2D patch 视为信息源。双流的 co-attention 让 1D token 从 2D patch 中"提取"所需信息。对 2D 分支用 2D RoPE、1D 分支用 1D RoPE
+    - 设计动机：相比 TiTok 的 ViT 编码器 + 可学习查询方式，MMDiT 双流架构更自然地支持信息从 2D→1D 的流动——1D token 之间通过 self-attention 协作决定"谁编码什么"
 
 2. **SigLIP 语义对齐约束**:
-   - 做什么：在编码器端直接施加语义监督，迫使 token 编码高层语义而非低层纹理
-   - 核心思路：冻结的 SigLIP 编码器提取图像特征 $x_{sig}$。对 2D 分支施加空间蒸馏 $\mathcal{L}_{distill} = \|x_{sig} - \boldsymbol{w}_x(x)\|^2$；对 1D 分支池化后做对比学习 $\mathcal{L}_{contra}$，确保量化后的 $\bar{z}$ 与 SigLIP 全局嵌入对齐
-   - 设计动机：纯像素重建训练→编码器优先编码局部纹理；语义约束→编码器优先编码全局语义。论文可视化（Fig.6）显示有约束时特征空间出现明显语义聚类——无约束时杂乱无章
+    - 做什么：在编码器端直接施加语义监督，迫使 token 编码高层语义而非低层纹理
+    - 核心思路：冻结的 SigLIP 编码器提取图像特征 $x_{sig}$。对 2D 分支施加空间蒸馏 $\mathcal{L}_{distill} = \|x_{sig} - \boldsymbol{w}_x(x)\|^2$；对 1D 分支池化后做对比学习 $\mathcal{L}_{contra}$，确保量化后的 $\bar{z}$ 与 SigLIP 全局嵌入对齐
+    - 设计动机：纯像素重建训练→编码器优先编码局部纹理；语义约束→编码器优先编码全局语义。论文可视化（Fig.6）显示有约束时特征空间出现明显语义聚类——无约束时杂乱无章
 
 3. **Binary Spherical Quantization (BSQ)**:
-   - 做什么：高效离散化，码本大小随通道维度指数增长
-   - 核心思路：$\mathcal{Q}(z) = \frac{1}{\sqrt{d}} \text{sign}(\frac{z}{\|z\|})$，每个通道映射为 ±1，码本索引 $k = \sum_i \mathbb{1}(\bar{z}_i > 0) \cdot 2^{i-1}$。无需存储显式码本
-   - 设计动机：传统 VQ 码本内存 $O(|\mathcal{C}| \cdot d)$，BSQ 码本大小 $2^d$ 但不需额外存储——可以轻松扩展到 $2^{32}$ 规模。STE 估计器反向传播
+    - 做什么：高效离散化，码本大小随通道维度指数增长
+    - 核心思路：$\mathcal{Q}(z) = \frac{1}{\sqrt{d}} \text{sign}(\frac{z}{\|z\|})$，每个通道映射为 ±1，码本索引 $k = \sum_i \mathbb{1}(\bar{z}_i > 0) \cdot 2^{i-1}$。无需存储显式码本
+    - 设计动机：传统 VQ 码本内存 $O(|\mathcal{C}| \cdot d)$，BSQ 码本大小 $2^d$ 但不需额外存储——可以轻松扩展到 $2^{32}$ 规模。STE 估计器反向传播
 
 4. **两阶段生成式训练**:
-   - **Stage I (扩散预训练)**: 解码器用 flow matching 从噪声预测图像 latent，$\mathcal{L}_{diff} = \mathbb{E}[\|x_v - \epsilon - \mathcal{D}(x_t, \bar{z}, t)\|^2]$。联合优化编码器+量化器+解码器
+    - **Stage I (扩散预训练)**: 解码器用 flow matching 从噪声预测图像 latent，$\mathcal{L}_{diff} = \mathbb{E}[\|x_v - \epsilon - \mathcal{D}(x_t, \bar{z}, t)\|^2]$。联合优化编码器+量化器+解码器
      - 目的：扩散式训练在多个噪声尺度上优化似然→探索潜在空间的多样路径→避免分布坍塌
    - **Stage II (精细化微调)**: 将解码器的噪声输入替换为可学习 mask token，改用一步重建 + MSE/LPIPS/GAN 损失
      - 目的：Stage I 探索了丰富语义空间但缺乏像素细节；Stage II 补回高频纹理，且推理时仅需一步→大幅加速

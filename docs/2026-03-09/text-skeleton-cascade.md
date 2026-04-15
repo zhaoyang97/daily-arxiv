@@ -27,23 +27,23 @@
 ### 关键设计
 
 1. **自回归 Text-to-Skeleton 模型**:
-   - 做什么：从文本描述生成 $T$ 帧 $J$ 个关节的 2D 骨架坐标序列
-   - 核心思路：将连续坐标离散化为 $K$ 个 bin 的 token，按 frame-major, joint-minor 顺序串行化为 1D token 流 $\mathbf{z} = [s(x_{1,1}), s(y_{1,1}), \ldots]$，用 CLIP 文本编码器产生的 embedding 作为前缀，decoder-only Transformer 做 next-token 预测
-   - 设计动机：自回归分解天然建模了复杂动作中的长程时间依赖和关节间协调性——每个关节的位置取决于之前所有帧和所有关节的配置
+    - 做什么：从文本描述生成 $T$ 帧 $J$ 个关节的 2D 骨架坐标序列
+    - 核心思路：将连续坐标离散化为 $K$ 个 bin 的 token，按 frame-major, joint-minor 顺序串行化为 1D token 流 $\mathbf{z} = [s(x_{1,1}), s(y_{1,1}), \ldots]$，用 CLIP 文本编码器产生的 embedding 作为前缀，decoder-only Transformer 做 next-token 预测
+    - 设计动机：自回归分解天然建模了复杂动作中的长程时间依赖和关节间协调性——每个关节的位置取决于之前所有帧和所有关节的配置
 
 2. **DINO-ALF（Adaptive Layer Fusion）外观编码器**:
-   - 做什么：从参考图像提取空间局部化的多层外观特征，注入视频扩散模型
-   - 核心思路：提取 DINOv3 所有 12 层的 patch token，用可学习的层权重 $\alpha^{(\ell)}$（softmax 归一化）自适应融合 $\mathbf{a} = \sum_\ell \alpha^{(\ell)} \text{proj}(\mathbf{p}^{(\ell)})$，每层投影到统一维度再线性组合
-   - 设计动机：DINO 浅层捕捉纹理细节，深层捕捉视角不变的语义，自适应融合让模型在大变形下同时利用局部纹理和全局语义
+    - 做什么：从参考图像提取空间局部化的多层外观特征，注入视频扩散模型
+    - 核心思路：提取 DINOv3 所有 12 层的 patch token，用可学习的层权重 $\alpha^{(\ell)}$（softmax 归一化）自适应融合 $\mathbf{a} = \sum_\ell \alpha^{(\ell)} \text{proj}(\mathbf{p}^{(\ell)})$，每层投影到统一维度再线性组合
+    - 设计动机：DINO 浅层捕捉纹理细节，深层捕捉视角不变的语义，自适应融合让模型在大变形下同时利用局部纹理和全局语义
 
 3. **Spatiotemporal Motion Encoder**:
-   - 做什么：将渲染的骨架图像序列编码为时空对齐的 motion token
-   - 核心思路：3D CNN 对渲染的 pose 图像序列做时空编码，输出与 latent 空间对齐的 context token
-   - 设计动机：比直接用坐标更适合与 DiT 架构融合，保持空间对齐
+    - 做什么：将渲染的骨架图像序列编码为时空对齐的 motion token
+    - 核心思路：3D CNN 对渲染的 pose 图像序列做时空编码，输出与 latent 空间对齐的 context token
+    - 设计动机：比直接用坐标更适合与 DiT 架构融合，保持空间对齐
 
 4. **合成数据集**:
-   - 用 Blender 构建 2000 个复杂人体动作视频（翻跟头、体操等），完全控制外观/动作/环境
-   - 填补了现有 benchmark 缺少杂技类动作的空白，同时避免版权和隐私问题
+    - 用 Blender 构建 2000 个复杂人体动作视频（翻跟头、体操等），完全控制外观/动作/环境
+    - 填补了现有 benchmark 缺少杂技类动作的空白，同时避免版权和隐私问题
 
 ### 训练策略
 - Stage 1 用 teacher forcing + next-token cross-entropy 训练

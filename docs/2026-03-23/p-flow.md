@@ -1,9 +1,9 @@
 # P-Flow: Prompting Visual Effects Generation
 
-**日期**: 2026-03-23
-**arXiv**: [2603.22091](https://arxiv.org/abs/2603.22091)
-**代码**: [GitHub - showlab/P-Flow](https://github.com/showlab/P-Flow)
-**领域**: 视频生成 / 视觉特效定制
+**日期**: 2026-03-23  
+**arXiv**: [2603.22091](https://arxiv.org/abs/2603.22091)  
+**代码**: [GitHub - showlab/P-Flow](https://github.com/showlab/P-Flow)  
+**领域**: 视频生成 / 视觉特效定制  
 **关键词**: visual effects, test-time prompt optimization, training-free, video generation, VLM, noise prior, flow matching inversion
 
 ## 一句话总结

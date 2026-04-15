@@ -34,14 +34,14 @@
 ### OutRo 方法
 
 1. **Head Output Rotation**:
-   - 做什么：将 non-sink 位置的 attention head output 向 sink value 方向旋转
-   - 核心思路：投影 head output 到 sink value 向量方向，加上投影分量后 rescale
-   - 设计动机：让所有 token 表示与 sink 编码的全局信息方向对齐
+    - 做什么：将 non-sink 位置的 attention head output 向 sink value 方向旋转
+    - 核心思路：投影 head output 到 sink value 向量方向，加上投影分量后 rescale
+    - 设计动机：让所有 token 表示与 sink 编码的全局信息方向对齐
 
 2. **Causal Mask Relaxation for Sink Tokens**:
-   - 做什么：从 sink 行为开始显著的层开始，允许 sink token attend 到后续 token
-   - 核心思路：选择性放松 causal mask，让 sink 能聚合更多全局上下文
-   - 设计动机：sink token 已经自然地编码全局信息，给它更多信息来源只会更好
+    - 做什么：从 sink 行为开始显著的层开始，允许 sink token attend 到后续 token
+    - 核心思路：选择性放松 causal mask，让 sink 能聚合更多全局上下文
+    - 设计动机：sink token 已经自然地编码全局信息，给它更多信息来源只会更好
 
 ### 关键优势
 - **不需要 attention map 访问**：在 head output 级别操作，兼容 FlashAttention

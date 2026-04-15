@@ -34,19 +34,19 @@
 ### 关键设计
 
 1. **图像自条件 (Self-Conditioning)**:
-   - 做什么：用图像自身的视觉特征替代文本作为生成条件
-   - 核心思路：将图像送入冻结 MLLM 的 ViT 编码器得到 patch embedding $\mathbf{c}_{\text{img}} = \boldsymbol{v}(\mathbf{x})$，与辅助文本提示（"Generate an image identical to the reference image"）拼接后送入冻结 MLLM 产生条件特征 $\mathbf{h} = \boldsymbol{g}(\mathbf{c})$
-   - 设计动机：图像特征包含比文本更丰富的语义和视觉信息，且无标签图像近乎无限——打破了对配对数据的依赖
+    - 做什么：用图像自身的视觉特征替代文本作为生成条件
+    - 核心思路：将图像送入冻结 MLLM 的 ViT 编码器得到 patch embedding $\mathbf{c}_{\text{img}} = \boldsymbol{v}(\mathbf{x})$，与辅助文本提示（"Generate an image identical to the reference image"）拼接后送入冻结 MLLM 产生条件特征 $\mathbf{h} = \boldsymbol{g}(\mathbf{c})$
+    - 设计动机：图像特征包含比文本更丰富的语义和视觉信息，且无标签图像近乎无限——打破了对配对数据的依赖
 
 2. **掩码图像建模 (Masked Image Modeling)**:
-   - 做什么：防止自条件下的恒等映射坍塌
-   - 核心思路：训练时随机掩去比例 $r$ 的图像 patch token，$\mathbf{c}_{\text{img}} \leftarrow \mathbf{c}_{\text{img}} \odot \mathbf{M}$，模型必须从部分可见的 patch 推断完整图像
-   - 设计动机：如果提供完整的图像自条件，模型只需学恒等映射（输入=输出），学不到有意义的生成先验。掩码将训练转变为"稀疏到稠密"重建——模拟了文本条件的稀疏性（文本只描述图像的部分信息），让模型学到组合式的视觉理解
+    - 做什么：防止自条件下的恒等映射坍塌
+    - 核心思路：训练时随机掩去比例 $r$ 的图像 patch token，$\mathbf{c}_{\text{img}} \leftarrow \mathbf{c}_{\text{img}} \odot \mathbf{M}$，模型必须从部分可见的 patch 推断完整图像
+    - 设计动机：如果提供完整的图像自条件，模型只需学恒等映射（输入=输出），学不到有意义的生成先验。掩码将训练转变为"稀疏到稠密"重建——模拟了文本条件的稀疏性（文本只描述图像的部分信息），让模型学到组合式的视觉理解
 
 3. **残差查询适配器 (Residual Query Adapter, RQA)**:
-   - 做什么：在不微调 MLLM 的情况下适配其表示用于生成
-   - 核心思路：256 个可学习查询 token 通过交叉注意力处理条件序列，产生"残差查询"附加到原始条件中，轻量级仅 29M 参数
-   - 设计动机：直接用冻结 MLLM 的输出作为扩散模型条件效果差（域失配）；微调整个 MLLM 太贵且可能灾难性遗忘。RQA 是一个轻量的"可学习 prompt"，引导冻结 MLLM 提取更适合生成的特征
+    - 做什么：在不微调 MLLM 的情况下适配其表示用于生成
+    - 核心思路：256 个可学习查询 token 通过交叉注意力处理条件序列，产生"残差查询"附加到原始条件中，轻量级仅 29M 参数
+    - 设计动机：直接用冻结 MLLM 的输出作为扩散模型条件效果差（域失配）；微调整个 MLLM 太贵且可能灾难性遗忘。RQA 是一个轻量的"可学习 prompt"，引导冻结 MLLM 提取更适合生成的特征
 
 ### 六种训练策略系统分析
 论文对比了 6 种预训练+微调的组合：

@@ -24,17 +24,17 @@
 ### A³-Law 三阶段评估范式
 
 1. **Perceptual Attention（感知注意）**：评估图像信号在生理层面能否吸引注意
-   - Image Fidelity：清晰度和失真程度
-   - Integration Realism：光照/色温/阴影/透视的物理一致性
-   - Professional Polish：无伪影、纹理清晰、符合商业类别原型
+    - Image Fidelity：清晰度和失真程度
+    - Integration Realism：光照/色温/阴影/透视的物理一致性
+    - Professional Polish：无伪影、纹理清晰、符合商业类别原型
 
 2. **Formal Interest（形式兴趣）**：评估色彩和空间布局能否引起兴趣
-   - Color Construction：Hue Adaptability（色相适配性）+ Color Harmonization（调色板协）
-   - Spatial Construction：Layout Adaptability（布局层次、焦点清晰、裁剪安全区）
+    - Color Construction：Hue Adaptability（色相适配性）+ Color Harmonization（调色板协）
+    - Spatial Construction：Layout Adaptability（布局层次、焦点清晰、裁剪安全区）
 
 3. **Desire Impact（欲望影响）**：评估说服力
-   - Copywriting Tone（文案语气）+ Promotional Iconography（促销图标）
-   - Aesthetic Attribute（视觉愉悦感）+ Advertising Attribute（品牌情感连接+说服力期望）
+    - Copywriting Tone（文案语气）+ Promotional Iconography（促销图标）
+    - Aesthetic Attribute（视觉愉悦感）+ Advertising Attribute（品牌情感连接+说服力期望）
 
 ### A³-Align 模型训练
 - **SFT 阶段**：在 A³-Dataset 上学习 CoT 推理格式、规则判断、工具调用。训练数据包含逐步推理链示范——先分析感知注意维度，再评估形式兴趣，最后评判欲望影响，确保模型学会渐进式评估流程

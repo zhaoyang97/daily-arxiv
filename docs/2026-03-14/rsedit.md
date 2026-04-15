@@ -29,21 +29,21 @@
 ### 关键设计
 
 1. **U-Net 适配（Channel Concatenation）**:
-   - 源图像经 VAE 编码到 latent 空间，与噪声 latent $z_t$ 在 channel 维拼接：$\tilde{z}_t = \text{Concat}(z_t, c_I)$
-   - 加宽第一层卷积接受 $(d_z + d_I)$ 通道
-   - 利用卷积的平移不变性和局部连接性，保持严格的像素对像素空间对应
-   - 适合保留道路网络、建筑轮廓等高频地理空间细节
+    - 源图像经 VAE 编码到 latent 空间，与噪声 latent $z_t$ 在 channel 维拼接：$\tilde{z}_t = \text{Concat}(z_t, c_I)$
+    - 加宽第一层卷积接受 $(d_z + d_I)$ 通道
+    - 利用卷积的平移不变性和局部连接性，保持严格的像素对像素空间对应
+    - 适合保留道路网络、建筑轮廓等高频地理空间细节
 
 2. **DiT 适配（Token Concatenation）**:
-   - 源图像经 VAE + Patchify 变为 token 序列 $V$，作为 prefix 拼接到噪声 tokens $Z_t$ 前：$\tilde{Z}_t = [V; Z_t]$
-   - 利用 self-attention 机制自然地从参考 tokens 向生成 tokens 路由语义和结构信息
-   - 不修改注意力层或权重结构，完全保留 DiT 预训练先验
-   - 利用 Transformer 的 in-context learning 能力
+    - 源图像经 VAE + Patchify 变为 token 序列 $V$，作为 prefix 拼接到噪声 tokens $Z_t$ 前：$\tilde{Z}_t = [V; Z_t]$
+    - 利用 self-attention 机制自然地从参考 tokens 向生成 tokens 路由语义和结构信息
+    - 不修改注意力层或权重结构，完全保留 DiT 预训练先验
+    - 利用 Transformer 的 in-context learning 能力
 
 3. **遥感域文本编码器**:
-   - 用 DGTRS-CLIP（长上下文遥感 CLIP 变体，最大 248 tokens）替代 OpenAI CLIP（77 tokens）
-   - F1dam 从 25.62 → 34.11，说明遥感的技术性长 prompt 需要域特异编码
-   - 遥感 prompt 往往是密集技术描述，标准 77 token 限制严重不足
+    - 用 DGTRS-CLIP（长上下文遥感 CLIP 变体，最大 248 tokens）替代 OpenAI CLIP（77 tokens）
+    - F1dam 从 25.62 → 34.11，说明遥感的技术性长 prompt 需要域特异编码
+    - 遥感 prompt 往往是密集技术描述，标准 77 token 限制严重不足
 
 ### 损失函数 / 训练策略
 - 标准 latent diffusion loss：$\mathcal{L} = \mathbb{E}[\|\epsilon - \epsilon_\theta(z_t, t, c_T, c_I)\|^2]$

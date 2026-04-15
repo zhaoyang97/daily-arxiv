@@ -29,21 +29,21 @@
 ### 关键设计
 
 1. **Relay LoRA（接力 LoRA）**:
-   - 做什么：将"直接用高分辨率图像微调"拆分为两阶段
-   - 核心思路：Stage 1 用低分辨率图像训练 $\text{LoRA}_1$，让视频 DiT 适应图像模态；将 $\text{LoRA}_1$ 合并到基模型后，Stage 2 在合并权重上用高分辨率图像训练 $\text{LoRA}_2$，学习空间外推。推理时只加载 $\text{LoRA}_2$（空间外推能力），丢弃 $\text{LoRA}_1$（图像模态偏置）
-   - 设计动机：$\text{LoRA}_2$ 在 Stage 2 的学习目标只包含"从低分辨率到高分辨率的空间能力"，因为 $\text{LoRA}_1$ 已经在 Stage 1 承担了模态对齐的工作。这样 $\text{LoRA}_2$ 不会把图像模态 noise 带入视频推理
+    - 做什么：将"直接用高分辨率图像微调"拆分为两阶段
+    - 核心思路：Stage 1 用低分辨率图像训练 $\text{LoRA}_1$，让视频 DiT 适应图像模态；将 $\text{LoRA}_1$ 合并到基模型后，Stage 2 在合并权重上用高分辨率图像训练 $\text{LoRA}_2$，学习空间外推。推理时只加载 $\text{LoRA}_2$（空间外推能力），丢弃 $\text{LoRA}_1$（图像模态偏置）
+    - 设计动机：$\text{LoRA}_2$ 在 Stage 2 的学习目标只包含"从低分辨率到高分辨率的空间能力"，因为 $\text{LoRA}_1$ 已经在 Stage 1 承担了模态对齐的工作。这样 $\text{LoRA}_2$ 不会把图像模态 noise 带入视频推理
 
 2. **Global-Coarse-Local-Fine-Attention (GCLFA)**:
-   - 做什么：替换 DiT 中的 3D full attention，用局部精细+全局粗糙的双分支注意力
-   - 核心思路：
+    - 做什么：替换 DiT 中的 3D full attention，用局部精细+全局粗糙的双分支注意力
+    - 核心思路：
      - **局部分支**: 滑动窗口注意力，窗口大小等于模型原生分辨率（如 480P），但引入 inward shifting——边界 token 的窗口向内偏移，确保所有 token 的可交互 KV 数量一致
      - **全局分支**: 对 K/V 做 pooling 得到粗粒度 token，与原始 KV 拼接，让每个 query 既看局部细节又看全局语义
    - 设计动机：纯局部注意力会产生重复 pattern，纯全局注意力在高分辨率下计算不可承受，双分支兼顾两者
 
 3. **High-Frequency-Awareness-Training-Objective (HFATO)**:
-   - 做什么：训练时先对 clean latent 做降采样-上采样退化，再加噪，模型需要从退化+加噪的 latent 恢复到原始 clean latent
-   - 核心思路：$\tilde{x}_0 = \text{DU}(x_0)$，$x_t = \tilde{x}_0 + \sigma_t \epsilon$，损失为 $\|\hat{x}_0 - x_0\|^2$（注意是对 clean $x_0$ 而非退化 $\tilde{x}_0$ 做监督）
-   - 设计动机：标准 flow matching 训练中模型不需要"恢复"丢失的高频信息，HFATO 显式引入高频缺失场景，迫使模型学会细节重建。用 $x_0$ 做监督而非 $\tilde{x}_0$ 是关键——直接监督更好
+    - 做什么：训练时先对 clean latent 做降采样-上采样退化，再加噪，模型需要从退化+加噪的 latent 恢复到原始 clean latent
+    - 核心思路：$\tilde{x}_0 = \text{DU}(x_0)$，$x_t = \tilde{x}_0 + \sigma_t \epsilon$，损失为 $\|\hat{x}_0 - x_0\|^2$（注意是对 clean $x_0$ 而非退化 $\tilde{x}_0$ 做监督）
+    - 设计动机：标准 flow matching 训练中模型不需要"恢复"丢失的高频信息，HFATO 显式引入高频缺失场景，迫使模型学会细节重建。用 $x_0$ 做监督而非 $\tilde{x}_0$ 是关键——直接监督更好
 
 ### 训练策略
 - 基模型：Wan2.2-5B / 14B

@@ -29,19 +29,19 @@ MHPO 替换 GRPO 目标函数中的硬裁剪操作，用两个模块处理 impor
 ### 关键设计
 
 1. **Log-Fidelity Modulator (LFM)**:
-   - 做什么：将无界的 importance ratio 映射到有界可微流形
-   - 核心思路：$\psi(r) = c \tanh(\log(r)/c)$，先取 log 将乘法空间变为加法空间（$r=1$ 成为原点），再用 scaled tanh 饱和到 $[-c, c]$
-   - 三个关键性质：(1) 近原点时 $\psi \approx \log r$（高保真局部映射）；(2) 远离原点时梯度通过 $\mathrm{sech}^2$ 平滑衰减（不硬截断）；(3) $C^\infty$ 可微，不像硬裁剪那样破坏 Adam 的动量缓冲
-   - 梯度乘子有理论上界：$|\mathcal{M}(r)| \leq e^c$（与 ratio 大小无关），保证了梯度二阶矩有界
+    - 做什么：将无界的 importance ratio 映射到有界可微流形
+    - 核心思路：$\psi(r) = c \tanh(\log(r)/c)$，先取 log 将乘法空间变为加法空间（$r=1$ 成为原点），再用 scaled tanh 饱和到 $[-c, c]$
+    - 三个关键性质：(1) 近原点时 $\psi \approx \log r$（高保真局部映射）；(2) 远离原点时梯度通过 $\mathrm{sech}^2$ 平滑衰减（不硬截断）；(3) $C^\infty$ 可微，不像硬裁剪那样破坏 Adam 的动量缓冲
+    - 梯度乘子有理论上界：$|\mathcal{M}(r)| \leq e^c$（与 ratio 大小无关），保证了梯度二阶矩有界
 
 2. **Decoupled Hazard Penalty (DHP)**:
-   - 做什么：对正向（$r>1$）和负向（$r<1$）策略偏移施加不同强度的惩罚
-   - 核心思路：$\zeta(r) = (s(\psi)/\lambda_+)^{k_+} + (s(-\psi)/\lambda_-)^{k_-}$，其中 $s(\cdot) = \log(1+e^x)$ 是 softplus，用于解耦正/负方向。Weibull 累积危险函数 $H(x) = (x/\lambda)^k$ 控制惩罚曲线形状
-   - 设计动机：$\lambda$ 控制安全区域大小（小偏移惩罚可忽略），$k>1$ 保证超过阈值后惩罚加速增长。默认配置 $(k_+, \lambda_+) = (1.5, 1.0)$（正向宽松探索），$(k_-, \lambda_-) = (2.0, 0.8)$（负向严格抑制），反映"防止策略侵蚀比防止模式坍塌更重要"的不对称先验
+    - 做什么：对正向（$r>1$）和负向（$r<1$）策略偏移施加不同强度的惩罚
+    - 核心思路：$\zeta(r) = (s(\psi)/\lambda_+)^{k_+} + (s(-\psi)/\lambda_-)^{k_-}$，其中 $s(\cdot) = \log(1+e^x)$ 是 softplus，用于解耦正/负方向。Weibull 累积危险函数 $H(x) = (x/\lambda)^k$ 控制惩罚曲线形状
+    - 设计动机：$\lambda$ 控制安全区域大小（小偏移惩罚可忽略），$k>1$ 保证超过阈值后惩罚加速增长。默认配置 $(k_+, \lambda_+) = (1.5, 1.0)$（正向宽松探索），$(k_-, \lambda_-) = (2.0, 0.8)$（负向严格抑制），反映"防止策略侵蚀比防止模式坍塌更重要"的不对称先验
 
 3. **Semi-gradient 优化**:
-   - DHP 中对 $\psi$ 应用 stop-gradient，使 $\zeta$ 仅作为幅值调制器而不改变策略梯度方向
-   - 这是关键的实现细节 — 如果允许 DHP 梯度回传可能导致梯度反转
+    - DHP 中对 $\psi$ 应用 stop-gradient，使 $\zeta$ 仅作为幅值调制器而不改变策略梯度方向
+    - 这是关键的实现细节 — 如果允许 DHP 梯度回传可能导致梯度反转
 
 ### 损失函数 / 训练策略
 - 目标函数：$\mathcal{L}_{\text{MHPO}} = -\mathbb{E}[\frac{1}{K}\sum_i \frac{1}{T_i}\sum_t \exp(\psi(r_t) - \zeta(r_t)) \hat{A}_t]$

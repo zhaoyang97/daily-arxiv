@@ -28,21 +28,21 @@
 ### 关键设计
 
 1. **对称交错 Token 聚合**:
-   - 构建因果交错序列 $\mathbf{x}_{cii}$（A-B-A-B...）和角色交换对称序列 $\mathbf{x}_{sym}$（B-A-B-A...）
-   - Concat 后送入 Transformer → 解交错恢复每人流 → 元素求和融合两种视角
-   - 附加 LPA 分支（1D Conv）捕获短程时间模式
-   - 设计动机: 建模角色切换和时序影响的对称性
+    - 构建因果交错序列 $\mathbf{x}_{cii}$（A-B-A-B...）和角色交换对称序列 $\mathbf{x}_{sym}$（B-A-B-A...）
+    - Concat 后送入 Transformer → 解交错恢复每人流 → 元素求和融合两种视角
+    - 附加 LPA 分支（1D Conv）捕获短程时间模式
+    - 设计动机: 建模角色切换和时序影响的对称性
 
 2. **语义感知计划 Token 对齐**:
-   - 16 个可学习计划 token 附加到 Transformer 第 3 块输出
-   - InfoNCE 对比损失对齐到冻结运动教师的目标嵌入
-   - 提供高层编辑意图指导，确保文本-动作一致性
+    - 16 个可学习计划 token 附加到 Transformer 第 3 块输出
+    - InfoNCE 对比损失对齐到冻结运动教师的目标嵌入
+    - 提供高层编辑意图指导，确保文本-动作一致性
 
 3. **交互感知频率 Token 对齐**:
-   - 计算双人均值信号 $\bar{\mathbf{x}} = (\mathbf{x}^A + \mathbf{x}^B)/2$ 和差分信号 $\Delta\mathbf{x} = \mathbf{x}^A - \mathbf{x}^B$
-   - DCT 变换 → 3 频带能量描述子（low/mid/high）→ 映射为频率控制 token
-   - 回归损失监督目标频带能量，高频分量权重降至 0.25
-   - 保持交互节奏和同步模式，防止编辑破坏时间耦合
+    - 计算双人均值信号 $\bar{\mathbf{x}} = (\mathbf{x}^A + \mathbf{x}^B)/2$ 和差分信号 $\Delta\mathbf{x} = \mathbf{x}^A - \mathbf{x}^B$
+    - DCT 变换 → 3 频带能量描述子（low/mid/high）→ 映射为频率控制 token
+    - 回归损失监督目标频带能量，高频分量权重降至 0.25
+    - 保持交互节奏和同步模式，防止编辑破坏时间耦合
 
 ### 训练策略
 - 1000 步扩散 + 余弦调度，DDIM 50 步推理，CFG scale 3.5

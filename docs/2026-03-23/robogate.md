@@ -1,9 +1,9 @@
 # RoboGate: Adaptive Failure Discovery for Safe Robot Policy Deployment
 
-**日期**: 2026-03-23
-**arXiv**: [2603.22126](https://arxiv.org/abs/2603.22126)
-**代码**: 开源（单 GPU 可运行）
-**领域**: 机器人 / 安全验证 / 部署风险管理
+**日期**: 2026-03-23  
+**arXiv**: [2603.22126](https://arxiv.org/abs/2603.22126)  
+**代码**: 开源（单 GPU 可运行）  
+**领域**: 机器人 / 安全验证 / 部署风险管理  
 **关键词**: robot safety, failure boundary, adaptive sampling, sim-to-real, VLA evaluation, deployment gate
 
 ## 一句话总结

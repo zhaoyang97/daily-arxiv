@@ -27,19 +27,19 @@ RoBERTa 模型 + LoRA 适配器。变体：(1) 标准 LoRA（每层独立 A/B）
 ### 关键设计
 
 1. **超网络生成 LoRA 因子**
-   - 做什么：一个共享的小型神经网络接收层编号作为输入，输出该层的 LoRA A 和 B 矩阵
-   - 核心思路：$A_l, B_l = h_\phi(l)$，其中 $h_\phi$ 是超网络。不同层的 LoRA 因子通过共享 $\phi$ 产生结构性耦合
-   - 设计动机：引入跨层约束可能起到正则化作用，改善校准
+    - 做什么：一个共享的小型神经网络接收层编号作为输入，输出该层的 LoRA A 和 B 矩阵
+    - 核心思路：$A_l, B_l = h_\phi(l)$，其中 $h_\phi$ 是超网络。不同层的 LoRA 因子通过共享 $\phi$ 产生结构性耦合
+    - 设计动机：引入跨层约束可能起到正则化作用，改善校准
 
 2. **校准度量体系**
-   - ECE（Expected Calibration Error）：平均校准误差
-   - MCE（Maximum Calibration Error）：最大校准误差
-   - ACE（Adaptive Calibration Error）：自适应分箱校准误差
-   - 提供了这些指标的统一可复现实现
+    - ECE（Expected Calibration Error）：平均校准误差
+    - MCE（Maximum Calibration Error）：最大校准误差
+    - ACE（Adaptive Calibration Error）：自适应分箱校准误差
+    - 提供了这些指标的统一可复现实现
 
 3. **冻结 A 矩阵实验**
-   - 做什么：只训练 B 矩阵，冻结 A（随机初始化）
-   - 发现：ECE 降低（校准更好），但准确率受损——约束适配空间 = 正则化 = 校准改善 = 容量下降
+    - 做什么：只训练 B 矩阵，冻结 A（随机初始化）
+    - 发现：ECE 降低（校准更好），但准确率受损——约束适配空间 = 正则化 = 校准改善 = 容量下降
 
 ## 实验关键数据
 

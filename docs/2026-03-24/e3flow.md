@@ -27,23 +27,23 @@
 ### 关键设计
 
 1. **球谐特征表示**:
-   - 3D 特征用球谐函数编码：$f(\theta,\phi)=\sum_{l}\sum_{m=-l}^{l}c_l^m Y_l^m(\theta,\phi)$
-   - 旋转变换：$Y_l^m(R^{-1}\hat{r})=\sum_{m'} D_{mm'}^{(l)}(R)Y_l^{m'}(\hat{r})$
-   - 自然解耦等变部分（$l>0$ 阶，保持旋转结构）和不变部分（$l=0$ 阶，处理视觉语义）
-   - 比 group convolution/Wigner-D 更高效
+    - 3D 特征用球谐函数编码：$f(\theta,\phi)=\sum_{l}\sum_{m=-l}^{l}c_l^m Y_l^m(\theta,\phi)$
+    - 旋转变换：$Y_l^m(R^{-1}\hat{r})=\sum_{m'} D_{mm'}^{(l)}(R)Y_l^{m'}(\hat{r})$
+    - 自然解耦等变部分（$l>0$ 阶，保持旋转结构）和不变部分（$l=0$ 阶，处理视觉语义）
+    - 比 group convolution/Wigner-D 更高效
 
 2. **Feature Enhancement Module (FEM)**:
-   - $f_{\text{fused}}=\Pi[\Lambda(\mathcal{A}(f_{\text{pcd}}^{(0)}, f_{\text{img}}), f_{\text{pcd}}^{(0)}) \| f_{\text{pcd}}^{(>0)}]$
-   - 跨模态注意力 $\mathcal{A}$ 将图像语义注入点云的不变分量（$l=0$）
-   - 门控 $\Lambda$ 自适应控制注入强度
-   - 等变分量（$l>0$）保持不变——只在不变空间做跨模态融合
-   - 简单拼接反而降性能 7%（72.36% vs 79.00%），说明等变空间中的跨模态对齐是关键
+    - $f_{\text{fused}}=\Pi[\Lambda(\mathcal{A}(f_{\text{pcd}}^{(0)}, f_{\text{img}}), f_{\text{pcd}}^{(0)}) \| f_{\text{pcd}}^{(>0)}]$
+    - 跨模态注意力 $\mathcal{A}$ 将图像语义注入点云的不变分量（$l=0$）
+    - 门控 $\Lambda$ 自适应控制注入强度
+    - 等变分量（$l>0$）保持不变——只在不变空间做跨模态融合
+    - 简单拼接反而降性能 7%（72.36% vs 79.00%），说明等变空间中的跨模态对齐是关键
 
 3. **Rectified Flow 替代扩散**:
-   - ODE：$\frac{d\xi_x(t)}{dt}=v_\theta(t,\xi_x(t),s,v)$
-   - 训练损失：$\mathcal{L}_{\text{RF}}=\mathbb{E}[\|v_\theta(x_t,t,s,v)-(a-x_0)\|^2]$
-   - 线性插值 $x_t=(1-t)x_0+ta$，比 DDPM 的噪声 schedule 更直接
-   - 等变性保证：$v_\theta(\rho*x_t,t,\rho*s,\rho*v)=\rho*v_\theta(x_t,t,s,v)$
+    - ODE：$\frac{d\xi_x(t)}{dt}=v_\theta(t,\xi_x(t),s,v)$
+    - 训练损失：$\mathcal{L}_{\text{RF}}=\mathbb{E}[\|v_\theta(x_t,t,s,v)-(a-x_0)\|^2]$
+    - 线性插值 $x_t=(1-t)x_0+ta$，比 DDPM 的噪声 schedule 更直接
+    - 等变性保证：$v_\theta(\rho*x_t,t,\rho*s,\rho*v)=\rho*v_\theta(x_t,t,s,v)$
 
 ## 实验关键数据
 

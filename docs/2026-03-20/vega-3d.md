@@ -30,20 +30,20 @@
 ### 关键设计
 
 1. **多视图一致性分析与模型选择**:
-   - 做什么：定义 Multi-view Correspondence Score，将 3D 场景不同视角的编码器特征投射到全局体素网格，计算同一体素在不同视角间的余弦相似度
-   - 发现：DiT 架构视频模型（如 Wan2.1）一致性 >96%，远超 UNet 架构（SVD、SD）；且该分数与下游 3D 性能强正相关
-   - 设计动机：全局注意力机制比局部卷积更擅长捕获长程几何依赖
+    - 做什么：定义 Multi-view Correspondence Score，将 3D 场景不同视角的编码器特征投射到全局体素网格，计算同一体素在不同视角间的余弦相似度
+    - 发现：DiT 架构视频模型（如 Wan2.1）一致性 >96%，远超 UNet 架构（SVD、SD）；且该分数与下游 3D 性能强正相关
+    - 设计动机：全局注意力机制比局部卷积更擅长捕获长程几何依赖
 
 2. **潜在世界模拟器（Latent World Simulator）**:
-   - 做什么：对输入视频的 clean latent 注入噪声激活生成模型的 3D 推理能力
-   - 核心思路：将视频经 VAE 编码为 $\mathbf{z}_0$，按 Flow Matching 路径加噪 $\mathbf{z}_k = (1-t_k)\mathbf{z}_0 + t_k\epsilon$，用空文本 prompt 送入冻结 DiT，提取第 $l$ 层中间特征 $\mathbf{f}_{\text{raw}} = \Phi^{(l)}(\mathbf{z}_k, k; \mathbf{c}_{\text{text}}=\text{""})$
-   - 设计动机：扩散模型在主动去噪过程中才真正激活结构理解能力；空文本确保特征仅依赖视觉信号和学到的物理规律，避免语义幻觉
-   - 最佳配置：$k=300$（中等噪声水平），第 20 层 DiT
+    - 做什么：对输入视频的 clean latent 注入噪声激活生成模型的 3D 推理能力
+    - 核心思路：将视频经 VAE 编码为 $\mathbf{z}_0$，按 Flow Matching 路径加噪 $\mathbf{z}_k = (1-t_k)\mathbf{z}_0 + t_k\epsilon$，用空文本 prompt 送入冻结 DiT，提取第 $l$ 层中间特征 $\mathbf{f}_{\text{raw}} = \Phi^{(l)}(\mathbf{z}_k, k; \mathbf{c}_{\text{text}}=\text{""})$
+    - 设计动机：扩散模型在主动去噪过程中才真正激活结构理解能力；空文本确保特征仅依赖视觉信号和学到的物理规律，避免语义幻觉
+    - 最佳配置：$k=300$（中等噪声水平），第 20 层 DiT
 
 3. **自适应门控融合**:
-   - 做什么：通过 token 级门控将生成特征和语义特征动态融合
-   - 核心思路：两路特征各经 MLP 投射到 LLM 维度后，对每个 token 计算标量门 $g_i = \sigma(\mathbf{W}_g^\top \text{Concat}(\text{LN}(\mathbf{F}_{\text{gen},i}), \text{LN}(\mathbf{F}_{\text{sem},i})) + b_g)$，最终 $\mathbf{F}_i = g_i \cdot \mathbf{F}_{\text{gen},i} + (1-g_i) \cdot \mathbf{F}_{\text{sem},i}$
-   - 设计动机：不同区域对语义/几何先验的需求不同——文字区域需要语义、定位区域需要几何，per-token gating 实现自适应平衡
+    - 做什么：通过 token 级门控将生成特征和语义特征动态融合
+    - 核心思路：两路特征各经 MLP 投射到 LLM 维度后，对每个 token 计算标量门 $g_i = \sigma(\mathbf{W}_g^\top \text{Concat}(\text{LN}(\mathbf{F}_{\text{gen},i}), \text{LN}(\mathbf{F}_{\text{sem},i})) + b_g)$，最终 $\mathbf{F}_i = g_i \cdot \mathbf{F}_{\text{gen},i} + (1-g_i) \cdot \mathbf{F}_{\text{sem},i}$
+    - 设计动机：不同区域对语义/几何先验的需求不同——文字区域需要语义、定位区域需要几何，per-token gating 实现自适应平衡
 
 ## 实验关键数据
 

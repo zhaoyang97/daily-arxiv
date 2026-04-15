@@ -1,9 +1,9 @@
 # AEGIS: From Clues to Verdicts -- Graph-Guided Deep Vulnerability Reasoning via Dialectics and Meta-Auditing
 
-**日期**: 2026-03-21
-**arXiv**: [2603.20637](https://arxiv.org/abs/2603.20637)
-**代码**: 无
-**领域**: LLM推理 / AI安全 / 软件工程
+**日期**: 2026-03-21  
+**arXiv**: [2603.20637](https://arxiv.org/abs/2603.20637)  
+**代码**: 无  
+**领域**: LLM推理 / AI安全 / 软件工程  
 **关键词**: Vulnerability Detection, Multi-Agent, Code Property Graph, Dialectics, Meta-Auditing, PrimeVul
 
 ## 一句话总结

@@ -29,19 +29,19 @@
 ### 关键设计
 
 1. **Brain-to-Hand Command（层次推理 + 轨迹生成）**:
-   - 做什么：MLLM 做三阶段层次推理 → 自动生成插入轨迹
-   - 核心思路：(1) Analysis：分析背景视频场景、物体属性、物理约束；(2) Revision：根据用户选择的模式推理物理交互（flexible 模式允许环境修改如生成支撑结构，standard 模式保持场景完整）；(3) Planning：生成运动规格和光照分析。然后 MLLM 输出每帧 bounding box → 二值 mask
-   - 设计动机：免去用户手动标注轨迹的繁琐操作，同时引入物理推理保证合理性
+    - 做什么：MLLM 做三阶段层次推理 → 自动生成插入轨迹
+    - 核心思路：(1) Analysis：分析背景视频场景、物体属性、物理约束；(2) Revision：根据用户选择的模式推理物理交互（flexible 模式允许环境修改如生成支撑结构，standard 模式保持场景完整）；(3) Planning：生成运动规格和光照分析。然后 MLLM 输出每帧 bounding box → 二值 mask
+    - 设计动机：免去用户手动标注轨迹的繁琐操作，同时引入物理推理保证合理性
 
 2. **Hand-to-Brain Feedback（Spatial DPO）**:
-   - 做什么：用 MLLM 评分构造物理真实性偏好对，做区域级 DPO
-   - 核心思路：每个输入生成 5 个候选 → MLLM 从尺度/光照/物理交互三维度评分 → 取一致排名构造偏好对 → Spatial DPO loss: $\mathcal{L}_{total} = \lambda_{global} \cdot \mathcal{L}_{DPO}^{global} + \lambda_{local} \cdot \mathcal{L}_{DPO}^{local}$，其中 local loss 只对插入区域 mask 内的 denoising error 做 DPO
-   - 设计动机：物理合理性的违反（接触瑕疵、尺度错误）高度局部化在插入区域，全局 DPO 效率低。Spatial DPO 聚焦关键区域
+    - 做什么：用 MLLM 评分构造物理真实性偏好对，做区域级 DPO
+    - 核心思路：每个输入生成 5 个候选 → MLLM 从尺度/光照/物理交互三维度评分 → 取一致排名构造偏好对 → Spatial DPO loss: $\mathcal{L}_{total} = \lambda_{global} \cdot \mathcal{L}_{DPO}^{global} + \lambda_{local} \cdot \mathcal{L}_{DPO}^{local}$，其中 local loss 只对插入区域 mask 内的 denoising error 做 DPO
+    - 设计动机：物理合理性的违反（接触瑕疵、尺度错误）高度局部化在插入区域，全局 DPO 效率低。Spatial DPO 聚焦关键区域
 
 3. **Brain-Hand Co-refinement（闭环精炼）**:
-   - 做什么：推理时 MLLM 迭代评估生成质量，触发精炼循环
-   - 核心思路：每次生成后 MLLM 评估三维度（尺度/光照/物理交互）→ 不满意则更新 CoT 和空间引导 → 扩散模型用新条件重新生成 → 通常 2-3 轮收敛
-   - 设计动机：单次生成难以完美，迭代反馈可渐进提升
+    - 做什么：推理时 MLLM 迭代评估生成质量，触发精炼循环
+    - 核心思路：每次生成后 MLLM 评估三维度（尺度/光照/物理交互）→ 不满意则更新 CoT 和空间引导 → 扩散模型用新条件重新生成 → 通常 2-3 轮收敛
+    - 设计动机：单次生成难以完美，迭代反馈可渐进提升
 
 ### 训练策略
 - 数据集：逆向工程构造——(i) 10,198 个人-物交互视频 + (ii) 10,352 个物理演示视频

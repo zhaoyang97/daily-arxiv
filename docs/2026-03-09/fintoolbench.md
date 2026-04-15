@@ -25,25 +25,25 @@
 ### 关键设计
 
 1. **760 工具库**:
-   - 来源：RapidAPI（第三方市场 API）+ AkShare（开源 Python 金融库）
-   - 从 5470 个候选接口过滤到 760 个可用工具
-   - 每个工具规范化为统一 manifest（稳定 ID + 描述 + 标准化签名 + 参数类型 + 对齐输出 schema）
+    - 来源：RapidAPI（第三方市场 API）+ AkShare（开源 Python 金融库）
+    - 从 5470 个候选接口过滤到 760 个可用工具
+    - 每个工具规范化为统一 manifest（稳定 ID + 描述 + 标准化签名 + 参数类型 + 对齐输出 schema）
 
 2. **金融属性标注**:
-   - **update_frequency**: realtime / daily / as_filed / periodic / static → 评估时效性
-   - **intent_type**: informational / advisory / transactional → 评估意图约束
-   - **regulatory_domain**: 集合值域（股票/加密/外汇等）→ 评估监管域对齐
-   - 在 tool manifest 中为每个 API 标注这三个属性
+    - **update_frequency**: realtime / daily / as_filed / periodic / static → 评估时效性
+    - **intent_type**: informational / advisory / transactional → 评估意图约束
+    - **regulatory_domain**: 集合值域（股票/加密/外汇等）→ 评估监管域对齐
+    - 在 tool manifest 中为每个 API 标注这三个属性
 
 3. **三维合规评估指标**:
-   - **TMR (Timeliness Mismatch Rate)**: 时效性不匹配率，如用 daily 数据回答需要 realtime 的查询
-   - **IMR (Intent Mismatch Rate)**: 意图升级率，如信息查询调用了交易 API
-   - **DMR (Domain Mismatch Rate)**: 域不匹配率，如用股票工具回答加密货币问题
-   - 从完整工具执行 trace 中计算
+    - **TMR (Timeliness Mismatch Rate)**: 时效性不匹配率，如用 daily 数据回答需要 realtime 的查询
+    - **IMR (Intent Mismatch Rate)**: 意图升级率，如信息查询调用了交易 API
+    - **DMR (Domain Mismatch Rate)**: 域不匹配率，如用股票工具回答加密货币问题
+    - 从完整工具执行 trace 中计算
 
 4. **FATR Baseline（Finance-Aware Tool Retrieval）**:
-   - 检索小候选集 + 注入金融属性到 tool card + 缓存/重试/输出压缩稳定执行
-   - 轻量级，为未来研究提供参考基线
+    - 检索小候选集 + 注入金融属性到 tool card + 缓存/重试/输出压缩稳定执行
+    - 轻量级，为未来研究提供参考基线
 
 ### 评估协议
 - 295 条问题（166 单工具 + 129 多工具）

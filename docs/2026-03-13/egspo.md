@@ -16,6 +16,7 @@
 4. **核心问题**: DLM 的决策发生在去噪步而非 token 位置——标准 GRPO 广播同一序列级优势给所有步，无法区分哪些步真正重要
 
 ## 方法详解
+
 ### 整体框架
 masked diffusion 生成 = 从全 mask 逐步 unmask → 建模为有限时域 MDP（状态 $\mathbf{x}_t$=部分 mask 序列，动作=unmask 决策）→ 推导精确策略梯度定理 → EGSPO（熵引导步选择）→ EGSPO-SA（+逐步优势估计）
 

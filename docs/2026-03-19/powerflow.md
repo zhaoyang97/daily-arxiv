@@ -29,24 +29,24 @@
 ### 关键设计
 
 1. **α-幂分布作为优化目标**:
-   - 做什么：为无监督微调定义原则性的目标分布
-   - 数学形式：$p_\alpha(y|q) = \frac{p_\text{base}(y|q)^\alpha}{Z(q,\alpha)}$
-   - α>1：锐化——将概率集中到高概率（"已验证的推理路径"）上，利用验证-生成不对称性
-   - α<1：平化——恢复长尾区域概率，释放被对齐压制的创造力
-   - 关键性质：严格保持基础分布的相对概率排序——不引入分布漂移
+    - 做什么：为无监督微调定义原则性的目标分布
+    - 数学形式：$p_\alpha(y|q) = \frac{p_\text{base}(y|q)^\alpha}{Z(q,\alpha)}$
+    - α>1：锐化——将概率集中到高概率（"已验证的推理路径"）上，利用验证-生成不对称性
+    - α<1：平化——恢复长尾区域概率，释放被对齐压制的创造力
+    - 关键性质：严格保持基础分布的相对概率排序——不引入分布漂移
 
 2. **GFlowNet 作为摊销采样器**:
-   - 做什么：将分布匹配等价于标准 Trajectory Balance (TB) 目标
-   - LLM 的自回归生成天然是树形 DAG → 后向策略简化为 1 → TB loss 变为：$\mathcal{L}_\text{TB}(\theta,\phi;q,y) = (\log Z_\phi(q) + \sum_{t=1}^T \log \pi_\theta(y_t|y_{<t},q) - \log \tilde{p}_\text{target}(y|q))^2$
-   - 问题：$\log p(y|q) = \sum_t \log p(y_t|y_{<t},q)$ 与长度 $|y|$ 近似负线性——naive 分布匹配被长度主导
+    - 做什么：将分布匹配等价于标准 Trajectory Balance (TB) 目标
+    - LLM 的自回归生成天然是树形 DAG → 后向策略简化为 1 → TB loss 变为：$\mathcal{L}_\text{TB}(\theta,\phi;q,y) = (\log Z_\phi(q) + \sum_{t=1}^T \log \pi_\theta(y_t|y_{<t},q) - \log \tilde{p}_\text{target}(y|q))^2$
+    - 问题：$\log p(y|q) = \sum_t \log p(y_t|y_{<t},q)$ 与长度 $|y|$ 近似负线性——naive 分布匹配被长度主导
 
 3. **长度感知 Trajectory-Balance (LA-TB) 目标（核心贡献）**:
-   - 做什么：消除自回归生成的结构性长度偏差
-   - 核心思路：将分区函数重参数化为长度感知能量 $Z_\phi(q,y) = (Z'_\phi(q))^{|y|}$，在长度归一化能量面上优化
-   - 最终 loss：$\mathcal{L}_\text{LA-TB} = (\log Z'_\phi(q) + \frac{1}{|y|}\log\frac{\pi_\theta(y|q)}{\tilde{p}_\text{target}(y|q)})^2$
-   - 为什么不能直接用 token-level 归一化：$\frac{1}{|y|}\log p_\text{base}$ 虽然初期有效但后期退化——模型利用重复无意义 token 人为降低平均能量
-   - PowerFlow 的关键区别：在摊销几何均值概率空间操作，优先语义质量而非序列长度
-   - 实证验证（Figure 3）：naive TB→长度立即崩塌；token-level→初升后降；PowerFlow→稳定提升
+    - 做什么：消除自回归生成的结构性长度偏差
+    - 核心思路：将分区函数重参数化为长度感知能量 $Z_\phi(q,y) = (Z'_\phi(q))^{|y|}$，在长度归一化能量面上优化
+    - 最终 loss：$\mathcal{L}_\text{LA-TB} = (\log Z'_\phi(q) + \frac{1}{|y|}\log\frac{\pi_\theta(y|q)}{\tilde{p}_\text{target}(y|q)})^2$
+    - 为什么不能直接用 token-level 归一化：$\frac{1}{|y|}\log p_\text{base}$ 虽然初期有效但后期退化——模型利用重复无意义 token 人为降低平均能量
+    - PowerFlow 的关键区别：在摊销几何均值概率空间操作，优先语义质量而非序列长度
+    - 实证验证（Figure 3）：naive TB→长度立即崩塌；token-level→初升后降；PowerFlow→稳定提升
 
 ### 训练策略
 - 用 PPO 风格的重要性采样比 $w = \text{clip}(\pi_\theta/\pi_\text{old}, 1-\epsilon, 1+\epsilon)$ 兼容离线数据

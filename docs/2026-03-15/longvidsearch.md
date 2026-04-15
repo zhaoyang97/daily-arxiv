@@ -30,22 +30,22 @@
 ### 关键设计
 
 1. **N-1 Adversarial Ablation Check**:
-   - 做什么：严格保证 multi-hop question 中每条 evidence 都不可或缺
-   - 核心思路：对 k-hop 问题，系统性遮掩每条证据（k 次），让 Verifier Agent 尝试回答。只有当所有 k 次遮掩都导致 agent 回答"INSUFFICIENT"时才保留该问题
-   - 设计动机：45% 的逻辑上合法的候选被此步过滤掉，说明"伪 multi-hop"问题非常普遍。这是区别于现有 benchmark 的核心创新
+    - 做什么：严格保证 multi-hop question 中每条 evidence 都不可或缺
+    - 核心思路：对 k-hop 问题，系统性遮掩每条证据（k 次），让 Verifier Agent 尝试回答。只有当所有 k 次遮掩都导致 agent 回答"INSUFFICIENT"时才保留该问题
+    - 设计动机：45% 的逻辑上合法的候选被此步过滤掉，说明"伪 multi-hop"问题非常普遍。这是区别于现有 benchmark 的核心创新
 
 2. **四类推理任务分类**:
-   - Visual Tracking（实体+聚合）：跨时间追踪同一实体
-   - State Mutation（实体+转变）：检测同一实体的状态变化
-   - Causal Inference（叙事+转变）：因果链推理
-   - Global Summary（叙事+聚合）：全局信息综合
-   - 设计动机：从语义粒度（细粒度/粗粒度）× 推理范式（聚合/转变）两个维度正交划分
+    - Visual Tracking（实体+聚合）：跨时间追踪同一实体
+    - State Mutation（实体+转变）：检测同一实体的状态变化
+    - Causal Inference（叙事+转变）：因果链推理
+    - Global Summary（叙事+聚合）：全局信息综合
+    - 设计动机：从语义粒度（细粒度/粗粒度）× 推理范式（聚合/转变）两个维度正交划分
 
 3. **统一 Tool 接口**:
-   - `Search_Clips_In_Video(video_id, query, top_k)`: 文本查询检索片段
-   - `Get_Clip_Detail(clip_id)`: 获取片段详细描述
-   - `FINAL_ANSWER(answer, evidence_ids)`: 提交答案
-   - 设计动机：固定检索后端，差异只来自 agent 的查询生成和规划能力
+    - `Search_Clips_In_Video(video_id, query, top_k)`: 文本查询检索片段
+    - `Get_Clip_Detail(clip_id)`: 获取片段详细描述
+    - `FINAL_ANSWER(answer, evidence_ids)`: 提交答案
+    - 设计动机：固定检索后端，差异只来自 agent 的查询生成和规划能力
 
 ### 数据统计
 - 3000 QA / 447 视频 / 平均 26 分钟

@@ -36,20 +36,20 @@ VEGA-3D 是一个即插即用的双分支视觉编码框架：语义分支（Sig
 ### 关键设计
 
 1. **多视图一致性分析（3D Awareness Metric）**:
-   - 做什么：定量评估不同视觉编码器的3D感知能力
-   - 核心思路：定义 Multi-view Correspondence Score，将不同视图的特征投影到共享体素网格，用余弦相似度衡量同一3D点在不同视角下特征的一致性 $S_{\text{voxel}}^{(m)} = \frac{\mathbf{h}_{m,v_i}^\top \mathbf{h}_{m,v_j}}{\|\mathbf{h}_{m,v_i}\| \|\mathbf{h}_{m,v_j}\|}$
-   - 关键发现：DiT 架构（Wan2.1）的一致性得分 >96%，远超 UNet 架构（SVD、SD）；且该得分与下游3D理解性能呈强正相关。这为选择生成模型架构提供了理论依据。
+    - 做什么：定量评估不同视觉编码器的3D感知能力
+    - 核心思路：定义 Multi-view Correspondence Score，将不同视图的特征投影到共享体素网格，用余弦相似度衡量同一3D点在不同视角下特征的一致性 $S_{\text{voxel}}^{(m)} = \frac{\mathbf{h}_{m,v_i}^\top \mathbf{h}_{m,v_j}}{\|\mathbf{h}_{m,v_i}\| \|\mathbf{h}_{m,v_j}\|}$
+    - 关键发现：DiT 架构（Wan2.1）的一致性得分 >96%，远超 UNet 架构（SVD、SD）；且该得分与下游3D理解性能呈强正相关。这为选择生成模型架构提供了理论依据。
 
 2. **潜在世界模拟器（Latent World Simulator）**:
-   - 做什么：从冻结的视频扩散模型中提取隐式3D先验特征
-   - 核心思路：将输入视频通过 VAE 编码为 latent $\mathbf{z}_0$，然后按 Flow Matching 路径注入噪声得到 $\mathbf{z}_k = (1-t_k)\mathbf{z}_0 + t_k \epsilon$，送入冻结 DiT 用空文本提示前向传播，从第 $l$ 层中间层提取特征
-   - 设计动机：扩散模型在"去噪"过程中才真正激活其对3D结构的理解——直接用 $\mathbf{z}_0$ 的特征信息不够丰富。实验发现 $k=300$（$t_k=0.3$，中等噪声）和第20层 DiT 特征效果最优——太少的噪声不足以激活模型，太多则淹没了有用信号
-   - 巧妙之处：用空文本提示确保特征纯粹依赖视觉信号和学到的物理规律，避免语义幻觉
+    - 做什么：从冻结的视频扩散模型中提取隐式3D先验特征
+    - 核心思路：将输入视频通过 VAE 编码为 latent $\mathbf{z}_0$，然后按 Flow Matching 路径注入噪声得到 $\mathbf{z}_k = (1-t_k)\mathbf{z}_0 + t_k \epsilon$，送入冻结 DiT 用空文本提示前向传播，从第 $l$ 层中间层提取特征
+    - 设计动机：扩散模型在"去噪"过程中才真正激活其对3D结构的理解——直接用 $\mathbf{z}_0$ 的特征信息不够丰富。实验发现 $k=300$（$t_k=0.3$，中等噪声）和第20层 DiT 特征效果最优——太少的噪声不足以激活模型，太多则淹没了有用信号
+    - 巧妙之处：用空文本提示确保特征纯粹依赖视觉信号和学到的物理规律，避免语义幻觉
 
 3. **自适应门控融合（Adaptive Gated Fusion）**:
-   - 做什么：动态融合语义特征和生成特征
-   - 核心思路：先通过独立 MLP 将两个流投影到 LLM 的隐藏维度，然后对每个 token 位置计算标量门控值 $g_i = \sigma(\mathbf{W}_g^\top \text{Concat}(\text{LN}(\mathbf{F}_{\text{gen},i}), \text{LN}(\mathbf{F}_{\text{sem},i})) + b_g)$，最终融合为 $\mathbf{F}_i^{\text{fused}} = (1-g_i) \cdot \mathbf{F}_{\text{gen},i} + g_i \cdot \mathbf{F}_{\text{sem},i}$
-   - 设计动机：简单平均会让冲突的语义和几何信号互相干扰。门控机制让模型在需要定位时侧重几何先验，在需要识别时侧重语义特征——实现 token 级的动态权衡
+    - 做什么：动态融合语义特征和生成特征
+    - 核心思路：先通过独立 MLP 将两个流投影到 LLM 的隐藏维度，然后对每个 token 位置计算标量门控值 $g_i = \sigma(\mathbf{W}_g^\top \text{Concat}(\text{LN}(\mathbf{F}_{\text{gen},i}), \text{LN}(\mathbf{F}_{\text{sem},i})) + b_g)$，最终融合为 $\mathbf{F}_i^{\text{fused}} = (1-g_i) \cdot \mathbf{F}_{\text{gen},i} + g_i \cdot \mathbf{F}_{\text{sem},i}$
+    - 设计动机：简单平均会让冲突的语义和几何信号互相干扰。门控机制让模型在需要定位时侧重几何先验，在需要识别时侧重语义特征——实现 token 级的动态权衡
 
 ### 训练策略
 - 生成模型完全冻结，只训练 MLP 投影器、门控参数和 LLM

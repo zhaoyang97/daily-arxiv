@@ -1,9 +1,9 @@
 # Memory-Efficient Fine-Tuning Diffusion Transformers via Dynamic Patch Sampling and Block Skipping
 
-**日期**: 2026-03-21
-**arXiv**: [2603.20755](https://arxiv.org/abs/2603.20755)
-**代码**: 无（Qualcomm AI Research）
-**领域**: 图像生成 / 扩散模型 / 高效微调
+**日期**: 2026-03-21  
+**arXiv**: [2603.20755](https://arxiv.org/abs/2603.20755)  
+**代码**: 无（Qualcomm AI Research）  
+**领域**: 图像生成 / 扩散模型 / 高效微调  
 **关键词**: DiT-BlockSkip, FLUX, SANA, Dynamic Patch Sampling, Block Skipping, Residual Feature, LoRA, Personalization
 
 ## 一句话总结

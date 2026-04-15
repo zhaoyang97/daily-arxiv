@@ -27,21 +27,21 @@
 ### 关键设计
 
 1. **合成数据 Pipeline**:
-   - 基于 Blender 的刚体物理模拟器，3-7 个物体，随机质量/弹性/初速度/高度
-   - 多模态渲染：RGB + 深度图 + 物理参数（力、质量、角度等写入 prompt）
-   - 仅 3K 个合成视频即足够微调
+    - 基于 Blender 的刚体物理模拟器，3-7 个物体，随机质量/弹性/初速度/高度
+    - 多模态渲染：RGB + 深度图 + 物理参数（力、质量、角度等写入 prompt）
+    - 仅 3K 个合成视频即足够微调
 
 2. **Physical Knowledge Injection（Gram 矩阵关系对齐）**:
-   - 从 DiT 中间层提取 hidden states → MLP 投影到 V-JEPA2 特征空间
-   - **不做 token 级绝对值对齐**（过于严格，会破坏生成先验），而是对齐**关系矩阵**
-   - 计算时空 Gram 矩阵 $G_{i,j} = \cos(s_i, s_j)$，同时捕捉帧内空间几何和帧间因果关系
-   - 用 margin-based L1 惩罚对齐学生和教师的关系矩阵：容许小偏差（margin m），仅惩罚结构性差异
-   - 这样保留了生成多样性，同时注入了运动学约束
+    - 从 DiT 中间层提取 hidden states → MLP 投影到 V-JEPA2 特征空间
+    - **不做 token 级绝对值对齐**（过于严格，会破坏生成先验），而是对齐**关系矩阵**
+    - 计算时空 Gram 矩阵 $G_{i,j} = \cos(s_i, s_j)$，同时捕捉帧内空间几何和帧间因果关系
+    - 用 margin-based L1 惩罚对齐学生和教师的关系矩阵：容许小偏差（margin m），仅惩罚结构性差异
+    - 这样保留了生成多样性，同时注入了运动学约束
 
 3. **3D Geometry Injection（深度监督）**:
-   - 在 DiT 中间层附加轻量 3D 卷积头预测深度 latent
-   - 四个互补深度损失：latent loss（全局结构）+ pixel SI loss（尺度不变的像素级）+ structure loss（空间梯度匹配，保留边缘）+ temporal loss（帧间深度变化一致性）
-   - 推理时丢弃深度头，无额外开销
+    - 在 DiT 中间层附加轻量 3D 卷积头预测深度 latent
+    - 四个互补深度损失：latent loss（全局结构）+ pixel SI loss（尺度不变的像素级）+ structure loss（空间梯度匹配，保留边缘）+ temporal loss（帧间深度变化一致性）
+    - 推理时丢弃深度头，无额外开销
 
 ### 训练目标
 $\mathcal{L} = \mathcal{L}_{FM} + \lambda_{Phys} \mathcal{L}_{Phys} + \lambda_{3D} \mathcal{L}_{3D}$

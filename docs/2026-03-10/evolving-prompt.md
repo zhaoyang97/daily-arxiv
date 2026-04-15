@@ -14,9 +14,9 @@
 1. **领域现状**: 大规模 VLM（CLIP 等）的参数高效适配是热点方向。提示学习（CoOp/CoCoOp/MaPLe）通过插入可学习连续 token 冻结骨干、减少可调参数。
 
 2. **现有痛点**: 
-   - **结构性缺陷**：现有方法在每层独立插入提示，破坏了编码器的层间语义信息流
-   - **模态偏差**：MaPLe 等方法展现文本中心偏差，未充分利用视觉-语言互补信息
-   - **灾难性遗忘**：在少样本适配过程中，可学习提示迅速偏离预训练语义锚点，过拟合少量下游数据，破坏零样本泛化能力
+    - **结构性缺陷**：现有方法在每层独立插入提示，破坏了编码器的层间语义信息流
+    - **模态偏差**：MaPLe 等方法展现文本中心偏差，未充分利用视觉-语言互补信息
+    - **灾难性遗忘**：在少样本适配过程中，可学习提示迅速偏离预训练语义锚点，过拟合少量下游数据，破坏零样本泛化能力
 
 3. **核心矛盾**: 适配需要修改提示来编码任务特异性知识，但修改又会覆盖预训练通用知识——如何在两者之间取得平衡？
 
@@ -32,26 +32,26 @@
 ### 关键设计
 
 1. **模态共享提示投射器（MPP）**:
-   - 做什么：从统一嵌入空间生成跨层、跨模态的提示，替代逐层独立提示
-   - 核心思路：共享权重矩阵 $W_{\text{shared}}^m$ 捕获跨层通用知识 + 层特定 low-rank adapter $A_i B_i$ 编码层级差异
-   - 投影器权重：$W_i = W_{\text{shared}} + A_i B_i$（公式7）
-   - 参数复杂度从 $\mathcal{O}((L-J+1) \cdot d_r d_m)$ 降至 $\mathcal{O}(d_r d_m + (L-J+1) \cdot r(d_r+d_m))$
-   - 设计动机：共享基础 + 低秩适配实现"结构化对齐 + 层级差异化"，避免独立提示的语义断裂
+    - 做什么：从统一嵌入空间生成跨层、跨模态的提示，替代逐层独立提示
+    - 核心思路：共享权重矩阵 $W_{\text{shared}}^m$ 捕获跨层通用知识 + 层特定 low-rank adapter $A_i B_i$ 编码层级差异
+    - 投影器权重：$W_i = W_{\text{shared}} + A_i B_i$（公式7）
+    - 参数复杂度从 $\mathcal{O}((L-J+1) \cdot d_r d_m)$ 降至 $\mathcal{O}(d_r d_m + (L-J+1) \cdot r(d_r+d_m))$
+    - 设计动机：共享基础 + 低秩适配实现"结构化对齐 + 层级差异化"，避免独立提示的语义断裂
 
 2. **增量幅度-方向解耦（Evolutionary Strategy）**:
-   - 做什么：将 low-rank 更新分解为方向和幅度，冻结早期方向仅训练幅度
-   - 核心思路：在 epoch $t$，adapter $\Delta W_i^t = \alpha_i^t \cdot \overline{A_i^t B_i^t}$（公式8），其中 $\alpha_i^t$ 是可学习幅度，$\overline{A_i^t B_i^t}$ 是归一化方向矩阵
-   - 关键约束：epoch $T$ 训练时，**冻结所有历史方向** $\{\overline{A_i^t B_i^t}\}_{t=1}^{T-1}$，仅训练幅度 $\{\alpha_i^t\}_{t=1}^T$ 和当前新方向 $\overline{A_i^T B_i^T}$
-   - 完整 adapter 权重为历史累积：$W_i^T = W_{\text{shared}} + \sum_{t=1}^{T-1} \alpha_i^t \overline{A_i^t B_i^t} + \alpha_i^T \overline{A_i^T B_i^T}$（公式9）
-   - 设计动机：研究表明方向比幅度更关键（Liu et al., DoRA）——冻结方向保不忘，调幅度保适配
-   - **自适应秩衰减**：后期 epoch 降低 rank（公式10），减少过拟合风险和计算开销
+    - 做什么：将 low-rank 更新分解为方向和幅度，冻结早期方向仅训练幅度
+    - 核心思路：在 epoch $t$，adapter $\Delta W_i^t = \alpha_i^t \cdot \overline{A_i^t B_i^t}$（公式8），其中 $\alpha_i^t$ 是可学习幅度，$\overline{A_i^t B_i^t}$ 是归一化方向矩阵
+    - 关键约束：epoch $T$ 训练时，**冻结所有历史方向** $\{\overline{A_i^t B_i^t}\}_{t=1}^{T-1}$，仅训练幅度 $\{\alpha_i^t\}_{t=1}^T$ 和当前新方向 $\overline{A_i^T B_i^T}$
+    - 完整 adapter 权重为历史累积：$W_i^T = W_{\text{shared}} + \sum_{t=1}^{T-1} \alpha_i^t \overline{A_i^t B_i^t} + \alpha_i^T \overline{A_i^T B_i^T}$（公式9）
+    - 设计动机：研究表明方向比幅度更关键（Liu et al., DoRA）——冻结方向保不忘，调幅度保适配
+    - **自适应秩衰减**：后期 epoch 降低 rank（公式10），减少过拟合风险和计算开销
 
 3. **特征几何正则化（FGR）**:
-   - 做什么：强制特征维度去相关，防止表示坍塌
-   - 核心思路：基于 Soft-HGR 最大相关框架——标准 InfoNCE 仅做实例级对齐，忽略特征空间的内在几何结构
-   - $\mathcal{L}_{fgr} = \frac{1}{2} \text{tr}(\text{cov}(\mathcal{F}^v) \cdot \text{cov}(\mathcal{F}^t))$（公式12）
-   - 最小化视觉和文本特征协方差矩阵的乘积→促进正交化、减少冗余
-   - 设计动机：少样本场景下维度冗余导致退化——FGR 是理论驱动的正则化
+    - 做什么：强制特征维度去相关，防止表示坍塌
+    - 核心思路：基于 Soft-HGR 最大相关框架——标准 InfoNCE 仅做实例级对齐，忽略特征空间的内在几何结构
+    - $\mathcal{L}_{fgr} = \frac{1}{2} \text{tr}(\text{cov}(\mathcal{F}^v) \cdot \text{cov}(\mathcal{F}^t))$（公式12）
+    - 最小化视觉和文本特征协方差矩阵的乘积→促进正交化、减少冗余
+    - 设计动机：少样本场景下维度冗余导致退化——FGR 是理论驱动的正则化
 
 ### 损失函数
 $$\mathcal{L}_{total} = \mathcal{L}_{InfoNCE} + \gamma \mathcal{L}_{fgr} + \eta \mathcal{L}_{kcl}$$

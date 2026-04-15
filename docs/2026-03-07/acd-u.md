@@ -31,18 +31,18 @@ ACD-U 由三个核心组件组成，按训练阶段逐步激活：
 ### 关键设计
 
 1. **Unlearning Target Selection（遗忘目标选择）**: 通过三个条件的集成识别应被遗忘的样本：
-   - **Condition 1 (Low-loss)**: 基于记忆效应，低损失样本更可能是已被记忆的噪声样本，用分位数阈值 $p_{low}$ 筛选
-   - **Condition 2 (Loss-drop)**: 损失值在最近 $E_{UP}$ 个 epoch 内下降的样本，说明模型正在记忆它们，用分位数阈值 $p_{drop}$ 筛选
-   - **Condition 3 (CLIP-consistent)**: 使用独立的 CLIP 模型做 zero-shot 预测——若 CLIP 预测与给定标签一致，则该样本很可能是干净的，从遗忘候选中排除
-   - 最终遗忘集：$D_u^{(l)} = (D_{pl}^{(l)} \cup D_{\Delta l}^{(l)}) \setminus D_{CS}$
+    - **Condition 1 (Low-loss)**: 基于记忆效应，低损失样本更可能是已被记忆的噪声样本，用分位数阈值 $p_{low}$ 筛选
+    - **Condition 2 (Loss-drop)**: 损失值在最近 $E_{UP}$ 个 epoch 内下降的样本，说明模型正在记忆它们，用分位数阈值 $p_{drop}$ 筛选
+    - **Condition 3 (CLIP-consistent)**: 使用独立的 CLIP 模型做 zero-shot 预测——若 CLIP 预测与给定标签一致，则该样本很可能是干净的，从遗忘候选中排除
+    - 最终遗忘集：$D_u^{(l)} = (D_{pl}^{(l)} \cup D_{\Delta l}^{(l)}) \setminus D_{CS}$
 
 2. **Selective Forgetting（选择性遗忘）**: 采用基于 KL 散度的遗忘损失（受 SCRUB 启发）：$\mathcal{L}_{unl} = -T_{unl}^2 \cdot D_{KL}(p_{\theta_{ref}} \| p_{\theta_l})$。关键在于负号——将 KL 散度最小化转为最大化，使当前模型对遗忘目标的预测远离遗忘前保存的参考模型预测。遗忘前保存当前参数作为参考模型 $\theta_{ref}$，遗忘执行 $E_{UD}$ 个 epoch。
 
 3. **Asymmetric Co-teaching with Different Architectures (ACD)**: 核心创新在于**非对称训练策略**：
-   - **Net V（CLIP 预训练 ViT）**: 仅在高置信干净样本上训练（纯有监督），不使用未标注数据，避免性能退化
-   - **Net A（随机初始化 CNN）**: 同时使用标注和未标注数据做 SSL 训练（含 consistency loss $\mathcal{L}_u$）
-   - 样本选择采用交叉策略：net A 用 net V 的 GMM 概率选数据，反之亦然，缓解确认偏差
-   - 训练数据 $D_t = D \setminus (D_u^{(A)} \cup D_u^{(V)})$，排除两个网络的遗忘目标
+    - **Net V（CLIP 预训练 ViT）**: 仅在高置信干净样本上训练（纯有监督），不使用未标注数据，避免性能退化
+    - **Net A（随机初始化 CNN）**: 同时使用标注和未标注数据做 SSL 训练（含 consistency loss $\mathcal{L}_u$）
+    - 样本选择采用交叉策略：net A 用 net V 的 GMM 概率选数据，反之亦然，缓解确认偏差
+    - 训练数据 $D_t = D \setminus (D_u^{(A)} \cup D_u^{(V)})$，排除两个网络的遗忘目标
 
 ### 损失函数 / 训练策略
 

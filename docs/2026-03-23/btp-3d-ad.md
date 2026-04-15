@@ -1,9 +1,9 @@
 # Back to Point: Exploring Point-Language Models for Zero-Shot 3D Anomaly Detection
 
-**日期**: 2026-03-23
-**arXiv**: [2603.21511](https://arxiv.org/abs/2603.21511)
-**代码**: [BTP-3DAD](https://github.com/wistful-8029/BTP-3DAD)
-**领域**: 3D视觉 / AI安全
+**日期**: 2026-03-23  
+**arXiv**: [2603.21511](https://arxiv.org/abs/2603.21511)  
+**代码**: [BTP-3DAD](https://github.com/wistful-8029/BTP-3DAD)  
+**领域**: 3D视觉 / AI安全  
 **关键词**: 零样本3D异常检测, Point-Language Model, 多粒度特征融合, 几何描述子, ULIP
 
 ## 一句话总结
@@ -140,20 +140,20 @@
 ### 关键设计
 
 1. **Patch 级特征挖掘**:
-   - 做什么：从 ULIP 编码器第 2/5/8/11 层提取中间层 patch 表示
-   - 核心思路：不同层捕获不同抽象级别的几何和语义信息，多层融合增强局部变化敏感度
-   - 设计动机：ULIP 原本只用最终全局嵌入，对点级异常不敏感
+    - 做什么：从 ULIP 编码器第 2/5/8/11 层提取中间层 patch 表示
+    - 核心思路：不同层捕获不同抽象级别的几何和语义信息，多层融合增强局部变化敏感度
+    - 设计动机：ULIP 原本只用最终全局嵌入，对点级异常不敏感
 
 2. **几何特征创建模块（GFCM）**:
-   - 做什么：用 PointNet 架构从每个 patch 的局部点集提取可学习几何描述子
-   - 公式：$\mathbf{f}_i = \phi(\max_{j=1,...,M} \text{MLP}(\mathbf{p}_{ij}))$
-   - 设计动机：替代不可学习的 FPFH，可端到端优化且表达能力更强
-   - 额外监督：通过对比损失将 GFCM 输出与 FPFH 对齐
+    - 做什么：用 PointNet 架构从每个 patch 的局部点集提取可学习几何描述子
+    - 公式：$\mathbf{f}_i = \phi(\max_{j=1,...,M} \text{MLP}(\mathbf{p}_{ij}))$
+    - 设计动机：替代不可学习的 FPFH，可端到端优化且表达能力更强
+    - 额外监督：通过对比损失将 GFCM 输出与 FPFH 对齐
 
 3. **多粒度特征嵌入模块（MGFEM）**:
-   - 做什么：融合三类信息——多层语义特征、几何特征、CLS token
-   - 核心思路：先投影到统一嵌入空间，再 concat + fusion 层得到 $\mathbf{Z} \in \mathbb{R}^{N \times D}$
-   - 层间权重 $\alpha_l$ 通过 softmax 自适应学习
+    - 做什么：融合三类信息——多层语义特征、几何特征、CLS token
+    - 核心思路：先投影到统一嵌入空间，再 concat + fusion 层得到 $\mathbf{Z} \in \mathbb{R}^{N \times D}$
+    - 层间权重 $\alpha_l$ 通过 softmax 自适应学习
 
 4. **混合可学习文本提示**: 4 个可学习 token 插入 "normal"/"defective" 模板之间
 

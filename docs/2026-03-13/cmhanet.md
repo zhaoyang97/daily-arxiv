@@ -16,6 +16,7 @@
 4. **跨模态机遇**: RGB-D 传感器日益普及，天然提供互补 2D+3D 数据流，但现有融合方法多依赖简单拼接
 
 ## 方法详解
+
 ### 整体框架
 平行编码器（KPConv-FPN 提取超点特征 $F_s^p \in \mathbb{R}^{N_P \times d}$ + ResUNet-50 提取图像特征）→ 三种注意力 $N$ 次迭代交替 → Sinkhorn 超点匹配 + dustbin → 密集对应精化 → Weighted SVD + Local-to-Global 变换估计
 

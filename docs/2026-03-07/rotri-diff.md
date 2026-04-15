@@ -1,9 +1,9 @@
 # RoTri-Diff: A Spatial Robot-Object Triadic Interaction-Guided Diffusion Model for Bimanual Manipulation
 
-**日期**: 2026-03-07
-**arXiv**: [2603.07165](https://arxiv.org/abs/2603.07165)
-**代码**: [项目主页](https://rotri-diff.github.io/)
-**领域**: 图像生成
+**日期**: 2026-03-07  
+**arXiv**: [2603.07165](https://arxiv.org/abs/2603.07165)  
+**代码**: [项目主页](https://rotri-diff.github.io/)  
+**领域**: 图像生成  
 **关键词**: bimanual manipulation, diffusion model, triadic interaction, imitation learning, 6D pose
 
 ## 一句话总结

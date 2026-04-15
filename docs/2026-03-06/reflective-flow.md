@@ -12,36 +12,37 @@
 ## 研究背景与动机
 1. **领域现状**: Flow Matching 模型（如 FLUX）已成为强大的文生图替代方案，生成质量与传统扩散模型相当甚至更优。推理增强技术（如 Z-Sampling、CFG++）已被证明可提升传统扩散模型的生成质量。
 2. **现有痛点**: 
-   - 现有推理增强方法主要针对传统扩散模型设计，直接应用到 flow 模型效果差
-   - CFG-distilled 模型（如 FLUX）将引导信号蒸馏入权重，缺乏显式无条件分支，传统 CFG 方法不适用
-   - 已有方法多基于启发式噪声操纵，缺乏理论解释
+    - 现有推理增强方法主要针对传统扩散模型设计，直接应用到 flow 模型效果差
+    - CFG-distilled 模型（如 FLUX）将引导信号蒸馏入权重，缺乏显式无条件分支，传统 CFG 方法不适用
+    - 已有方法多基于启发式噪声操纵，缺乏理论解释
 3. **核心矛盾**: Flow Matching 的独特几何性质 + CFG-distilled 架构使得现有推理增强策略失效，需要专门的解决方案。
 4. **切入角度**: 通过文本嵌入插值创建语义差异，利用 "高权去噪→低权反演" 的反射流机制隐式估计对齐分数梯度。
 5. **核心idea一句话**: 在每个推理步中执行 "高语义权重去噪→低语义权重反演→正常去噪" 三步操作，产生的位移向量即为文本-图像对齐分数梯度的近似，等效于隐式梯度上升优化。
 
 ## 方法详解
+
 ### 整体框架
 RF-Sampling 在 ODE 求解器的每个积分步中执行三阶段操作：高权去噪 → 低权反演 → 正常去噪。通过文本嵌入的线性插值参数化语义空间中的两个状态，绕过对显式 CFG 的依赖。
 
 ### 关键设计
 1. **语义空间参数化**:
-   - 文本嵌入插值：$c_{mix}(\beta) = \beta \cdot c_{text} + (1-\beta) \cdot c_{uncond}$
-   - 放大权重：$c_w(s, \beta) = c_{text} + s \cdot c_{mix}(\beta)$
-   - 高权状态 $\{s_{high}, \beta_{high}\}$：强语义对齐
-   - 低权状态 $\{s_{low}, \beta_{low}\}$：弱对齐/近似无条件
-   - 设计动机：通过 $\beta$ 和 $s$ 组合控制文本引导程度
+    - 文本嵌入插值：$c_{mix}(\beta) = \beta \cdot c_{text} + (1-\beta) \cdot c_{uncond}$
+    - 放大权重：$c_w(s, \beta) = c_{text} + s \cdot c_{mix}(\beta)$
+    - 高权状态 $\{s_{high}, \beta_{high}\}$：强语义对齐
+    - 低权状态 $\{s_{low}, \beta_{low}\}$：弱对齐/近似无条件
+    - 设计动机：通过 $\beta$ 和 $s$ 组合控制文本引导程度
 
 2. **反射位移向量的理论推导**:
-   - 核心定理（Theorem 1）：反射位移 $\Delta_{RF}$ 在一阶 Taylor 展开下满足 $\Delta_{RF} = \mathcal{A} \cdot \delta t \cdot \nabla_x J(x_t) + \mathcal{O}(\|\mathbf{u}\|^2)$
-   - 其中 $\mathcal{A} = s_{high}\beta_{high} - s_{low}\beta_{low} > 0$ 为对齐系数
-   - 保证更新方向为对齐分数的上升方向：$J(x_t'') > J(x_t)$
-   - Theorem 2 给出二阶最优步长：$\gamma^* = \frac{\langle\Delta_{RF}, \nabla_x J\rangle}{|\Delta_{RF}^\top \mathbf{H}(x_t) \Delta_{RF}|}$
+    - 核心定理（Theorem 1）：反射位移 $\Delta_{RF}$ 在一阶 Taylor 展开下满足 $\Delta_{RF} = \mathcal{A} \cdot \delta t \cdot \nabla_x J(x_t) + \mathcal{O}(\|\mathbf{u}\|^2)$
+    - 其中 $\mathcal{A} = s_{high}\beta_{high} - s_{low}\beta_{low} > 0$ 为对齐系数
+    - 保证更新方向为对齐分数的上升方向：$J(x_t'') > J(x_t)$
+    - Theorem 2 给出二阶最优步长：$\gamma^* = \frac{\langle\Delta_{RF}, \nabla_x J\rangle}{|\Delta_{RF}^\top \mathbf{H}(x_t) \Delta_{RF}|}$
 
 3. **三阶段推理过程**:
-   - **Stage 1 (高权去噪)**: 用 $c_{high}$ 执行 $\alpha$ 步前向 ODE，强对齐文本
-   - **Stage 2 (低权反演)**: 用 $c_{low}$ 从去噪结果执行 $\alpha$ 步反向 ODE，"反射"回更语义中心的区域
-   - **Stage 3 (正常去噪)**: 用合并比 $\gamma$ 执行梯度上升，再标准去噪一步
-   - 更新公式：$x_t'' = x_t + \gamma \cdot (x_t - x_t')$，然后 $x_{t-1}'' = x_t'' + v_\theta(x_t'', t, c)\Delta t$
+    - **Stage 1 (高权去噪)**: 用 $c_{high}$ 执行 $\alpha$ 步前向 ODE，强对齐文本
+    - **Stage 2 (低权反演)**: 用 $c_{low}$ 从去噪结果执行 $\alpha$ 步反向 ODE，"反射"回更语义中心的区域
+    - **Stage 3 (正常去噪)**: 用合并比 $\gamma$ 执行梯度上升，再标准去噪一步
+    - 更新公式：$x_t'' = x_t + \gamma \cdot (x_t - x_t')$，然后 $x_{t-1}'' = x_t'' + v_\theta(x_t'', t, c)\Delta t$
 
 ### 损失函数 / 训练策略
 - **完全无训练**：纯推理时增强，不修改模型权重
@@ -50,6 +51,7 @@ RF-Sampling 在 ODE 求解器的每个积分步中执行三阶段操作：高权
 - FLUX-Dev: $s_{high}=3.5$，$s_{low}=0$，$\alpha=1$，50 步推理
 
 ## 实验关键数据
+
 ### 主实验（HPDv2 数据集平均分）
 
 | 模型 | 方法 | AES↑ | HPSv2↑ |

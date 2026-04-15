@@ -27,11 +27,11 @@
 1. **数据来源**: Ego4D + Ego-Exo4D（公开数据集）+ 自录视频，涵盖烹饪、自行车修理等多种场景
 2. **视频预处理**: 按场景标签过滤 → 提取主活动起止帧 → 检查无运动模糊、无镜头切换、无严重遮挡
 3. **场景标注管线（5 步）**:
-   - **物体标签提取**: Recognize Anything Plus Model（图像）+ spaCy（文本动作描述）→ 合并 → LLM + 规则过滤无效标签（同义词、人体部位）
-   - **物体定位**: Grounding DINO 检测边界框，每个实例用 "bowl.2" 格式区分
-   - **属性生成**: Qwen3-VL-235B 基于最终场景图像描述每个物体的形状、颜色、大小、纹理、状态等
-   - **关系生成**: Qwen3-VL-235B 生成关系三元组 (object.0, relation, object.1)，含空间关系（under/on/next_to）和交互关系（holding/pouring）
-   - **标注校正**: GPT-5.2 最终校正 + 人工质控审核
+    - **物体标签提取**: Recognize Anything Plus Model（图像）+ spaCy（文本动作描述）→ 合并 → LLM + 规则过滤无效标签（同义词、人体部位）
+    - **物体定位**: Grounding DINO 检测边界框，每个实例用 "bowl.2" 格式区分
+    - **属性生成**: Qwen3-VL-235B 基于最终场景图像描述每个物体的形状、颜色、大小、纹理、状态等
+    - **关系生成**: Qwen3-VL-235B 生成关系三元组 (object.0, relation, object.1)，含空间关系（under/on/next_to）和交互关系（holding/pouring）
+    - **标注校正**: GPT-5.2 最终校正 + 人工质控审核
 
 ### 评估协议（三层级）
 - **物体级覆盖率 $S_{obj}$**: Sentence-BERT 计算候选物体与标注物体的相似度矩阵 → 互最大匹配 → 软覆盖分数

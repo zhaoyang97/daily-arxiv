@@ -25,15 +25,15 @@
 ### 关键设计
 
 1. **粗到细四分支编码**:
-   - 物体编码：$\mathbf{E}_o=\text{Proj}_o([\mathbf{f}_v; \mathbf{f}_s; \mathbf{f}_l])$，融合局部俯视图（CLIP）+ 3D 形状（Uni3D）+ 地标名称（BERT）
-   - 关系编码：KNN 近邻 + 空间相关性注意力 $\alpha_k=\text{softmax}(\mathbf{f}_s^{(t)}\cdot[\mathbf{f}_s^{(k)}+\phi(\Delta\mathbf{p}^{(k)})])$，建模物体间的空间拓扑
-   - 场景编码：$\mathbf{E}_s=\text{Proj}_s([\mathbf{F}_v^{\text{Sce}}; \mathbf{F}_l^{\text{Sce}}])$，全局俯视图 + 聚合地标特征
-   - 文本编码：标准 LLM token embedding
-   - 设计动机：城市中的物体描述、物体关系、全局场景理解需要不同粒度的感知
+    - 物体编码：$\mathbf{E}_o=\text{Proj}_o([\mathbf{f}_v; \mathbf{f}_s; \mathbf{f}_l])$，融合局部俯视图（CLIP）+ 3D 形状（Uni3D）+ 地标名称（BERT）
+    - 关系编码：KNN 近邻 + 空间相关性注意力 $\alpha_k=\text{softmax}(\mathbf{f}_s^{(t)}\cdot[\mathbf{f}_s^{(k)}+\phi(\Delta\mathbf{p}^{(k)})])$，建模物体间的空间拓扑
+    - 场景编码：$\mathbf{E}_s=\text{Proj}_s([\mathbf{F}_v^{\text{Sce}}; \mathbf{F}_l^{\text{Sce}}])$，全局俯视图 + 聚合地标特征
+    - 文本编码：标准 LLM token embedding
+    - 设计动机：城市中的物体描述、物体关系、全局场景理解需要不同粒度的感知
 
 2. **两阶段训练**:
-   - Stage 1：用 caption 任务对齐多模态嵌入空间
-   - Stage 2：用分析/定位/规划任务微调推理能力
+    - Stage 1：用 caption 任务对齐多模态嵌入空间
+    - Stage 2：用分析/定位/规划任务微调推理能力
 
 3. **多维评估协议**: 传统文本相似度指标（BLEU/ROUGE/METEOR）+ LLM-based 语义评估（逻辑性/可靠性，0-10 分）
 

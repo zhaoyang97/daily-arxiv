@@ -29,22 +29,22 @@
 ### 关键设计
 
 1. **Comparison Encoder**:
-   - 做什么：在视觉编码阶段就捕捉两张图像之间的细粒度差异
-   - 核心思路：受 DETR 启发，设计可学习的 comparison queries（100 个），通过跨注意力机制与配对图像特征交互。具体地，每张图像的细粒度特征与其配对图像做 cross-attention，然后 comparison queries 压缩交互结果为固定长度的 tokens
-   - 设计动机：**不修改原始图像特征**，而是生成额外的 comparison tokens — 这保证了基础模型能力不退化，同时 comparison tokens 提供了补充性的差异线索。相比 OneDiff 等直接修改图像特征的做法更加安全
-   - 支持流式处理：每张图像只与前一张配对（第一张自配对），可适配任意数量的输入图像
+    - 做什么：在视觉编码阶段就捕捉两张图像之间的细粒度差异
+    - 核心思路：受 DETR 启发，设计可学习的 comparison queries（100 个），通过跨注意力机制与配对图像特征交互。具体地，每张图像的细粒度特征与其配对图像做 cross-attention，然后 comparison queries 压缩交互结果为固定长度的 tokens
+    - 设计动机：**不修改原始图像特征**，而是生成额外的 comparison tokens — 这保证了基础模型能力不退化，同时 comparison tokens 提供了补充性的差异线索。相比 OneDiff 等直接修改图像特征的做法更加安全
+    - 支持流式处理：每张图像只与前一张配对（第一张自配对），可适配任意数量的输入图像
 
 2. **Chat-AD 数据集**:
-   - 做什么：构建最大规模的工业多模态数据集（62万样本，200万QA对，327个工业类别）
-   - 核心思路：从 VIADUCT、Real-IAD、MANTA 等公开+私有数据集收集 112 万工业图像，每个 query 图像配对一个正常模板图像（对比式范式），然后通过 GPT-4o/Qwen2.5-VL-72B 生成对比描述、多轮对话、可验证 QA 和推理数据，经人工迭代精修确保质量
-   - 设计动机：以"对比"为核心数据范式——生成的文本显式描述异常图像与正常模板之间的差异，而非简单的图像描述，直接强化视觉对比范式
-   - 数据与 MMAD 测试集类别无重叠，避免数据泄漏
+    - 做什么：构建最大规模的工业多模态数据集（62万样本，200万QA对，327个工业类别）
+    - 核心思路：从 VIADUCT、Real-IAD、MANTA 等公开+私有数据集收集 112 万工业图像，每个 query 图像配对一个正常模板图像（对比式范式），然后通过 GPT-4o/Qwen2.5-VL-72B 生成对比描述、多轮对话、可验证 QA 和推理数据，经人工迭代精修确保质量
+    - 设计动机：以"对比"为核心数据范式——生成的文本显式描述异常图像与正常模板之间的差异，而非简单的图像描述，直接强化视觉对比范式
+    - 数据与 MMAD 测试集类别无重叠，避免数据泄漏
 
 3. **四阶段渐进训练**:
-   - **Stage 0 (学习比较)**: 在通用变化检测数据（CLEVR-Change, MagicBrush, Spot-the-diff，3万样本）上全参数微调 Comparison Encoder，冻结 LLM。教会比较模块感知视觉差异
-   - **Stage 1 (工业对比)**: LoRA 微调 Comparison Encoder + LLM，用 21.8 万工业对比描述数据做领域对齐。文本显式强调异常 vs 正常的差异
-   - **Stage 2 (多任务指令)**: 解锁所有模块端到端 LoRA 微调，用 29.8 万多轮对话数据覆盖判别/分类/描述/定位/分析等多种 IAD 任务。混合通用数据防止遗忘
-   - **Stage 3 (推理强化)**: 基于 GRPO 的强化学习，用可验证的多选题和定位任务做奖励。奖励函数结合选择题准确率和 bbox IoU：$R(x,y) = \lambda R_{\text{fmt}}(y) + \mathbf{1}[C_{\text{pred}}=C_{\text{gt}}]$（多选题）或 $\mathbf{IoU}(B_{\text{pred}}, M_{\text{gt}})$（定位）
+    - **Stage 0 (学习比较)**: 在通用变化检测数据（CLEVR-Change, MagicBrush, Spot-the-diff，3万样本）上全参数微调 Comparison Encoder，冻结 LLM。教会比较模块感知视觉差异
+    - **Stage 1 (工业对比)**: LoRA 微调 Comparison Encoder + LLM，用 21.8 万工业对比描述数据做领域对齐。文本显式强调异常 vs 正常的差异
+    - **Stage 2 (多任务指令)**: 解锁所有模块端到端 LoRA 微调，用 29.8 万多轮对话数据覆盖判别/分类/描述/定位/分析等多种 IAD 任务。混合通用数据防止遗忘
+    - **Stage 3 (推理强化)**: 基于 GRPO 的强化学习，用可验证的多选题和定位任务做奖励。奖励函数结合选择题准确率和 bbox IoU：$R(x,y) = \lambda R_{\text{fmt}}(y) + \mathbf{1}[C_{\text{pred}}=C_{\text{gt}}]$（多选题）或 $\mathbf{IoU}(B_{\text{pred}}, M_{\text{gt}})$（定位）
 
 ### 损失函数 / 训练策略
 - SFT 阶段用标准 cross-entropy loss，RL 阶段用 GRPO + 组合奖励函数

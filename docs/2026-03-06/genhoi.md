@@ -17,24 +17,25 @@
 5. **核心idea一句话**: 用 Head-Sliding RoPE 消除 3D RoPE 的时间衰减、用空间注意力门控将物体信息精准注入 HOI 区域，两者协同实现高质量 HOI 视频。
 
 ## 方法详解
+
 ### 整体框架
 GenHOI 基于预训练 Wan-14B-I2V 视频生成模型，增加三个轻量组件：HOI Condition Unit（条件输入）、Head-Sliding RoPE（时间均衡注入）、Spatial Attention Gate（空间选择性注入）。训练以自监督重建方式进行。
 
 ### 关键设计
 1. **HOI Condition Unit (HCU)**:
-   - 将视频 inpainting 与物体参考注入统一为条件输入
-   - 构造参考视频 $\mathbf{V}_r$：第 0 帧保留原始，后续帧用二值掩码标记 HOI 区域（掩码区域填充常数 $\lambda=127$）
-   - 所有输入在 VAE 潜空间中通道拼接：$\mathbf{L_v} = \text{Concat}(\mathbf{X_t}, \mathcal{E}(\mathbf{V}_r), \psi(\mathbf{V}_{mask}))$
-   - 不引入额外网络分支或参数
+    - 将视频 inpainting 与物体参考注入统一为条件输入
+    - 构造参考视频 $\mathbf{V}_r$：第 0 帧保留原始，后续帧用二值掩码标记 HOI 区域（掩码区域填充常数 $\lambda=127$）
+    - 所有输入在 VAE 潜空间中通道拼接：$\mathbf{L_v} = \text{Concat}(\mathbf{X_t}, \mathcal{E}(\mathbf{V}_r), \psi(\mathbf{V}_{mask}))$
+    - 不引入额外网络分支或参数
 
 2. **Head-Sliding RoPE**:
-   - **问题**：标准 3D RoPE 给条件 token 分配固定帧索引（如 -1），导致注意力响应随时间距离衰减——早期帧物体清晰，后期帧退化
-   - **解决**：让不同注意力头分配不同的帧索引给参考 token：$\lceil \frac{N_f}{N_{head}} n_{head} \rceil$
-   - 效果：参考 token 的注意力响应在视频全时间跨度上被均匀平均
-   - 空间坐标保持不变，仅修改时间维度的 RoPE
+    - **问题**：标准 3D RoPE 给条件 token 分配固定帧索引（如 -1），导致注意力响应随时间距离衰减——早期帧物体清晰，后期帧退化
+    - **解决**：让不同注意力头分配不同的帧索引给参考 token：$\lceil \frac{N_f}{N_{head}} n_{head} \rceil$
+    - 效果：参考 token 的注意力响应在视频全时间跨度上被均匀平均
+    - 空间坐标保持不变，仅修改时间维度的 RoPE
 
 3. **Spatial Attention Gate（两级空间门控）**:
-   - **Hard Mask Gate (HMG)**：二值掩码控制信息流向
+    - **Hard Mask Gate (HMG)**：二值掩码控制信息流向
      - 允许 HOI 区域 query 关注参考 key
      - 阻止背景 query 关注参考 key（避免背景污染）
      - 阻止参考 query 反向关注视频 key（避免自回归泄漏）
@@ -50,6 +51,7 @@ GenHOI 基于预训练 Wan-14B-I2V 视频生成模型，增加三个轻量组件
 - 推理时参考物体图像由用户提供，首帧通过图像编辑方法生成
 
 ## 实验关键数据
+
 ### 主实验（AnchorCrafter_HOI 数据集）
 
 **短视频生成（81 帧）**:

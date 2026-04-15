@@ -28,19 +28,19 @@ PreLabellingProbe 提出仅用每类一张标注图像即可预测 VLFM 的 zero
 ### 关键设计
 
 1. **反事实生成 (Counterfactual Probing)**:
-   - 用 GPT-5-Nano 对每张图生成一句真实描述 $T_{pc}$
-   - LLM 基于 $T_{pc}$ 生成 $N=5$ 个反事实描述 $T_{cf_i}$——语义相关但属于其他视觉可混淆的类别（"hard negatives"）
-   - 设计动机：如果 CLIP 能区分真描述和反事实，说明该概念在 embedding 空间中得到了良好表示
+    - 用 GPT-5-Nano 对每张图生成一句真实描述 $T_{pc}$
+    - LLM 基于 $T_{pc}$ 生成 $N=5$ 个反事实描述 $T_{cf_i}$——语义相关但属于其他视觉可混淆的类别（"hard negatives"）
+    - 设计动机：如果 CLIP 能区分真描述和反事实，说明该概念在 embedding 空间中得到了良好表示
 
 2. **双通道相似度特征**:
-   - 通道 1：反事实通道——图像 vs 真描述 + 5 个反事实的余弦相似度（6 维）
-   - 通道 2：标准 zero-shot 通道——图像 vs "A photo of {label}" + 5 个其他类 prompt 的相似度（6 维）
-   - 合计 12 维特征 → Ridge 回归（L2 正则化解决特征相关性）
+    - 通道 1：反事实通道——图像 vs 真描述 + 5 个反事实的余弦相似度（6 维）
+    - 通道 2：标准 zero-shot 通道——图像 vs "A photo of {label}" + 5 个其他类 prompt 的相似度（6 维）
+    - 合计 12 维特征 → Ridge 回归（L2 正则化解决特征相关性）
 
 3. **Ridge 回归预测**:
-   - 训练集：11 个多样数据集的 CLIP 实际 zero-shot 准确率作为 label
-   - 测试集：5 个 holdout 数据集（含非洲食物和豆类病害）
-   - Pearson-r = 0.96, RMSE = 10.37
+    - 训练集：11 个多样数据集的 CLIP 实际 zero-shot 准确率作为 label
+    - 测试集：5 个 holdout 数据集（含非洲食物和豆类病害）
+    - Pearson-r = 0.96, RMSE = 10.37
 
 ## 实验关键数据
 

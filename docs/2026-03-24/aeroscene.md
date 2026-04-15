@@ -25,21 +25,21 @@
 ### 关键设计
 
 1. **层次感知 Tokenization**:
-   - 做什么：可学习分数 $\tau_i=\sigma(\mathbf{w}_\tau^\top \text{MLP}(\mathbf{f}_i^{(0)}))$ 将物体分为粗（建筑、道路）和细（障碍物、着陆区）两类
-   - 粗分支用 3D CNN 处理全局布局：$F_{\text{coarse}}=\text{CNN}_{\text{coarse}}(\mathcal{T}_{\text{coarse}})$
-   - 细分支用 GNN 处理局部空间邻接：$F_{\text{fine}}=\text{GNN}_{\text{fine}}(\mathcal{T}_{\text{fine}}, G_{\text{fine}})$
-   - 设计动机：建筑级粗结构需要 3D 全局感受野，障碍物等细物体需要关注局部邻接关系
+    - 做什么：可学习分数 $\tau_i=\sigma(\mathbf{w}_\tau^\top \text{MLP}(\mathbf{f}_i^{(0)}))$ 将物体分为粗（建筑、道路）和细（障碍物、着陆区）两类
+    - 粗分支用 3D CNN 处理全局布局：$F_{\text{coarse}}=\text{CNN}_{\text{coarse}}(\mathcal{T}_{\text{coarse}})$
+    - 细分支用 GNN 处理局部空间邻接：$F_{\text{fine}}=\text{GNN}_{\text{fine}}(\mathcal{T}_{\text{fine}}, G_{\text{fine}})$
+    - 设计动机：建筑级粗结构需要 3D 全局感受野，障碍物等细物体需要关注局部邻接关系
 
 2. **跨尺度渐进注意力**:
-   - Top-down（粗→细）：$Q=F_{\text{fine}}, K,V=F_{\text{coarse}}$，传播全局结构约束
-   - Bottom-up（细→粗）：$Q=F_{\text{coarse}}, K,V=F_{\text{fine}}$，注入局部细节
-   - 交替执行保证双向信息流通
+    - Top-down（粗→细）：$Q=F_{\text{fine}}, K,V=F_{\text{coarse}}$，传播全局结构约束
+    - Bottom-up（细→粗）：$Q=F_{\text{coarse}}, K,V=F_{\text{fine}}$，注入局部细节
+    - 交替执行保证双向信息流通
 
 3. **三重引导目标**:
-   - 碰撞避免：$\mathcal{L}_{\text{col}}=\sum_{i\neq j}\max(0, \text{IoU}(B_i,B_j)-\delta_d)$
-   - 粗细一致性：$\mathcal{L}_{\text{c2f}}=\sum_{o_i\in\text{fine}}\text{dist}(\mathbf{p}_i, \mathcal{R}_{\text{coarse}}(o_i))$
-   - 语义约束：$\mathcal{L}_{\text{sem}}=-\sum\log P_{\text{sem}}(c_i,c_j,r_{ij})$
-   - 直接集成到扩散逆过程，无需后处理
+    - 碰撞避免：$\mathcal{L}_{\text{col}}=\sum_{i\neq j}\max(0, \text{IoU}(B_i,B_j)-\delta_d)$
+    - 粗细一致性：$\mathcal{L}_{\text{c2f}}=\sum_{o_i\in\text{fine}}\text{dist}(\mathbf{p}_i, \mathcal{R}_{\text{coarse}}(o_i))$
+    - 语义约束：$\mathcal{L}_{\text{sem}}=-\sum\log P_{\text{sem}}(c_i,c_j,r_{ij})$
+    - 直接集成到扩散逆过程，无需后处理
 
 ### 训练细节
 - Adam optimizer，lr $2\times10^{-4}$，batch 64，800 epochs（A100）

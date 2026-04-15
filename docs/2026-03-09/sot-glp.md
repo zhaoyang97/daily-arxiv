@@ -27,26 +27,26 @@
 ### 关键设计
 
 1. **双流视觉编码器**:
-   - 原始 CLIP 流（Q-K attention）产生全局 [CLS] embedding $Z_{\text{global}}$
-   - 并行 V-V attention 流产生局部 patch features $Z_{\text{local}}$
-   - V-V attention：$A^{vv} = \text{softmax}(VV^\top / \sqrt{d})$，直接关联 value 表示，增强 patch-to-patch 交互
-   - 设计动机：V-V attention 已在 CLIP Surgery 中被证明能增强局部判别性
+    - 原始 CLIP 流（Q-K attention）产生全局 [CLS] embedding $Z_{\text{global}}$
+    - 并行 V-V attention 流产生局部 patch features $Z_{\text{local}}$
+    - V-V attention：$A^{vv} = \text{softmax}(VV^\top / \sqrt{d})$，直接关联 value 表示，增强 patch-to-patch 交互
+    - 设计动机：V-V attention 已在 CLIP Surgery 中被证明能增强局部判别性
 
 2. **Saliency-Guided Sparsification**:
-   - 对每个类 $c$，计算每个 patch 与该类所有 local prompt 的平均相似度作为显著性分数
-   - 取 top-K 个显著 patch 构成共享稀疏支撑集 $\mathcal{S}_c^{(i)}$
-   - 设计动机：过滤背景噪声，确保后续 OT 只在前景区域上操作
+    - 对每个类 $c$，计算每个 patch 与该类所有 local prompt 的平均相似度作为显著性分数
+    - 取 top-K 个显著 patch 构成共享稀疏支撑集 $\mathcal{S}_c^{(i)}$
+    - 设计动机：过滤背景噪声，确保后续 OT 只在前景区域上操作
 
 3. **Balanced Entropic Optimal Transport**:
-   - 在稀疏 patch 集合和 local prompt 之间建立 OT 问题
-   - 代价矩阵 $C_{uv} = 1 - s_u^\top t_v$，均匀边际约束 $\mathbf{a} = \frac{1}{K}\mathbf{1}_K$，$\mathbf{b} = \frac{1}{N_\ell}\mathbf{1}_{N_\ell}$
-   - 用 Sinkhorn 迭代可微求解，得到传输矩阵 $\mathbf{T}$
-   - 设计动机：均衡边际约束防止 prompt 塌缩——每个 prompt 收到可比的分配质量，不同 prompt 自然专注不同 patch
+    - 在稀疏 patch 集合和 local prompt 之间建立 OT 问题
+    - 代价矩阵 $C_{uv} = 1 - s_u^\top t_v$，均匀边际约束 $\mathbf{a} = \frac{1}{K}\mathbf{1}_K$，$\mathbf{b} = \frac{1}{N_\ell}\mathbf{1}_{N_\ell}$
+    - 用 Sinkhorn 迭代可微求解，得到传输矩阵 $\mathbf{T}$
+    - 设计动机：均衡边际约束防止 prompt 塌缩——每个 prompt 收到可比的分配质量，不同 prompt 自然专注不同 patch
 
 4. **Accuracy-Robustness Trade-off 发现**:
-   - 带可学习投影的版本：few-shot 精度最高（+0.9%），但改变了 CLIP 原始特征流形
-   - 无投影版本：保持 CLIP 原生几何结构，OOD 检测性能 SOTA（23.8 FPR95 / 94.2 AUC）
-   - 这是一个有趣且实用的 trade-off 发现
+    - 带可学习投影的版本：few-shot 精度最高（+0.9%），但改变了 CLIP 原始特征流形
+    - 无投影版本：保持 CLIP 原生几何结构，OOD 检测性能 SOTA（23.8 FPR95 / 94.2 AUC）
+    - 这是一个有趣且实用的 trade-off 发现
 
 ### 训练策略
 - 冻结 CLIP 视觉和文本编码器，只训练 prompt 参数

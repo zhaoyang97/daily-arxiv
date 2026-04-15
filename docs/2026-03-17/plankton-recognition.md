@@ -31,24 +31,24 @@
 ### 关键设计
 
 1. **双编码器架构**:
-   - 图像编码器：ViT-Tiny / EfficientNet-B0 / ConvNeXt-Femto（均为 5-7M 轻量级）
-   - 光学剖面编码器：1D CNN（ResNet18 结构改 1D 卷积，963K params）/ Transformer / 双向 LSTM
-   - 两个编码器输出经线性投影层映射到共享 512 维空间，$\ell_2$ 归一化后计算余弦相似度
+    - 图像编码器：ViT-Tiny / EfficientNet-B0 / ConvNeXt-Femto（均为 5-7M 轻量级）
+    - 光学剖面编码器：1D CNN（ResNet18 结构改 1D 卷积，963K params）/ Transformer / 双向 LSTM
+    - 两个编码器输出经线性投影层映射到共享 512 维空间，$\ell_2$ 归一化后计算余弦相似度
 
 2. **对比预训练（InfoNCE vs Sigmoid 损失）**:
-   - 做什么：对齐同一粒子的图像和光学剖面，分离不同粒子的表示
-   - InfoNCE: $\mathcal{L}_{i \to p} = -\frac{1}{n}\sum_{k=1}^n \log \frac{\exp(\tau S(\mathbf{e}_i^k, \mathbf{e}_p^k))}{\sum_{j=1}^n \exp(\tau S(\mathbf{e}_i^k, \mathbf{e}_p^j))}$，$\tau$ 为可学习温度
-   - Sigmoid 损失（SigLIP 式）：替换 softmax 为独立二分类，加可学习偏置 $b$ 稳定训练
-   - **实验结论**：InfoNCE 在所有配置下一致优于 Sigmoid——可能因为数据规模相对小，softmax 的全局竞争提供更强梯度
+    - 做什么：对齐同一粒子的图像和光学剖面，分离不同粒子的表示
+    - InfoNCE: $\mathcal{L}_{i \to p} = -\frac{1}{n}\sum_{k=1}^n \log \frac{\exp(\tau S(\mathbf{e}_i^k, \mathbf{e}_p^k))}{\sum_{j=1}^n \exp(\tau S(\mathbf{e}_i^k, \mathbf{e}_p^j))}$，$\tau$ 为可学习温度
+    - Sigmoid 损失（SigLIP 式）：替换 softmax 为独立二分类，加可学习偏置 $b$ 稳定训练
+    - **实验结论**：InfoNCE 在所有配置下一致优于 Sigmoid——可能因为数据规模相对小，softmax 的全局竞争提供更强梯度
 
 3. **尺度信息注入**:
-   - 做什么：在投影前将原始图像尺寸和光学剖面长度拼接到特征向量
-   - 设计动机：浮游生物大小是重要分类线索，但预处理（resize/resample）会丢失这一信息
+    - 做什么：在投影前将原始图像尺寸和光学剖面长度拼接到特征向量
+    - 设计动机：浮游生物大小是重要分类线索，但预处理（resize/resample）会丢失这一信息
 
 4. **k-NN 分类器**:
-   - 做什么：避免重新训练分类器，仅需极少标注
-   - 核心思路：每类 $n$ 个标注样本编码后构成 gallery，测试时取 $k=3$ 最近邻投票。画廊可包含单模态或双模态嵌入
-   - 三种推理模式：图像+剖面 / 仅图像 / 仅剖面——天然支持模态缺失场景
+    - 做什么：避免重新训练分类器，仅需极少标注
+    - 核心思路：每类 $n$ 个标注样本编码后构成 gallery，测试时取 $k=3$ 最近邻投票。画廊可包含单模态或双模态嵌入
+    - 三种推理模式：图像+剖面 / 仅图像 / 仅剖面——天然支持模态缺失场景
 
 ### 数据预处理
 - 图像：裁剪标尺 → 边缘填充正方形 → 236×236 → 随机裁剪 224×224 + 翻转/色彩抖动

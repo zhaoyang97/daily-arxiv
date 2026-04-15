@@ -25,20 +25,20 @@
 ### 关键设计
 
 1. **实体属性生成**:
-   - 为 PER/LOC/ORG/TIME 四类实体定义属性集（如 PER: name, occupation, gender, nationality 等）
-   - Qwen3-Max 三轮提取 + 去重 + 人工后处理修正
-   - 属性增强了模型对实体上下文角色的理解，尤其利于关系抽取
+    - 为 PER/LOC/ORG/TIME 四类实体定义属性集（如 PER: name, occupation, gender, nationality 等）
+    - Qwen3-Max 三轮提取 + 去重 + 人工后处理修正
+    - 属性增强了模型对实体上下文角色的理解，尤其利于关系抽取
 
 2. **场景图生成**:
-   - Qwen3-VL-235B 三轮提取图像中的 (subject, relation, object) 三元组
-   - 显式捕获图像中的物体及其关系，为多模态融合提供结构化视觉信息
-   - 与纯视觉特征互补：场景图提供显式语义，ViT 提供隐式表征
+    - Qwen3-VL-235B 三轮提取图像中的 (subject, relation, object) 三元组
+    - 显式捕获图像中的物体及其关系，为多模态融合提供结构化视觉信息
+    - 与纯视觉特征互补：场景图提供显式语义，ViT 提供隐式表征
 
 3. **代码风格模板构建**:
-   - 输入：以 `information_extraction` Python 函数定义，参数包含 input_text、entity_attribute、scene_graph
-   - 输出：Python 字典——entity_dic、chain_dic、relation_dic、grounding_dic
-   - 任务无关：同一模板处理所有 IE 子任务，利用任务间关联
-   - 实体链用 ID 引用简化关系抽取输出
+    - 输入：以 `information_extraction` Python 函数定义，参数包含 input_text、entity_attribute、scene_graph
+    - 输出：Python 字典——entity_dic、chain_dic、relation_dic、grounding_dic
+    - 任务无关：同一模板处理所有 IE 子任务，利用任务间关联
+    - 实体链用 ID 引用简化关系抽取输出
 
 ### 训练策略
 ViT 编码图像 → 平均池化 + 位置编码 → 与代码模板文本特征拼接 → LLM 端到端微调。

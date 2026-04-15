@@ -30,21 +30,21 @@
 ### 关键设计
 
 1. **神经符号查询分解**:
-   - 叶节点：$(expert, query)$，expert $\in$ {clip, ovd, ocr, asr, clap}
-   - 内部节点：逻辑/时序算子——And（共现）、Or（析取）、Seq（时间序列）、RightAfter（紧邻）
-   - MCQ 模式：$\text{And}(\text{shared\_context}, \text{Or}(\text{opt}_1, ..., \text{opt}_n))$，公共元素从 Or 中提取
-   - 路由规则：LLM prompt 中给出映射规则——动作/场景→clip，物体/人→ovd，文字→ocr，说话→asr，环境音→clap
+    - 叶节点：$(expert, query)$，expert $\in$ {clip, ovd, ocr, asr, clap}
+    - 内部节点：逻辑/时序算子——And（共现）、Or（析取）、Seq（时间序列）、RightAfter（紧邻）
+    - MCQ 模式：$\text{And}(\text{shared\_context}, \text{Or}(\text{opt}_1, ..., \text{opt}_n))$，公共元素从 Or 中提取
+    - 路由规则：LLM prompt 中给出映射规则——动作/场景→clip，物体/人→ovd，文字→ocr，说话→asr，环境音→clap
 
 2. **多模态专家信号**:
-   - **视觉专家**：CLIP（余弦相似度）、OVD（YOLO-World 检测置信度）、OCR（文字匹配）
-   - **音频专家**：ASR（语音转文字+子串/语义匹配）、CLAP（音频-文本余弦相似度）
-   - 缓存机制：CLIP/ASR/CLAP/OCR 特征查询无关→预缓存；仅 OVD 查询相关需重新运行
+    - **视觉专家**：CLIP（余弦相似度）、OVD（YOLO-World 检测置信度）、OCR（文字匹配）
+    - **音频专家**：ASR（语音转文字+子串/语义匹配）、CLAP（音频-文本余弦相似度）
+    - 缓存机制：CLIP/ASR/CLAP/OCR 特征查询无关→预缓存；仅 OVD 查询相关需重新运行
 
 3. **信号归一化与组合**:
-   - 归一化：中位数-MAD 鲁棒标准化 → sigmoid 映射到 (0,1)：$\tilde{u}_i(t) = \sigma\left(\gamma \cdot \frac{u_i(t) - \text{med}(u_i)}{\text{MAD}(u_i) + \delta}\right)$
-   - 时序平滑：高斯平滑 + 单调最大池化，对齐不同模态的时间分辨率
-   - 模糊逻辑组合：And→逐帧取 min，Or→逐帧取 max，Seq→按时间窗口滑动取乘积，RightAfter→紧邻窗口内乘积
-   - 输出：每帧一个连续满意度值 $T(t) \in [0,1]$
+    - 归一化：中位数-MAD 鲁棒标准化 → sigmoid 映射到 (0,1)：$\tilde{u}_i(t) = \sigma\left(\gamma \cdot \frac{u_i(t) - \text{med}(u_i)}{\text{MAD}(u_i) + \delta}\right)$
+    - 时序平滑：高斯平滑 + 单调最大池化，对齐不同模态的时间分辨率
+    - 模糊逻辑组合：And→逐帧取 min，Or→逐帧取 max，Seq→按时间窗口滑动取乘积，RightAfter→紧邻窗口内乘积
+    - 输出：每帧一个连续满意度值 $T(t) \in [0,1]$
 
 ### 效率分析
 - 首次查询：~13.3s（含专家特征提取）

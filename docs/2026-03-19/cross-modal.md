@@ -29,20 +29,20 @@
 ### 关键设计
 
 1. **文本理据提取器**:
-   - 做什么：token 级二分类，预测每个 token 是否为理据
-   - 核心思路：ViLT 编码后接 GRU 层捕获 token 依赖 + FC-Sigmoid 层。训练用加权 BCE loss $Loss_r = -\sum_{j=1}^n \frac{n}{n_j} BCE(y_j, p_j)$ 处理理据/非理据 token 不平衡
-   - 辅助任务：同时用 pooler output + Softmax 做推文分类（交叉熵 loss），联合训练使理据更面向任务
-   - 总 loss：$Loss = Loss_l + \alpha Loss_r$
+    - 做什么：token 级二分类，预测每个 token 是否为理据
+    - 核心思路：ViLT 编码后接 GRU 层捕获 token 依赖 + FC-Sigmoid 层。训练用加权 BCE loss $Loss_r = -\sum_{j=1}^n \frac{n}{n_j} BCE(y_j, p_j)$ 处理理据/非理据 token 不平衡
+    - 辅助任务：同时用 pooler output + Softmax 做推文分类（交叉熵 loss），联合训练使理据更面向任务
+    - 总 loss：$Loss = Loss_l + \alpha Loss_r$
 
 2. **图像理据提取器（跨模态迁移）**:
-   - 做什么：无需图像理据标注，从文本理据零样本迁移生成图像 patch 级热力图
-   - 核心思路：用 IPOT（Inexact Proximal Optimal Transport）计算预测的文本理据 token 嵌入与图像 patch 嵌入之间的对齐分数：$h_k = \max_{t_j, y'_j=1}(IPOT(e_k, e_{t_j}))$
-   - 设计动机：危机推文中文本和图像通常语义对齐（如"桥塌了"配桥损坏的图），文本理据天然指向图像中的对应区域。IPOT 比余弦相似度更精确地建模最优传输匹配
+    - 做什么：无需图像理据标注，从文本理据零样本迁移生成图像 patch 级热力图
+    - 核心思路：用 IPOT（Inexact Proximal Optimal Transport）计算预测的文本理据 token 嵌入与图像 patch 嵌入之间的对齐分数：$h_k = \max_{t_j, y'_j=1}(IPOT(e_k, e_{t_j}))$
+    - 设计动机：危机推文中文本和图像通常语义对齐（如"桥塌了"配桥损坏的图），文本理据天然指向图像中的对应区域。IPOT 比余弦相似度更精确地建模最优传输匹配
 
 3. **理据驱动的分类（第二阶段）**:
-   - 做什么：仅基于提取的理据进行最终分类
-   - 核心思路：用 `*` 替换非理据文本 token，用热力图模糊非理据图像 patch，将掩码后的输入送入 ViLT 分类
-   - 设计动机：确保模型决策完全基于可解释的证据（interpretable-by-design），去除理据后性能应大幅下降
+    - 做什么：仅基于提取的理据进行最终分类
+    - 核心思路：用 `*` 替换非理据文本 token，用热力图模糊非理据图像 patch，将掩码后的输入送入 ViLT 分类
+    - 设计动机：确保模型决策完全基于可解释的证据（interpretable-by-design），去除理据后性能应大幅下降
 
 ## 实验关键数据
 

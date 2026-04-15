@@ -22,18 +22,18 @@
 ### 关键设计
 
 1. **Dimension-wise Quantization**:
-   - 将 768 维向量的每个维度独立量化到 L 个级别（L=8 或 16）
-   - 在 DINOv2-B 上 L=8 即可达到 rFID 0.57（匹配连续表征质量）
-   - 关键优势：保留语义理解能力（LLaVA benchmark 上与连续特征几乎无差异：GQA 63.1 vs 63.2）
+    - 将 768 维向量的每个维度独立量化到 L 个级别（L=8 或 16）
+    - 在 DINOv2-B 上 L=8 即可达到 rFID 0.57（匹配连续表征质量）
+    - 关键优势：保留语义理解能力（LLaVA benchmark 上与连续特征几乎无差异：GQA 63.1 vs 63.2）
 
 2. **Per-element Masking**:
-   - 在 h×w×d 的 3D tensor 中，任意位置的任意维度都可被独立 mask
-   - 双向注意力建模位置内（intra-position）和位置间（inter-position）依赖
-   - vs per-spatial masking: gFID 5.33 vs 22.22——per-element 大幅领先
+    - 在 h×w×d 的 3D tensor 中，任意位置的任意维度都可被独立 mask
+    - 双向注意力建模位置内（intra-position）和位置间（inter-position）依赖
+    - vs per-spatial masking: gFID 5.33 vs 22.22——per-element 大幅领先
 
 3. **Bidirectional Attention**:
-   - 同时捕获空间位置间的全局关系和单个 token 内维度间的依赖关系
-   - 支持并行生成：尽管 token 总量为 h×w×d，仅需 O(T) 步（~256 步）
+    - 同时捕获空间位置间的全局关系和单个 token 内维度间的依赖关系
+    - 支持并行生成：尽管 token 总量为 h×w×d，仅需 O(T) 步（~256 步）
 
 ## 实验关键数据
 
@@ -66,6 +66,7 @@
 
 - **可复现性**：建议关注作者后续是否开源代码和数据，这将极大影响该工作的实际影响力
 - **后续研究方向**：将该方法与最新的基础模型（如更大规模的视觉/语言模型）结合，可能带来进一步的性能提升
+
 ## 局限性 / 可改进方向
 - 3D tensor 上的 per-element masking 计算量较大（h×w×d tokens）
 - 仅在类条件 ImageNet 生成上评估，缺少文本条件生成
@@ -75,6 +76,7 @@
 
 - 消融实验的完整性可进一步提升，对各超参数的敏感性分析将增强结论的说服力
 - 计算效率分析（FLOPs、延迟、内存占用）应作为标准评估维度纳入
+
 ## 评分
 - 新颖性: ⭐⭐⭐⭐⭐ Dimension-wise 量化 + 3D tensor masked diffusion 是原创性很强的设计
 - 实验充分度: ⭐⭐⭐⭐ 消融详尽，但应用场景偏窄

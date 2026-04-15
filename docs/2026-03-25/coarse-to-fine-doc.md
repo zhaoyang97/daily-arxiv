@@ -30,22 +30,22 @@
 ### 关键设计
 
 1. **Valid Region Focus Module (VRFM)**:
-   - 做什么：轻量级检测文档中的有效区域（文本块、表格、公式、图表），同时预测阅读顺序
-   - 核心思路：基于 RT-DETR 做布局检测和分类，在检测表示之上接 pointer network 建模区域间成对关系，预测 $N \times N$ 排序矩阵
-   - 训练策略：两阶段——先训 RT-DETR 核心 100 epochs（用 PP-DocLayout_Plus-L 权重初始化），再冻结核心训 pointer network 200 epochs（用 Generalized CE Loss 处理噪声标注）
-   - 设计动机：比 VLM-based 布局检测快得多且不会出现坐标飘移，同时 pointer network 优雅地解决了阅读顺序预测问题
+    - 做什么：轻量级检测文档中的有效区域（文本块、表格、公式、图表），同时预测阅读顺序
+    - 核心思路：基于 RT-DETR 做布局检测和分类，在检测表示之上接 pointer network 建模区域间成对关系，预测 $N \times N$ 排序矩阵
+    - 训练策略：两阶段——先训 RT-DETR 核心 100 epochs（用 PP-DocLayout_Plus-L 权重初始化），再冻结核心训 pointer network 200 epochs（用 Generalized CE Loss 处理噪声标注）
+    - 设计动机：比 VLM-based 布局检测快得多且不会出现坐标飘移，同时 pointer network 优雅地解决了阅读顺序预测问题
 
 2. **PaddleOCR-VL-0.9B（元素识别模型）**:
-   - 做什么：对 VRFM 裁剪出的有效区域做精细识别（文字、表格、公式、图表等）
-   - 架构：NaViT 风格视觉编码器（Keye-VL 初始化）+ 2 层 MLP 投影器（GELU 激活）+ ERNIE-4.5-0.3B 语言模型（+3D-RoPE）
-   - 关键设计：**原生动态分辨率处理**——不做固定分辨率或 tiling，直接按原始分辨率处理，避免失真和幻觉
-   - 训练：Stage 1 预对齐 29M 图文对 + Stage 2 指令微调 2.7M 样本（覆盖 OCR、表格 OTSL、公式 LaTeX、图表 Markdown）
-   - 设计动机：因为输入是裁剪后的小区域而非全页，0.9B 小模型即可处理，token 数大幅减少
+    - 做什么：对 VRFM 裁剪出的有效区域做精细识别（文字、表格、公式、图表等）
+    - 架构：NaViT 风格视觉编码器（Keye-VL 初始化）+ 2 层 MLP 投影器（GELU 激活）+ ERNIE-4.5-0.3B 语言模型（+3D-RoPE）
+    - 关键设计：**原生动态分辨率处理**——不做固定分辨率或 tiling，直接按原始分辨率处理，避免失真和幻觉
+    - 训练：Stage 1 预对齐 29M 图文对 + Stage 2 指令微调 2.7M 样本（覆盖 OCR、表格 OTSL、公式 LaTeX、图表 Markdown）
+    - 设计动机：因为输入是裁剪后的小区域而非全页，0.9B 小模型即可处理，token 数大幅减少
 
 3. **高质量数据流水线（30M+ 样本）**:
-   - 四来源：开源数据集（CASIA-HWDB、UniMER-1M 等）+ 合成数据（补充不平衡类别）+ 网络爬取（真实多样性）+ 自有数据
-   - 自动标注：PP-StructureV3 生成伪标签 → ERNIE-4.5-VL / Qwen2.5-VL 精修 → 幻觉过滤
-   - 难例挖掘：构建精标评估集 → 按子类别评估 → 针对弱项用 XeLaTeX/浏览器渲染合成新数据
+    - 四来源：开源数据集（CASIA-HWDB、UniMER-1M 等）+ 合成数据（补充不平衡类别）+ 网络爬取（真实多样性）+ 自有数据
+    - 自动标注：PP-StructureV3 生成伪标签 → ERNIE-4.5-VL / Qwen2.5-VL 精修 → 幻觉过滤
+    - 难例挖掘：构建精标评估集 → 按子类别评估 → 针对弱项用 XeLaTeX/浏览器渲染合成新数据
 
 ### 训练策略
 - VRFM：2 万+ 样本，RT-DETR 100 epochs + pointer network 200 epochs

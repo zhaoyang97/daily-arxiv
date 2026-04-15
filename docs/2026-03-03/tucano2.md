@@ -27,21 +27,21 @@ Tucano 2 是一套完全开源的葡萄牙语 LLM（0.5B-3.7B），基于 320B t
 ### 关键设计
 
 1. **GigaVerbo-v2 语料构建**：
-   - 做什么：构建 320B token 的高质量葡萄牙语语料
-   - 核心流程：文本提取（Trafilatura）→ 语言识别（FastText + GlotLID 双重过滤）→ 质量过滤（FineWeb 2 风格启发式规则）→ MinHash 去重 → LLM-as-Judge 质量标注
-   - 教育质量标注：用 Qwen2.5-32B-Instruct 对 70 万样本做 5 级教育质量+毒性评分，蒸馏为轻量 BERTimbau 分类器（教育 F1=0.57，毒性 F1=0.60）
-   - 最终：372M 文档，834GB，其中 37%（119B token）为教育内容
+    - 做什么：构建 320B token 的高质量葡萄牙语语料
+    - 核心流程：文本提取（Trafilatura）→ 语言识别（FastText + GlotLID 双重过滤）→ 质量过滤（FineWeb 2 风格启发式规则）→ MinHash 去重 → LLM-as-Judge 质量标注
+    - 教育质量标注：用 Qwen2.5-32B-Instruct 对 70 万样本做 5 级教育质量+毒性评分，蒸馏为轻量 BERTimbau 分类器（教育 F1=0.57，毒性 F1=0.60）
+    - 最终：372M 文档，834GB，其中 37%（119B token）为教育内容
 
 2. **合成数据增强（GigaVerbo-v2 Synth）**：
-   - 做什么：生成 9.3B token 合成数据填补 web 数据盲区
-   - 用 Qwen2.5 系列（7B/14B/32B）基于 15 个种子数据集生成多样化内容：教育文本、学术文章、编程教程、数学推理、法律摘要、多选题等
-   - 去污染：token 级 k-gram 匹配确保与评估基准无重叠
-   - 4 个月 × 16 块 A40 GPU ≈ 48000 GPU 小时
+    - 做什么：生成 9.3B token 合成数据填补 web 数据盲区
+    - 用 Qwen2.5 系列（7B/14B/32B）基于 15 个种子数据集生成多样化内容：教育文本、学术文章、编程教程、数学推理、法律摘要、多选题等
+    - 去污染：token 级 k-gram 匹配确保与评估基准无重叠
+    - 4 个月 × 16 块 A40 GPU ≈ 48000 GPU 小时
 
 3. **数据消融验证**：
-   - Edu+Synth 在 ARC Challenge 达 34.4%（Non-Edu 只有 25.6%）
-   - HellaSwag: Edu+Synth 46.0% vs Non-Edu 38.3%
-   - 以远小于竞品的计算量（46B token vs Curió 1T+150B）达到可比性能
+    - Edu+Synth 在 ARC Challenge 达 34.4%（Non-Edu 只有 25.6%）
+    - HellaSwag: Edu+Synth 46.0% vs Non-Edu 38.3%
+    - 以远小于竞品的计算量（46B token vs Curió 1T+150B）达到可比性能
 
 ### 模型家族
 

@@ -1,9 +1,9 @@
 # Let's Think with Images Efficiently! An Interleaved-Modal Chain-of-Thought Reasoning Framework with Dynamic and Precise Visual Thoughts (DaP-ICoT)
 
-**日期**: 2026-03-23
-**arXiv**: [2603.21754](https://arxiv.org/abs/2603.21754)
-**代码**: [DaP-ICoT](https://github.com/67L1/DaP-ICoT)
-**领域**: 多模态VLM / LLM推理
+**日期**: 2026-03-23  
+**arXiv**: [2603.21754](https://arxiv.org/abs/2603.21754)  
+**代码**: [DaP-ICoT](https://github.com/67L1/DaP-ICoT)  
+**领域**: 多模态VLM / LLM推理  
 **关键词**: Interleaved-modal Chain-of-Thought, 动态视觉思维, SAM2分割, 置信度感知, token效率
 
 ## 一句话总结
@@ -132,17 +132,17 @@ ICoT 推理中，每步生成文本推理后：(1) DVTI 模块计算该步置信
 ### 关键设计
 
 1. **动态视觉思维插入（DVTI）**:
-   - 做什么：根据模型推理置信度动态决定是否需要视觉辅助
-   - 核心思路：在每个解码位置 i 计算 logit margin $\delta_i = \ell_{i,w^{(1)}} - \ell_{i,w^{(2)}}$（top1 与 top2 logit 之差），聚合为该步平均置信度 $C_t = \frac{1}{|T_t|}\sum_i \delta_i$
-   - 决策规则：$C_t < \tau$ 时插入视觉思维，否则跳过
-   - 设计动机：高置信度 = 模型已经确定，不需要额外视觉信息；低置信度 = 需要视觉辅助来消歧
-   - 效果：大幅减少不必要的图像插入，降低 72.6% token 消耗
+    - 做什么：根据模型推理置信度动态决定是否需要视觉辅助
+    - 核心思路：在每个解码位置 i 计算 logit margin $\delta_i = \ell_{i,w^{(1)}} - \ell_{i,w^{(2)}}$（top1 与 top2 logit 之差），聚合为该步平均置信度 $C_t = \frac{1}{|T_t|}\sum_i \delta_i$
+    - 决策规则：$C_t < \tau$ 时插入视觉思维，否则跳过
+    - 设计动机：高置信度 = 模型已经确定，不需要额外视觉信息；低置信度 = 需要视觉辅助来消歧
+    - 效果：大幅减少不必要的图像插入，降低 72.6% token 消耗
 
 2. **精确视觉思维引导（PVTG）**:
-   - 做什么：当 DVTI 触发插入时，精确选择最相关的完整物体子图
-   - 核心思路：先用 SAM2 对原图做物体级分割 → 得到候选物体子图集合 $\mathcal{O} = \{O_1, ..., O_N\}$ → 计算当前文本推理 $T_t$ 与每个 $O_i$ 的跨模态相似度 $s_i = f_{attn}(T_t, O_i)$ → 选最相关的 $\hat{O} = \arg\max s_i$
-   - 与 patch token 的区别：物体子图保留完整语义边界，不是任意裁剪的碎片
-   - 插入方式：$\mathcal{R}_{t \to v} = \mathcal{R}_t \oplus \hat{O}$，interleave 到推理序列中
+    - 做什么：当 DVTI 触发插入时，精确选择最相关的完整物体子图
+    - 核心思路：先用 SAM2 对原图做物体级分割 → 得到候选物体子图集合 $\mathcal{O} = \{O_1, ..., O_N\}$ → 计算当前文本推理 $T_t$ 与每个 $O_i$ 的跨模态相似度 $s_i = f_{attn}(T_t, O_i)$ → 选最相关的 $\hat{O} = \arg\max s_i$
+    - 与 patch token 的区别：物体子图保留完整语义边界，不是任意裁剪的碎片
+    - 插入方式：$\mathcal{R}_{t \to v} = \mathcal{R}_t \oplus \hat{O}$，interleave 到推理序列中
 
 ### 训练/推理
 完全 training-free，利用已有 MLLM 的推理能力 + SAM2 的分割能力，无需额外训练。

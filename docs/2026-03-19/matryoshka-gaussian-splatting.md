@@ -34,20 +34,20 @@ MGS 修改的是训练过程，不改模型架构。核心两步：
 ### 关键设计
 
 1. **基于 Opacity 的重要性排序**:
-   - 做什么：为每个高斯基元分配重要性分数，按降序排列构成嵌套序列
-   - 核心思路：用 opacity $\sigma_i$ 作为重要性分数 $s(g_i) = \sigma_i$，高 opacity 的基元出现在序列前面
-   - 设计动机：opacity 直接反映基元对最终渲染的可见性和辐射贡献，高 opacity 基元携带场景的主要结构信息。实验对比了 7 种排序策略（opacity↓、opacity↑、color variance、SH energy、volume 等），opacity 降序在所有预算级别都最优——10% 预算时达 22.2dB，而次优的 SH energy 降序只有 17.6dB
+    - 做什么：为每个高斯基元分配重要性分数，按降序排列构成嵌套序列
+    - 核心思路：用 opacity $\sigma_i$ 作为重要性分数 $s(g_i) = \sigma_i$，高 opacity 的基元出现在序列前面
+    - 设计动机：opacity 直接反映基元对最终渲染的可见性和辐射贡献，高 opacity 基元携带场景的主要结构信息。实验对比了 7 种排序策略（opacity↓、opacity↑、color variance、SH energy、volume 等），opacity 降序在所有预算级别都最优——10% 预算时达 22.2dB，而次优的 SH energy 降序只有 17.6dB
 
 2. **随机预算训练（Stochastic Budget Training）**:
-   - 做什么：高效覆盖所有可能的预算级别
-   - 核心思路：每步从均匀分布采样 $r \sim \text{Unif}(r_{\min}, 1)$，计算 $k = \lceil rN \rceil$，同时渲染前缀 $\mathcal{G}_{\leq k}$ 和全集 $\mathcal{G}_{\leq N}$，优化联合损失 $\ell_{\text{MGS}} = \ell(\mathcal{G}_{\leq k}; \mathbf{I}, \mathbf{c}) + \gamma \ell(\mathcal{G}_{\leq N}; \mathbf{I}, \mathbf{c})$
-   - 设计动机：逐预算优化计算上不可行（N 可达数百万）。随机采样保证所有预算被均匀覆盖，双渲染（仅 2 次前向传播/步）中全集项锚定全质量，前缀项迫使有意义的子集也能重建——两者缺一不可
-   - $\gamma = 1$（等权）效果最好；$r_{\min} = 0.001$ 是默认最小前缀比例
+    - 做什么：高效覆盖所有可能的预算级别
+    - 核心思路：每步从均匀分布采样 $r \sim \text{Unif}(r_{\min}, 1)$，计算 $k = \lceil rN \rceil$，同时渲染前缀 $\mathcal{G}_{\leq k}$ 和全集 $\mathcal{G}_{\leq N}$，优化联合损失 $\ell_{\text{MGS}} = \ell(\mathcal{G}_{\leq k}; \mathbf{I}, \mathbf{c}) + \gamma \ell(\mathcal{G}_{\leq N}; \mathbf{I}, \mathbf{c})$
+    - 设计动机：逐预算优化计算上不可行（N 可达数百万）。随机采样保证所有预算被均匀覆盖，双渲染（仅 2 次前向传播/步）中全集项锚定全质量，前缀项迫使有意义的子集也能重建——两者缺一不可
+    - $\gamma = 1$（等权）效果最好；$r_{\min} = 0.001$ 是默认最小前缀比例
 
 3. **动态重排序**:
-   - 做什么：保持排序随训练参数更新
-   - 核心思路：每步训练后，对所有基元按当前 opacity 重新 argsort，确保排列反映最新参数状态
-   - 设计动机：梯度更新会改变基元的 opacity，固定初始排序会逐渐失效
+    - 做什么：保持排序随训练参数更新
+    - 核心思路：每步训练后，对所有基元按当前 opacity 重新 argsort，确保排列反映最新参数状态
+    - 设计动机：梯度更新会改变基元的 opacity，固定初始排序会逐渐失效
 
 ### 容量控制
 采用 3DGS-MCMC 的 Langevin 动力学策略在固定预算 N 下训练（默认 5M 基元），确保基元数量可控。

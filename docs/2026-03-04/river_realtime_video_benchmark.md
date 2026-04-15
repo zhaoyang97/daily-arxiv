@@ -30,25 +30,25 @@ RIVER 由两部分组成：（1）**RIVER Bench** —— 1,067 个视频、4,278
 ### 关键设计
 
 1. **三类交互任务定义**：
-   - **Retro-Memory**：事件发生在过去（$t_\mathbf{V} < t'$），查询涉及历史记忆。按时间间隔分 short/medium/long/very long 四档（15s~3600s）。
-   - **Live-Perception**：事件发生在当前窗口（$t' \le t_\mathbf{V} \le t$），测试即时视觉理解。
-   - **Pro-Response**：事件尚未发生（$t_\mathbf{V} > t$），模型需持续监控视频流，在条件满足时主动响应。又分 Instant（单次回答）和 Stream（持续描述）两种。
-   - 设计动机：三类任务完整覆盖"过去/现在/未来"三个时间维度，且通过 $\Delta = \|t_\mathbf{V} - t\|$ 量化性能随时间间隔的变化。
+    - **Retro-Memory**：事件发生在过去（$t_\mathbf{V} < t'$），查询涉及历史记忆。按时间间隔分 short/medium/long/very long 四档（15s~3600s）。
+    - **Live-Perception**：事件发生在当前窗口（$t' \le t_\mathbf{V} \le t$），测试即时视觉理解。
+    - **Pro-Response**：事件尚未发生（$t_\mathbf{V} > t$），模型需持续监控视频流，在条件满足时主动响应。又分 Instant（单次回答）和 Stream（持续描述）两种。
+    - 设计动机：三类任务完整覆盖"过去/现在/未来"三个时间维度，且通过 $\Delta = \|t_\mathbf{V} - t\|$ 量化性能随时间间隔的变化。
 
 2. **长短期记忆模块（使离线模型支持在线推理）**：
-   - 短期记忆 = 当前滑动窗口（1fps 采样）的视频帧 token。
-   - 长期记忆 = 固定 $M$ 个 slot，每个 slot 的 token 数与短期记忆相同。新帧输入时通过最近邻平均（nearest-neighbor averaging）合并最相似的 slot 对，保持 slot 数不增长。
-   - 设计动机：模拟人类"将相邻时间事件整合为高级语义表征"的记忆机制，用可控内存处理超长视频（最长 120 分钟）。
-   - 通过 system prompt 显式告知模型时间线信息："long memory of 0.0 to X seconds" + "short memory sampled from Y to Z seconds"。
+    - 短期记忆 = 当前滑动窗口（1fps 采样）的视频帧 token。
+    - 长期记忆 = 固定 $M$ 个 slot，每个 slot 的 token 数与短期记忆相同。新帧输入时通过最近邻平均（nearest-neighbor averaging）合并最相似的 slot 对，保持 slot 数不增长。
+    - 设计动机：模拟人类"将相邻时间事件整合为高级语义表征"的记忆机制，用可控内存处理超长视频（最长 120 分钟）。
+    - 通过 system prompt 显式告知模型时间线信息："long memory of 0.0 to X seconds" + "short memory sampled from Y to Z seconds"。
 
 3. **数据构建与质量控制**：
-   - 数据来源：Vript-RR、LVBench、LongVideoBench、Ego4D、QVHighlights 五个公开数据集。
-   - 多阶段过滤：rule-based 去掉过于简单/模糊的问题 → LLM 去掉不看视频也能答对的问题 → 语义相似度筛选独特事件作为锚点。
-   - Pro-Response 训练数据使用随机时间戳（而非默认 0 秒）提升泛化性。
+    - 数据来源：Vript-RR、LVBench、LongVideoBench、Ego4D、QVHighlights 五个公开数据集。
+    - 多阶段过滤：rule-based 去掉过于简单/模糊的问题 → LLM 去掉不看视频也能答对的问题 → 语义相似度筛选独特事件作为锚点。
+    - Pro-Response 训练数据使用随机时间戳（而非默认 0 秒）提升泛化性。
 
 4. **评测指标设计**：
-   - Retro-Memory & Live-Perception：MC 选择题准确率 + 开放式（OE）GPT 评分。
-   - Pro-Response：Response Accuracy Metric —— 在容忍窗口 $w$ 内满分，早回答直接 0 分（惩罚误报），晚回答线性衰减。
+    - Retro-Memory & Live-Perception：MC 选择题准确率 + 开放式（OE）GPT 评分。
+    - Pro-Response：Response Accuracy Metric —— 在容忍窗口 $w$ 内满分，早回答直接 0 分（惩罚误报），晚回答线性衰减。
 
 ### 训练策略
 

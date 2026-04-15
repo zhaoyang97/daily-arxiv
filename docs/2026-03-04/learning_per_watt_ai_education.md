@@ -28,21 +28,21 @@
 ### 关键设计
 
 1. **Learning-per-Watt (LpW) 指标**:
-   - $\text{LpW}_i = Q_{ped,i} / (E_{net,i} \times L_i)$
-   - 分子：教学质量（1-10 分，4 维度：概念准确性、清晰度、脚手架质量、难度适当性）
-   - 分母：能耗 × 延迟 = 学生等待窗口内的总能量成本
-   - 特点：$Q_{ped}$ 对每个 response 实证测量（非固定值），捕捉 response 级别差异
+    - $\text{LpW}_i = Q_{ped,i} / (E_{net,i} \times L_i)$
+    - 分子：教学质量（1-10 分，4 维度：概念准确性、清晰度、脚手架质量、难度适当性）
+    - 分母：能耗 × 延迟 = 学生等待窗口内的总能量成本
+    - 特点：$Q_{ped}$ 对每个 response 实证测量（非固定值），捕捉 response 级别差异
 
 2. **能耗测量协议**:
-   - CodeCarbon 逐 prompt 测量 GPU 功率
-   - 先测 10s idle power $P_{idle}=81.7$ W 作为基线
-   - 净 AI 能耗：$E_{net,i} = E_{gross,i} - P_{idle} \times L_i$
-   - 所有非 AI 开销（tensor 传输、tokenization）在计时前完成
+    - CodeCarbon 逐 prompt 测量 GPU 功率
+    - 先测 10s idle power $P_{idle}=81.7$ W 作为基线
+    - 净 AI 能耗：$E_{net,i} = E_{gross,i} - P_{idle} \times L_i$
+    - 所有非 AI 开销（tensor 传输、tokenization）在计时前完成
 
 3. **KV-cache 对比实验**:
-   - 主实验：cache-enabled（真实部署配置）
-   - 对照实验：cache-disabled（离线基准常用配置）
-   - 目的：暴露两种基准方法的效率估计偏差
+    - 主实验：cache-enabled（真实部署配置）
+    - 对照实验：cache-disabled（离线基准常用配置）
+    - 目的：暴露两种基准方法的效率估计偏差
 
 ### 评分体系
 

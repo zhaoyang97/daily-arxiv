@@ -30,19 +30,19 @@
 ### 关键设计
 
 1. **Skeleton-based Control Representation**:
-   - 做什么：为图表设计极简但精确的空间控制信号
-   - 核心思路：柱状图 = 单竖线（编码高度）；折线图 = 折线段（编码趋势）；饼图 = 两条径向线（编码起止角度）
-   - 设计动机：在控制密度谱系的"最佳甜区"——精确编码数据维度，最小结构约束，从而最大化视觉变形空间
+    - 做什么：为图表设计极简但精确的空间控制信号
+    - 核心思路：柱状图 = 单竖线（编码高度）；折线图 = 折线段（编码趋势）；饼图 = 两条径向线（编码起止角度）
+    - 设计动机：在控制密度谱系的"最佳甜区"——精确编码数据维度，最小结构约束，从而最大化视觉变形空间
 
 2. **双 LoRA（LoRA_S + LoRA_R）**:
-   - 做什么：分别学习空间控制和主题控制
-   - 核心思路：LoRA_S 从 (skeleton, pictorial chart) 对学习；LoRA_R 从 (reference, pictorial chart) 对学习。两者用不同位置编码——skeleton 与 latent 共享 RoPE 位置索引（空间对齐），reference 偏移 Δ
-   - 可独立或联合使用
+    - 做什么：分别学习空间控制和主题控制
+    - 核心思路：LoRA_S 从 (skeleton, pictorial chart) 对学习；LoRA_R 从 (reference, pictorial chart) 对学习。两者用不同位置编码——skeleton 与 latent 共享 RoPE 位置索引（空间对齐），reference 偏移 Δ
+    - 可独立或联合使用
 
 3. **Spatially-Gated Attention**:
-   - 做什么：消除并行组合两个 LoRA 时的交叉条件干扰
-   - 核心思路：从 skeleton query 和 latent key 的注意力计算空间 mask $M = \sum_{i \in I_S} (W_{S \to X})_i$，用 mask 门控 subject attention：$W'_{X \to R} = M \odot W_{X \to R} + \beta \cdot (1-M) \odot W_{X \to R}$
-   - 设计动机：并行组合导致 structure misalignment（主题扭曲骨架）和 style leakage（主题溢出到背景）。门控确保主题只在骨架区域内表达
+    - 做什么：消除并行组合两个 LoRA 时的交叉条件干扰
+    - 核心思路：从 skeleton query 和 latent key 的注意力计算空间 mask $M = \sum_{i \in I_S} (W_{S \to X})_i$，用 mask 门控 subject attention：$W'_{X \to R} = M \odot W_{X \to R} + \beta \cdot (1-M) \odot W_{X \to R}$
+    - 设计动机：并行组合导致 structure misalignment（主题扭曲骨架）和 style leakage（主题溢出到背景）。门控确保主题只在骨架区域内表达
 
 ### 数据集 ChArtist-30K
 - 30K 三元组 (skeleton, reference, pictorial chart)

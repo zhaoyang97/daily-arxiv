@@ -27,20 +27,20 @@
 ### 关键设计
 
 1. **确定性轨迹的中间奖励估计**:
-   - 做什么：为少步采样的每个中间步骤分配准确的奖励信号
-   - 核心思路：若 $p(\mathbf{x}|\mathbf{x}_t)$ 是 Dirac 分布（确定性 ODE），则 $r(\mathbf{x}_t) = \mathbb{E}_{p(\mathbf{x}|\mathbf{x}_t)} r(\mathbf{x})$ 可通过端点的单样本无偏估计，方差为零
-   - 设计动机：随机轨迹的中间奖励估计有高方差，确定性轨迹消除了这一问题，收敛更快
+    - 做什么：为少步采样的每个中间步骤分配准确的奖励信号
+    - 核心思路：若 $p(\mathbf{x}|\mathbf{x}_t)$ 是 Dirac 分布（确定性 ODE），则 $r(\mathbf{x}_t) = \mathbb{E}_{p(\mathbf{x}|\mathbf{x}_t)} r(\mathbf{x})$ 可通过端点的单样本无偏估计，方差为零
+    - 设计动机：随机轨迹的中间奖励估计有高方差，确定性轨迹消除了这一问题，收敛更快
 
 2. **代理奖励学习（Surrogate Reward）**:
-   - 做什么：学习可微的代理奖励模型来替代非可微奖励
-   - 核心思路：用扩散模型参数化代理奖励 $\tilde{r}_\phi(\mathbf{x}_{t_k}) \approx \beta \cdot \mathbb{E} \log \frac{p_\phi}{p_{ref}}$，通过组偏好 BT 模型优化
-   - 创新点：组级偏好学习（正/负组由 advantage 分区），样本权重为归一化 advantage 的绝对值
-   - EMA 动态参考模型防止过拟合
+    - 做什么：学习可微的代理奖励模型来替代非可微奖励
+    - 核心思路：用扩散模型参数化代理奖励 $\tilde{r}_\phi(\mathbf{x}_{t_k}) \approx \beta \cdot \mathbb{E} \log \frac{p_\phi}{p_{ref}}$，通过组偏好 BT 模型优化
+    - 创新点：组级偏好学习（正/负组由 advantage 分区），样本权重为归一化 advantage 的绝对值
+    - EMA 动态参考模型防止过拟合
 
 3. **生成器学习**:
-   - 目标：$\max -\tilde{r}_{sg(\phi)}(\mathbf{x}_{t_k}) + \beta_g \cdot KL(p_{\theta,k} \| p_\psi)$
-   - 用分布级（marginal-level）reverse KL 正则化而非实例级约束，比标准扩散 RL 更宽松
-   - 代理奖励和 KL 正则化协同工作：奖励引导质量提升，KL 防止偏离过远
+    - 目标：$\max -\tilde{r}_{sg(\phi)}(\mathbf{x}_{t_k}) + \beta_g \cdot KL(p_{\theta,k} \| p_\psi)$
+    - 用分布级（marginal-level）reverse KL 正则化而非实例级约束，比标准扩散 RL 更宽松
+    - 代理奖励和 KL 正则化协同工作：奖励引导质量提升，KL 防止偏离过远
 
 ### 训练策略
 代理奖励学习和生成器学习交替进行，形成类 GAN 的对抗循环——生成器产出更好样本，代理奖励提供更精确梯度。

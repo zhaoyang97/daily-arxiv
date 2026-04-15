@@ -22,15 +22,15 @@
 ### 关键设计
 
 1. **循环一致性奖励**:
-   - Image → VLM → Caption → Frozen T2I model (SD3/FLUX.1-dev) → Reconstructed Image
-   - 奖励 = DreamSim(原图, 重建图)——DreamSim 比 LPIPS 和 CLIP 更好平衡感知和语义
-   - T2I 模型全程冻结，只更新 VLM 参数
+    - Image → VLM → Caption → Frozen T2I model (SD3/FLUX.1-dev) → Reconstructed Image
+    - 奖励 = DreamSim(原图, 重建图)——DreamSim 比 LPIPS 和 CLIP 更好平衡感知和语义
+    - T2I 模型全程冻结，只更新 VLM 参数
 
 2. **GRPO 微调**:
-   - 每张图采样 n=8 个候选 caption
-   - 计算组内相对优势（advantage）
-   - 裁剪策略梯度 + KL 正则化
-   - 训练数据：83K COCO 图像，1 epoch，LoRA rank 64
+    - 每张图采样 n=8 个候选 caption
+    - 计算组内相对优势（advantage）
+    - 裁剪策略梯度 + KL 正则化
+    - 训练数据：83K COCO 图像，1 epoch，LoRA rank 64
 
 ## 实验关键数据
 

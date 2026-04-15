@@ -27,24 +27,24 @@ PromptAvatar 构建 10 万对四模态配对数据集（文本/图像/UV纹理/3
 ### 关键设计
 
 1. **数据集构建管线（10 万对四模态数据）**：
-   - 反光/重光：NeRFFaceLighting 生成去光照正面 + 侧面视图，随机球谐系数采样
-   - 纹理展开：Deep3D 生成 UV 纹理，面部解析掩码 + 线性混合 + 色彩校正补全
-   - 几何：Deep3D 提取 532 维 identity 系数
-   - 文本：Qwen2.5-VL-32B 生成结构化描述（基础 + 纹理 + 几何，平均 200 tokens）
-   - 双阶段过滤：MLP 美学分类器 + CLIP 相似度阈值，500K → 100K 样本
-   - 设计动机：解决"无大规模配对数据"的根本瓶颈，使直接生成成为可能
+    - 反光/重光：NeRFFaceLighting 生成去光照正面 + 侧面视图，随机球谐系数采样
+    - 纹理展开：Deep3D 生成 UV 纹理，面部解析掩码 + 线性混合 + 色彩校正补全
+    - 几何：Deep3D 提取 532 维 identity 系数
+    - 文本：Qwen2.5-VL-32B 生成结构化描述（基础 + 纹理 + 几何，平均 200 tokens）
+    - 双阶段过滤：MLP 美学分类器 + CLIP 相似度阈值，500K → 100K 样本
+    - 设计动机：解决"无大规模配对数据"的根本瓶颈，使直接生成成为可能
 
 2. **纹理扩散模型（TDM，基于 SD-2.1）**：
-   - 微调 VAE 适应 UV 纹理分布（关键——SD 原生 VAE 在 UV 贴图上过度平滑）
-   - 多条件指导：图像 → 展开不完整 UV 与噪声 latent 拼接（channel-wise）；文本 → CLIP 编码后交叉注意力
-   - 训练：$L_\text{tex} = \mathbb{E}\|\epsilon - \epsilon_\text{tex}(z_t, I_p, y_p, t)\|^2$
-   - 支持随机条件丢弃（图像/文本/两者），推理时灵活选择输入模态
+    - 微调 VAE 适应 UV 纹理分布（关键——SD 原生 VAE 在 UV 贴图上过度平滑）
+    - 多条件指导：图像 → 展开不完整 UV 与噪声 latent 拼接（channel-wise）；文本 → CLIP 编码后交叉注意力
+    - 训练：$L_\text{tex} = \mathbb{E}\|\epsilon - \epsilon_\text{tex}(z_t, I_p, y_p, t)\|^2$
+    - 支持随机条件丢弃（图像/文本/两者），推理时灵活选择输入模态
 
 3. **几何扩散模型（GDM，自定义 1D UNet）**：
-   - ID-UNet：3 个下采样块 + 中间块（6 个残差卷积 + 6 个交叉注意力）+ 上采样块
-   - 输入：文本几何描述；输出：532 维 identity 系数
-   - 训练：$L_\text{geo} = \mathbb{E}\|\epsilon - \epsilon_\text{geo}(h_t, y_p, t)\|^2$
-   - 设计动机：几何信息维度远低于纹理（532-d vs 512×512），用 1D UNet 更轻量
+    - ID-UNet：3 个下采样块 + 中间块（6 个残差卷积 + 6 个交叉注意力）+ 上采样块
+    - 输入：文本几何描述；输出：532 维 identity 系数
+    - 训练：$L_\text{geo} = \mathbb{E}\|\epsilon - \epsilon_\text{geo}(h_t, y_p, t)\|^2$
+    - 设计动机：几何信息维度远低于纹理（532-d vs 512×512），用 1D UNet 更轻量
 
 ### 训练策略
 

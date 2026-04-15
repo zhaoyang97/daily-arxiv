@@ -17,12 +17,13 @@
 5. **核心idea一句话**: 发现 Circuit-Interference Law 后，通过对比学习重塑电路使同模式电路对齐、异模式电路分离，再用轻量 LoRA 编辑即可同时获得通用性和局部性。
 
 ## 方法详解
+
 ### 整体框架
 REdit 分两阶段：(1) **电路重塑阶段**：通过对比元学习重新组织 LLM 内部的推理电路结构；(2) **编辑阶段**：在重塑后的模型上用 LoRA 进行目标推理模式的编辑。
 
 ### 关键设计
 1. **Circuit-Interference Law 的发现**:
-   - 四步验证流程：
+    - 四步验证流程：
      - (1) Edge Attribution Patching (EAP) 提取每个推理模式的电路 $\mathcal{C}_\pi^{(\tau)}$
      - (2) 计算电路距离（Jaccard / Edit / Optimal Transport）
      - (3) 单模式编辑后测量对其他模式的干扰 $\Delta_{i \to j}$
@@ -30,19 +31,19 @@ REdit 分两阶段：(1) **电路重塑阶段**：通过对比元学习重新组
    - **核心结论**：电路越相似的推理模式，编辑干扰越大；电路越不同，编辑越局部
 
 2. **Contrastive Circuit Reshaping（对比电路重塑）**:
-   - 对 EAP 归因权重 $w_\pi$ 做 L2 归一化得 $\tilde{w}_\pi$
-   - InfoNCE 损失：同模式实例作正样本，异模式实例作负样本
-   - $\mathcal{L}_{\mathrm{ctr}} = -\sum_i \log \frac{\exp(\langle \tilde{w}_i, \tilde{w}_{i^+} \rangle / \tau)}{\exp(\langle \tilde{w}_i, \tilde{w}_{i^+} \rangle / \tau) + \sum_{j \in \mathcal{N}(i)} \exp(\langle \tilde{w}_i, \tilde{w}_j \rangle / \tau)}$
-   - 效果：同模式电路对齐（提升通用性），异模式电路分离（保护局部性）
+    - 对 EAP 归因权重 $w_\pi$ 做 L2 归一化得 $\tilde{w}_\pi$
+    - InfoNCE 损失：同模式实例作正样本，异模式实例作负样本
+    - $\mathcal{L}_{\mathrm{ctr}} = -\sum_i \log \frac{\exp(\langle \tilde{w}_i, \tilde{w}_{i^+} \rangle / \tau)}{\exp(\langle \tilde{w}_i, \tilde{w}_{i^+} \rangle / \tau) + \sum_{j \in \mathcal{N}(i)} \exp(\langle \tilde{w}_i, \tilde{w}_j \rangle / \tau)}$
+    - 效果：同模式电路对齐（提升通用性），异模式电路分离（保护局部性）
 
 3. **Meta-Contrastive Learning（元对比学习）**:
-   - Reptile 风格的元学习：采样对比任务 → 多步内更新 → 外层朝任务适配方向平均移动
-   - 内层：$\theta_i^{t+1} = \theta_i^t - \alpha \nabla_\theta \mathcal{L}_{\text{ctr}}^{(i)}(\theta_i^t)$
-   - 外层：$\theta \leftarrow \theta + \eta \cdot \frac{1}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} (\phi_i - \theta)$
-   - 增强对未见推理模式的迁移能力
+    - Reptile 风格的元学习：采样对比任务 → 多步内更新 → 外层朝任务适配方向平均移动
+    - 内层：$\theta_i^{t+1} = \theta_i^t - \alpha \nabla_\theta \mathcal{L}_{\text{ctr}}^{(i)}(\theta_i^t)$
+    - 外层：$\theta \leftarrow \theta + \eta \cdot \frac{1}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} (\phi_i - \theta)$
+    - 增强对未见推理模式的迁移能力
 
 4. **Dual-Level Protection（双层保护）**:
-   - **预测分布保护**：KL 散度约束保持正确推理的输出分布不变
+    - **预测分布保护**：KL 散度约束保持正确推理的输出分布不变
      - $\mathcal{L}_{\mathrm{pred}} = \mathbb{E}_{(\mathcal{P},\mathcal{G}) \in \mathcal{C}} \mathrm{KL}(f_{\theta^{\text{ref}}} \| f_\theta)$
    - **零空间保护**：内层梯度投影到任务损失梯度的近似零空间
      - $P^{(i,t)} = I - \rho \Pi_{g_{i,t}}$，限制更新方向不损害当前任务性能
@@ -53,6 +54,7 @@ REdit 分两阶段：(1) **电路重塑阶段**：通过对比元学习重新组
 - 骨干模型：Qwen-2.5-3B-Instruct
 
 ## 实验关键数据
+
 ### 主实验（ContextHub 命题逻辑）
 
 | 数据集 | 指标 | Raw | BIMT | LoRA | ROME | AlphaEdit | **REdit** |

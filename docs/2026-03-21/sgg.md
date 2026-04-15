@@ -31,19 +31,19 @@
 ### 关键设计
 
 1. **操作域分析（合成实验隔离）**:
-   - 做什么：用递归高斯混合模型隔离两种引导的成功/失败条件
-   - 核心思路：控制类数（条件粒度）和递归深度（类内复杂度）。CLS=4, Depth=3时 CFG 出现 mode-seeking 而 AG 保持多样性；CLS=24, Depth=1时 AG 产生离群点而 CFG 成功纠偏
-   - 设计动机：不同条件粒度+拟合度决定引导有效性。用 Inception distance 在 ImageNet 上量化验证：CFG 在高噪声时误差校正能力最强，AG 在低噪声时最强
+    - 做什么：用递归高斯混合模型隔离两种引导的成功/失败条件
+    - 核心思路：控制类数（条件粒度）和递归深度（类内复杂度）。CLS=4, Depth=3时 CFG 出现 mode-seeking 而 AG 保持多样性；CLS=24, Depth=1时 AG 产生离群点而 CFG 成功纠偏
+    - 设计动机：不同条件粒度+拟合度决定引导有效性。用 Inception distance 在 ImageNet 上量化验证：CFG 在高噪声时误差校正能力最强，AG 在低噪声时最强
 
 2. **分段引导 SGG（推理时）**:
-   - 做什么：在采样轨迹中按时间步切换引导类型
-   - 核心思路：引导方向 $\mathbf{g}$ 在 $t > \tau$ 时为 $\mathbf{v}(\mathbf{x}_t,t,\mathbf{c}) - \mathbf{v}(\mathbf{x}_t,t,\emptyset)$（CFG），在 $t \leq \tau$ 时为 $\mathbf{v}(\mathbf{x}_t,t,\mathbf{c}) - \tilde{\mathbf{v}}(\mathbf{x}_t,t,\mathbf{c})$（CAG/SLG）
-   - 设计动机：避免 CFG 在低噪声时的模式寻求和 AG 在高噪声时的离群点问题
+    - 做什么：在采样轨迹中按时间步切换引导类型
+    - 核心思路：引导方向 $\mathbf{g}$ 在 $t > \tau$ 时为 $\mathbf{v}(\mathbf{x}_t,t,\mathbf{c}) - \mathbf{v}(\mathbf{x}_t,t,\emptyset)$（CFG），在 $t \leq \tau$ 时为 $\mathbf{v}(\mathbf{x}_t,t,\mathbf{c}) - \tilde{\mathbf{v}}(\mathbf{x}_t,t,\mathbf{c})$（CAG/SLG）
+    - 设计动机：避免 CFG 在低噪声时的模式寻求和 AG 在高噪声时的离群点问题
 
 3. **训练时集成（W2S → 训练目标）**:
-   - 做什么：将引导方向直接加到 velocity matching target 中
-   - 核心思路：$\mathbf{u}_{w2s} = \mathbf{u} + w \cdot \text{sg}[\mathbf{g}(\mathbf{x}_t, t, \mathbf{c})]$，弱模型构造方式包括 CDG(CFG/MG)、CAG-AG（独立小网络，+27%计算）、CAG-BR（中间层分支，仅+2%计算）
-   - 设计动机：训练后模型不需要额外引导调用即可达到超越 CFG 的 FID
+    - 做什么：将引导方向直接加到 velocity matching target 中
+    - 核心思路：$\mathbf{u}_{w2s} = \mathbf{u} + w \cdot \text{sg}[\mathbf{g}(\mathbf{x}_t, t, \mathbf{c})]$，弱模型构造方式包括 CDG(CFG/MG)、CAG-AG（独立小网络，+27%计算）、CAG-BR（中间层分支，仅+2%计算）
+    - 设计动机：训练后模型不需要额外引导调用即可达到超越 CFG 的 FID
 
 ### 损失函数 / 训练策略
 $\mathcal{L}_s = \mathbb{E}[\|\mathbf{v}_\theta - (\mathbf{u} + w \cdot \text{sg}[\mathbf{g}])\|_2^2]$。训练时 SGG 在 $t \geq \tau$ 用 CFG 方向，$t < \tau$ 用 BR 方向。SGG 可与 REPA 互补叠加。

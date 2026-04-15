@@ -27,22 +27,22 @@ V₁ 以配对比较替代逐点评分进行自验证，通过瑞士制赛制动
 ### 关键设计
 
 1. **配对比较评分机制**：
-   - 对候选解对 $(s_i, s_j)$ 生成配对评分 $(r_i, r_j) \in [1,10]$
-   - 置信权重：$w_{ij} = \max(|r_i - r_j|/9, \tau)$，评分差越大越确信
-   - 加权胜率：$\mu_i = \frac{\sum_{j \in \mathcal{N}(i)} w_{ij} v_{ij}}{\sum_{j \in \mathcal{N}(i)} w_{ij}}$
-   - 设计动机：配对比较强制相对判断，天然提供校准参考，避免绝对评分的饱和问题
+    - 对候选解对 $(s_i, s_j)$ 生成配对评分 $(r_i, r_j) \in [1,10]$
+    - 置信权重：$w_{ij} = \max(|r_i - r_j|/9, \tau)$，评分差越大越确信
+    - 加权胜率：$\mu_i = \frac{\sum_{j \in \mathcal{N}(i)} w_{ij} v_{ij}}{\sum_{j \in \mathcal{N}(i)} w_{ij}}$
+    - 设计动机：配对比较强制相对判断，天然提供校准参考，避免绝对评分的饱和问题
 
 2. **瑞士制赛制预算调度**：
-   - **Phase 1 拓扑覆盖**：确保每个解至少被比较 $d_\min$ 次，随机配对 + 优先匹配欠采样节点
-   - **Phase 2 瑞士细化**：剩余预算聚焦评分最接近的未见配对 $\min_\text{unseen}|\mu_i - \mu_j|$，最大化 Bradley-Terry 模型下的边际信息增益
-   - 设计动机：相比穷举 $O(N^2)$ 配对，瑞士制以 $O(N \log N)$ 预算获得近似最优排名
+    - **Phase 1 拓扑覆盖**：确保每个解至少被比较 $d_\min$ 次，随机配对 + 优先匹配欠采样节点
+    - **Phase 2 瑞士细化**：剩余预算聚焦评分最接近的未见配对 $\min_\text{unseen}|\mu_i - \mu_j|$，最大化 Bradley-Terry 模型下的边际信息增益
+    - 设计动机：相比穷举 $O(N^2)$ 配对，瑞士制以 $O(N \log N)$ 预算获得近似最优排名
 
 3. **V₁-PairRL 联合训练**：
-   - 目标：$J(\theta) = J_\text{Gen}(\theta) + \lambda J_\text{PairVerif}(\theta)$
-   - 生成奖励：二进制正确性 $r_\text{gen} \in \{0,1\}$
-   - 验证奖励：$r_\text{verif} = \frac{1}{2}\sum_{i}\mathbb{I}(|v_i - y_i| \le 0.2)(1-|v_i - y_i|)$
-   - 防"安全赌注崩溃"：只有高置信判断（接近 0 或 1）才获正奖励，禁止模型学习中性 0.5
-   - 使用 GRPO 优化，8 个总预算拆分为 4 个生成 + 4 个验证
+    - 目标：$J(\theta) = J_\text{Gen}(\theta) + \lambda J_\text{PairVerif}(\theta)$
+    - 生成奖励：二进制正确性 $r_\text{gen} \in \{0,1\}$
+    - 验证奖励：$r_\text{verif} = \frac{1}{2}\sum_{i}\mathbb{I}(|v_i - y_i| \le 0.2)(1-|v_i - y_i|)$
+    - 防"安全赌注崩溃"：只有高置信判断（接近 0 或 1）才获正奖励，禁止模型学习中性 0.5
+    - 使用 GRPO 优化，8 个总预算拆分为 4 个生成 + 4 个验证
 
 ## 实验关键数据
 

@@ -25,21 +25,21 @@
 ### 关键设计
 
 1. **迭代自精炼框架**:
-   - 每轮：模型生成代码→渲染→CLIP 评分过滤（$\tau=0.8$）→扩充数据集→重训练
-   - 自精炼集：$\mathcal{D}_k^R=\{(\hat{I},\hat{C})|\hat{C}=M_k(I), \hat{I}=\mathcal{R}(\hat{C}), s(I,\hat{I})>\tau\}$
-   - 4 轮迭代：145K→190K→750K→1.8M→**2.5M**
-   - CLIP 过滤阈值 0.8 是最优——质量比数量更重要（0.6 得 3.24M 但 CLIP-S 更低）
+    - 每轮：模型生成代码→渲染→CLIP 评分过滤（$\tau=0.8$）→扩充数据集→重训练
+    - 自精炼集：$\mathcal{D}_k^R=\{(\hat{I},\hat{C})|\hat{C}=M_k(I), \hat{I}=\mathcal{R}(\hat{C}), s(I,\hat{I})>\tau\}$
+    - 4 轮迭代：145K→190K→750K→1.8M→**2.5M**
+    - CLIP 过滤阈值 0.8 是最优——质量比数量更重要（0.6 得 3.24M 但 CLIP-S 更低）
 
 2. **局部化代码变换**:
-   - 随机删除 1~n 行 TikZ 代码（n ≤ 40% 总行数），渲染缺失元素的图像
-   - 变换集：$\mathcal{D}_k^T=\{(\tilde{I},\tilde{C})|\tilde{C}=\mathcal{T}(\hat{C}), \tilde{I}=\mathcal{R}(\tilde{C})\}$
-   - 强制模型学习细粒度几何语义（某条线、某个角、某段弧）而非记忆模板
-   - 代码重复预测率降低 15%，CSR 提升 2.6%
+    - 随机删除 1~n 行 TikZ 代码（n ≤ 40% 总行数），渲染缺失元素的图像
+    - 变换集：$\mathcal{D}_k^T=\{(\tilde{I},\tilde{C})|\tilde{C}=\mathcal{T}(\hat{C}), \tilde{I}=\mathcal{R}(\tilde{C})\}$
+    - 强制模型学习细粒度几何语义（某条线、某个角、某段弧）而非记忆模板
+    - 代码重复预测率降低 15%，CSR 提升 2.6%
 
 3. **即插即用下游集成**:
-   - LLM/VLM 先调用 GeoTikzBridge 生成 TikZ 代码，再用代码辅助推理
-   - 关键发现：TikZ 代码比增强图像更有效（+2.8% vs +1.3%）
-   - VLM 灾难性遗忘问题：微调后 VLM 推理能力下降，LLM+TikZ 组合效果更好（0.889 vs 0.764）
+    - LLM/VLM 先调用 GeoTikzBridge 生成 TikZ 代码，再用代码辅助推理
+    - 关键发现：TikZ 代码比增强图像更有效（+2.8% vs +1.3%）
+    - VLM 灾难性遗忘问题：微调后 VLM 推理能力下降，LLM+TikZ 组合效果更好（0.889 vs 0.764）
 
 4. **GeoTikz-Instruct**: 419K 指令增强数据集，Qwen2.5-VL-72B 生成指令 + Doubao VLM 过滤
 

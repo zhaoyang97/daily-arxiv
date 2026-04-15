@@ -14,9 +14,9 @@
 1. **领域现状**：文本到图像扩散模型在多物体组合生成中，通常依赖 bounding box 或 mask 引导注意力实现空间控制。方法分两类：梯度优化型（BoxDiff 等）和区域融合型（Zero-Painter 等）。
 
 2. **现有痛点**：这些方法只关心 2D 平面位置，对深度层级和遮挡关系毫无感知。当多个物体的 bounding box 重叠时，注意力图产生空间干扰——背景物体的注意力"泄漏"到前景区域（attention hijacking），导致三类典型问题：
-   - **概念混合（concept mixing）**：重叠区域融合了多个物体的特征
-   - **遮挡不合逻辑（illogical occlusion）**：本该被遮挡的物体反而显示在前面
-   - **概念丢失（concept missing）**：某个物体完全消失
+    - **概念混合（concept mixing）**：重叠区域融合了多个物体的特征
+    - **遮挡不合逻辑（illogical occlusion）**：本该被遮挡的物体反而显示在前面
+    - **概念丢失（concept missing）**：某个物体完全消失
 
 3. **核心矛盾**：现有方法对所有物体赋予相同显著性（uniform salience），无法在重叠区域做出像素级的归属判决。根本原因是缺乏深度感知的注意力仲裁机制。
 
@@ -34,19 +34,19 @@ Pipeline：在 SDXL 去噪过程的每步，计算三个损失并反向传播梯
 ### 关键设计
 
 1. **Layout Confinement (LC, 布局约束)**:
-   - 做什么：确保每个物体的注意力集中在其 bounding box 内部
-   - 核心思路：计算注意力的"对齐比率" $f_i = E_{in}^{(i)} / (E_{in}^{(i)} + E_{out}^{(i)} + \varepsilon)$，然后最小化 $\mathcal{L}_{align} = \sum_i d_i \cdot (1 - f_i)^2$
-   - 设计动机：前景物体（$d_i$ 小=离相机近）占更大图像区域，注意力泄漏更显眼，所以用深度加权——越近的物体约束越严格
+    - 做什么：确保每个物体的注意力集中在其 bounding box 内部
+    - 核心思路：计算注意力的"对齐比率" $f_i = E_{in}^{(i)} / (E_{in}^{(i)} + E_{out}^{(i)} + \varepsilon)$，然后最小化 $\mathcal{L}_{align} = \sum_i d_i \cdot (1 - f_i)^2$
+    - 设计动机：前景物体（$d_i$ 小=离相机近）占更大图像区域，注意力泄漏更显眼，所以用深度加权——越近的物体约束越严格
 
 2. **Attention Arbitration Modulation (AAM, 注意力仲裁调制)**:
-   - 做什么：在重叠区域抑制背景物体的注意力，确保前景物体占据支配地位
-   - 核心思路：对每个前景-背景对 $(i,j)$，计算背景注意力在前景 mask 内的归一化响应 $\mathcal{I}_{i \leftarrow j}$，最小化深度加权的正交损失 $\mathcal{L}_{ortho} = \sum_{(i,j)} \lambda_{ij} \cdot \mathcal{I}_{i \leftarrow j}$，其中 $\lambda_{ij} = \lambda_0 \cdot \exp(\alpha \frac{d_j - d_i}{\tau})$
-   - 设计动机：深度差越大（前景离相机越近、背景越远），正交约束越强。这确保了注意力在特征层面的空间正交性，从根本上消除了注意力泄漏
+    - 做什么：在重叠区域抑制背景物体的注意力，确保前景物体占据支配地位
+    - 核心思路：对每个前景-背景对 $(i,j)$，计算背景注意力在前景 mask 内的归一化响应 $\mathcal{I}_{i \leftarrow j}$，最小化深度加权的正交损失 $\mathcal{L}_{ortho} = \sum_{(i,j)} \lambda_{ij} \cdot \mathcal{I}_{i \leftarrow j}$，其中 $\lambda_{ij} = \lambda_0 \cdot \exp(\alpha \frac{d_j - d_i}{\tau})$
+    - 设计动机：深度差越大（前景离相机越近、背景越远），正交约束越强。这确保了注意力在特征层面的空间正交性，从根本上消除了注意力泄漏
 
 3. **Spatial Compactness Control (SCC, 空间紧凑性控制)**:
-   - 做什么：防止注意力在 bounding box 内部过度扩散，保持物体边界清晰
-   - 核心思路：将注意力图归一化为空间概率分布，计算空间二阶矩（方差）$\text{Var}_i = \sum_{x,y} \tilde{\mathbf{A}}_i(x,y) \|\mathbf{p}(x,y) - \boldsymbol{\mu}_i\|_2^2$，最小化 $\mathcal{L}_{compact} = \sum_i d_i \cdot \text{Var}_i$
-   - 设计动机：AAM 解决了物体间干扰，但物体自身注意力可能在有效区域内弥散导致模糊。SCC 强制前景物体注意力紧凑集中，而允许背景物体适当松散（通过深度加权实现）
+    - 做什么：防止注意力在 bounding box 内部过度扩散，保持物体边界清晰
+    - 核心思路：将注意力图归一化为空间概率分布，计算空间二阶矩（方差）$\text{Var}_i = \sum_{x,y} \tilde{\mathbf{A}}_i(x,y) \|\mathbf{p}(x,y) - \boldsymbol{\mu}_i\|_2^2$，最小化 $\mathcal{L}_{compact} = \sum_i d_i \cdot \text{Var}_i$
+    - 设计动机：AAM 解决了物体间干扰，但物体自身注意力可能在有效区域内弥散导致模糊。SCC 强制前景物体注意力紧凑集中，而允许背景物体适当松散（通过深度加权实现）
 
 ### 训练策略 / 两阶段推理
 - **Stage 1（结构阶段）**：$\mathcal{L}_t = \mathcal{L}_{align} + \lambda_{ortho}\mathcal{L}_{ortho} + \lambda_{compact}\mathcal{L}_{compact}$，强制严格空间解耦 + 深度层级

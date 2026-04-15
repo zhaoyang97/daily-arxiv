@@ -27,15 +27,15 @@
 ### 关键设计
 
 1. **隐式 3D 感知记忆检索**:
-   - 做什么：用 LVSM 中间层特征 + 轻量 CNN 预测每个候选帧的空间覆盖置信图 $\mathbf{m}_i$
-   - 不确定性损失：$\mathcal{L}_{\text{un}}=\sum_{u,v}(\frac{1}{2}e^{-\sigma(u,v)}\cdot\text{sg}[\text{MSE}]+\frac{1}{2}\sigma(u,v))$
-   - 贪心最大覆盖选帧：$i^{*}=\arg\max_{i\notin\mathcal{C}}\sum_{u,v}(\max(\mathbf{m}^{g}(u,v),\mathbf{m}_i(u,v))-\mathbf{m}^{g}(u,v))$
-   - 核心优势：避免显式 3D 重建的尺度歧义和误差累积，纯特征空间操作
+    - 做什么：用 LVSM 中间层特征 + 轻量 CNN 预测每个候选帧的空间覆盖置信图 $\mathbf{m}_i$
+    - 不确定性损失：$\mathcal{L}_{\text{un}}=\sum_{u,v}(\frac{1}{2}e^{-\sigma(u,v)}\cdot\text{sg}[\text{MSE}]+\frac{1}{2}\sigma(u,v))$
+    - 贪心最大覆盖选帧：$i^{*}=\arg\max_{i\notin\mathcal{C}}\sum_{u,v}(\max(\mathbf{m}^{g}(u,v),\mathbf{m}_i(u,v))-\mathbf{m}^{g}(u,v))$
+    - 核心优势：避免显式 3D 重建的尺度歧义和误差累积，纯特征空间操作
 
 2. **自适应 3D 对齐记忆注入**:
-   - 做什么：LVSM 将检索帧 warp 到目标视角得到 $\hat{\mathbf{I}}^{t}$，VAE 编码后 channel-wise 拼接到 DiT latent：$\mathbf{z}'=[\mathbf{z}_t, \mathcal{E}(\hat{\mathbf{I}}^{t})]$
-   - 联合微调 NVS + Wan-DiT：NVS 不求光度精确重建，而是学习生成对 DiT 最有帮助的条件特征
-   - 冻结 NVS 的消融发现导航失败（相机进不了房间），说明联合微调让 NVS 适应性地编码可靠/不可靠区域
+    - 做什么：LVSM 将检索帧 warp 到目标视角得到 $\hat{\mathbf{I}}^{t}$，VAE 编码后 channel-wise 拼接到 DiT latent：$\mathbf{z}'=[\mathbf{z}_t, \mathcal{E}(\hat{\mathbf{I}}^{t})]$
+    - 联合微调 NVS + Wan-DiT：NVS 不求光度精确重建，而是学习生成对 DiT 最有帮助的条件特征
+    - 冻结 NVS 的消融发现导航失败（相机进不了房间），说明联合微调让 NVS 适应性地编码可靠/不可靠区域
 
 ### 训练细节
 - 训练 11K 步，batch size 4，640×352 分辨率，7 帧/clip

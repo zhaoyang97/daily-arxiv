@@ -1,9 +1,9 @@
 # Optimizing Multi-Modal Models for Image-Based Shape Retrieval: The Role of Pre-Alignment and Hard Contrastive Learning
 
-**日期**: 2026-03-07
-**arXiv**: [2603.06982](https://arxiv.org/abs/2603.06982)
-**代码**: 待发布（作者表示将通过项目网站公开）
-**领域**: 3D视觉
+**日期**: 2026-03-07  
+**arXiv**: [2603.06982](https://arxiv.org/abs/2603.06982)  
+**代码**: 待发布（作者表示将通过项目网站公开）  
+**领域**: 3D视觉  
 **关键词**: Image-Based Shape Retrieval, Pre-Aligned Encoders, Hard Contrastive Learning, Point Cloud, Multi-Modal
 
 ## 一句话总结

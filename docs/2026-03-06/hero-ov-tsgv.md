@@ -29,19 +29,19 @@
 ### 关键设计
 
 1. **Hierarchical Embedding Module (HEM)**:
-   - 做什么：将 query 编码为 4 层不同语义抽象级别的表示
-   - 核心思路：6 层 Transformer Encoder，分别取第 0（原始嵌入）、2、4、6 层输出作为 $Q_0, Q_1, Q_2, Q_3$。低层保留词汇细节，高层捕获语义概念
-   - 设计动机：开放词汇的关键挑战是同义词/改述难以在单一表示层级处理——"boy grabs skateboard" 和 "kid picks up object" 在词汇层完全不同，但在高层语义相近。多层次编码允许模型在合适的抽象层找到匹配
+    - 做什么：将 query 编码为 4 层不同语义抽象级别的表示
+    - 核心思路：6 层 Transformer Encoder，分别取第 0（原始嵌入）、2、4、6 层输出作为 $Q_0, Q_1, Q_2, Q_3$。低层保留词汇细节，高层捕获语义概念
+    - 设计动机：开放词汇的关键挑战是同义词/改述难以在单一表示层级处理——"boy grabs skateboard" 和 "kid picks up object" 在词汇层完全不同，但在高层语义相近。多层次编码允许模型在合适的抽象层找到匹配
 
 2. **Semantic-Guided Visual Filter (SGVF)**:
-   - 做什么：用文本语义引导过滤无关视觉内容
-   - 核心思路：cross-attention 以视频 $V$ 为 query、文本 $Q_i$ 为 key/value，得到注意力后经 sigmoid 生成软相关系数 $\hat{V}_i = V \odot \sigma(V_i^{attn})$
-   - 设计动机：视频中大量帧与 query 无关（背景噪声），直接融合会稀释有效信号。SGVF 在特征层面抑制无关帧，提升跨模态对齐精度
+    - 做什么：用文本语义引导过滤无关视觉内容
+    - 核心思路：cross-attention 以视频 $V$ 为 query、文本 $Q_i$ 为 key/value，得到注意力后经 sigmoid 生成软相关系数 $\hat{V}_i = V \odot \sigma(V_i^{attn})$
+    - 设计动机：视频中大量帧与 query 无关（背景噪声），直接融合会稀释有效信号。SGVF 在特征层面抑制无关帧，提升跨模态对齐精度
 
 3. **Contrastive Masked Text Refiner (CMTR)**:
-   - 做什么：通过随机掩码 query token + 对比学习提升文本鲁棒性
-   - 核心思路：随机掩码 $Q_i$ 生成 $Q_i^m$，分别与视频特征融合后计算相关性分数 $RS$ 和 $RS^m$，最小化 KL 散度 $\mathcal{L}_{CL} = D_{KL}(RS \| RS^m)$
-   - 设计动机：掩码训练迫使模型不依赖单个特定词汇进行定位——即使 query 中部分词被遮住，模型仍需给出一致的相关性判断。这直接增强了对词汇变化和缺失的鲁棒性
+    - 做什么：通过随机掩码 query token + 对比学习提升文本鲁棒性
+    - 核心思路：随机掩码 $Q_i$ 生成 $Q_i^m$，分别与视频特征融合后计算相关性分数 $RS$ 和 $RS^m$，最小化 KL 散度 $\mathcal{L}_{CL} = D_{KL}(RS \| RS^m)$
+    - 设计动机：掩码训练迫使模型不依赖单个特定词汇进行定位——即使 query 中部分词被遮住，模型仍需给出一致的相关性判断。这直接增强了对词汇变化和缺失的鲁棒性
 
 ### 损失函数
 总损失：$\mathcal{L} = \mathcal{L}_{TSGV} + \lambda_1 \mathcal{L}_{RS} + \lambda_2 \mathcal{L}_{CL}$

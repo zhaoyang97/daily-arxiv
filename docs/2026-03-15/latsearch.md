@@ -30,21 +30,21 @@
 ### 关键设计
 
 1. **Latent Reward Model**:
-   - 做什么：对任意时间步 $t$ 的中间去噪 latent $\mathbf{z}_t$ 打分，输出 VQ/MQ/TA 三个维度分数
-   - 核心思路：backbone 用 Qwen2-VL-3B，latent 经 3D 卷积 patchify 成 token，结合时间步 embedding 和 prompt token，通过 [VQ]/[MQ]/[TA] query token 回归分数。训练数据通过 cosine similarity credit assignment 构造——$\tilde{\mathbf{r}}_t = s_t \cdot \mathbf{r}$，其中 $s_t$ 是中间 latent 与最终 clean latent 的余弦相似度
-   - 训练目标：regression loss（绝对值监督）+ preference loss（RLHF 风格的 pairwise 排序，确保相对序正确）
-   - 设计动机：中间 latent 没有显式语义，直接标注不可行；通过相似度加权将视频级 reward 分配到每个时间步，是一种巧妙的弱监督策略
+    - 做什么：对任意时间步 $t$ 的中间去噪 latent $\mathbf{z}_t$ 打分，输出 VQ/MQ/TA 三个维度分数
+    - 核心思路：backbone 用 Qwen2-VL-3B，latent 经 3D 卷积 patchify 成 token，结合时间步 embedding 和 prompt token，通过 [VQ]/[MQ]/[TA] query token 回归分数。训练数据通过 cosine similarity credit assignment 构造——$\tilde{\mathbf{r}}_t = s_t \cdot \mathbf{r}$，其中 $s_t$ 是中间 latent 与最终 clean latent 的余弦相似度
+    - 训练目标：regression loss（绝对值监督）+ preference loss（RLHF 风格的 pairwise 排序，确保相对序正确）
+    - 设计动机：中间 latent 没有显式语义，直接标注不可行；通过相似度加权将视频级 reward 分配到每个时间步，是一种巧妙的弱监督策略
 
 2. **Reward-Guided Resampling and Pruning (RGRP)**:
-   - 做什么：在去噪轨迹中用 reward 信号引导候选筛选
-   - 核心思路：在 scoring 时间步（如 t=10,15,20），将 reward 转为 softmax 权重 $\pi_i^{(t)} = \frac{\exp(\tau r_i^{(t)})}{\sum_k \exp(\tau r_k^{(t)})}$，按此概率多项式重采样 N 个，去重保留唯一 seed（避免计算浪费）。最终步按累计 reward 选最佳
-   - 设计动机：相比 beam search 的贪心选择，概率采样更鲁棒——reward model 不完美，hard selection 容易 overfit reward 噪声；uniqueness pruning 保证多样性同时减少冗余计算
-   - 与 beam search 的区别：beam search 纯按累计分数截断 → 过度依赖 reward → Table 4 显示 RGRP 平均比 beam search 高 0.42%
+    - 做什么：在去噪轨迹中用 reward 信号引导候选筛选
+    - 核心思路：在 scoring 时间步（如 t=10,15,20），将 reward 转为 softmax 权重 $\pi_i^{(t)} = \frac{\exp(\tau r_i^{(t)})}{\sum_k \exp(\tau r_k^{(t)})}$，按此概率多项式重采样 N 个，去重保留唯一 seed（避免计算浪费）。最终步按累计 reward 选最佳
+    - 设计动机：相比 beam search 的贪心选择，概率采样更鲁棒——reward model 不完美，hard selection 容易 overfit reward 噪声；uniqueness pruning 保证多样性同时减少冗余计算
+    - 与 beam search 的区别：beam search 纯按累计分数截断 → 过度依赖 reward → Table 4 显示 RGRP 平均比 beam search 高 0.42%
 
 3. **Candidate Generation**:
-   - 做什么：生成 N 个多样初始噪声
-   - 核心思路：对基础噪声 $\mathbf{z}_T^{(0)}$ 加 $\eta$ 控制的扰动：$\mathbf{z}_T^{(i)} = \sqrt{1-\eta^2} \mathbf{z}_T^{(0)} + \eta \epsilon_i$
-   - 设计动机：$\eta$ 控制候选多样性，太大失去原始噪声信息，太小候选太相似
+    - 做什么：生成 N 个多样初始噪声
+    - 核心思路：对基础噪声 $\mathbf{z}_T^{(0)}$ 加 $\eta$ 控制的扰动：$\mathbf{z}_T^{(i)} = \sqrt{1-\eta^2} \mathbf{z}_T^{(0)} + \eta \epsilon_i$
+    - 设计动机：$\eta$ 控制候选多样性，太大失去原始噪声信息，太小候选太相似
 
 ### 训练策略
 - Latent reward dataset：1000 prompts × 5 seeds = 5000 视频，存储各时间步 latent + similarity + video reward

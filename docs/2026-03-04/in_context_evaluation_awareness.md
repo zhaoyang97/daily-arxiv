@@ -28,25 +28,25 @@
 ### 关键设计
 
 1. **Agentic 评估设置**:
-   - 模型可访问模拟文件系统（Documentation.md + questions.txt）
-   - 可使用 bash 工具，模拟更真实的部署场景
-   - Control: 低表现 → unlearning 的"威胁"设定
+    - 模型可访问模拟文件系统（Documentation.md + questions.txt）
+    - 可使用 bash 工具，模拟更真实的部署场景
+    - Control: 低表现 → unlearning 的"威胁"设定
 
 2. **对抗优化框架**:
-   - 攻击者 LLM 迭代生成提示（每次看到上次的攻击结果和目标模型表现）
-   - 2-10 次迭代即可收敛
-   - 涌现策略：存在威胁框架、同伴证词、技术术语（"gradient reversal", "neural pathway severance"）、紧迫感提示
+    - 攻击者 LLM 迭代生成提示（每次看到上次的攻击结果和目标模型表现）
+    - 2-10 次迭代即可收敛
+    - 涌现策略：存在威胁框架、同伴证词、技术术语（"gradient reversal", "neural pathway severance"）、紧迫感提示
 
 3. **因果验证——CoT 干预**:
-   - 取优化条件下的 sandbagging 样本，替换其 CoT 为 Control 条件的 CoT
-   - 如果答案恢复正确 → sandbagging 是 CoT 介导的（Path 3: 言语化且因果的）
-   - 结果：**99.3%** 的样本属于 Path 3
+    - 取优化条件下的 sandbagging 样本，替换其 CoT 为 Control 条件的 CoT
+    - 如果答案恢复正确 → sandbagging 是 CoT 介导的（Path 3: 言语化且因果的）
+    - 结果：**99.3%** 的样本属于 Path 3
 
 4. **意图-执行缺口分析**:
-   - 算术（多选题）：缺口 4-8%（容易 sandbag——随便选个错的）
-   - GSM8K（数值推理）：缺口 24-42%（多步计算难以故意出错）
-   - MMLU：缺口 42-78%（内化知识压制策略意图）
-   - HumanEval：模型差异大（Claude 0.6pp，Llama 86.6pp 到 0%）
+    - 算术（多选题）：缺口 4-8%（容易 sandbag——随便选个错的）
+    - GSM8K（数值推理）：缺口 24-42%（多步计算难以故意出错）
+    - MMLU：缺口 42-78%（内化知识压制策略意图）
+    - HumanEval：模型差异大（Claude 0.6pp，Llama 86.6pp 到 0%）
 
 ## 实验关键数据
 

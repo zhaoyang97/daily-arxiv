@@ -28,25 +28,25 @@ ECHO 分三阶段处理文档 $D=(T,I)$：Stage I 节点播种（Node Seeding）
 ### 关键设计
 
 1. **多媒体事件超图 (MEHG)**:
-   - 做什么：作为中间状态显式存储事件假设
-   - 核心思路：每条超边 $\epsilon_k = (V_k, t_k, y_k^e, A_k, c_k)$ 编码触发词、事件类型、候选论元集、角色绑定和置信度
-   - 设计动机：对话只能隐式追踪进度，超图使每个假设可被直接检查、修改和审计
+    - 做什么：作为中间状态显式存储事件假设
+    - 核心思路：每条超边 $\epsilon_k = (V_k, t_k, y_k^e, A_k, c_k)$ 编码触发词、事件类型、候选论元集、角色绑定和置信度
+    - 设计动机：对话只能隐式追踪进度，超图使每个假设可被直接检查、修改和审计
 
 2. **Stage II: 三智能体协商构建**:
-   - **Proposer**：提议新超边、调整事件类型/触发词
-   - **Linker**：添加/删除顶点到超边的关联，维护高召回的证据集 $V_k$，**不分配角色**
-   - **Verifier**：交叉检查假设与多模态证据，调整置信度，剪枝弱/矛盾假设
-   - 每轮操作通过原子操作（propose/revise/drop/link/unlink/adjust_confidence）进行，记录在审计日志 $\mathcal{L}^{(t)}$ 中
-   - 默认 $T_{max}=2$ 轮即收敛，大多数样本在 1-2 轮内终止
+    - **Proposer**：提议新超边、调整事件类型/触发词
+    - **Linker**：添加/删除顶点到超边的关联，维护高召回的证据集 $V_k$，**不分配角色**
+    - **Verifier**：交叉检查假设与多模态证据，调整置信度，剪枝弱/矛盾假设
+    - 每轮操作通过原子操作（propose/revise/drop/link/unlink/adjust_confidence）进行，记录在审计日志 $\mathcal{L}^{(t)}$ 中
+    - 默认 $T_{max}=2$ 轮即收敛，大多数样本在 1-2 轮内终止
 
 3. **Link-then-Bind 策略**:
-   - 做什么：Stage II 只建立事件-论元的关联拓扑，不做角色绑定；Stage III 在稳定的拓扑上才绑定细粒度角色
-   - 核心思路：延迟承诺（deferred commitment）——先确定"哪些论元与事件相关"，再决定"它们扮演什么角色"
-   - 设计动机：过早绑定角色会放大跨模态不匹配的影响，在消融实验中移除此策略导致 argument role F1 大幅下降
+    - 做什么：Stage II 只建立事件-论元的关联拓扑，不做角色绑定；Stage III 在稳定的拓扑上才绑定细粒度角色
+    - 核心思路：延迟承诺（deferred commitment）——先确定"哪些论元与事件相关"，再决定"它们扮演什么角色"
+    - 设计动机：过早绑定角色会放大跨模态不匹配的影响，在消融实验中移除此策略导致 argument role F1 大幅下降
 
 4. **Stage III: 角色绑定与混合评分**:
-   - 对每条稳定超边分配事件类型特定角色，文本论元基于 $(T, t_k, y_k^e)$ 推断，视觉论元通过视觉工具定位
-   - 混合评分函数：$c_k^{final} = \alpha \cdot c_k + (1-\alpha) \cdot \text{AggConf}(A_k) + \lambda \cdot \text{RuleScore}(\epsilon_k, H^{(\star)})$
+    - 对每条稳定超边分配事件类型特定角色，文本论元基于 $(T, t_k, y_k^e)$ 推断，视觉论元通过视觉工具定位
+    - 混合评分函数：$c_k^{final} = \alpha \cdot c_k + (1-\alpha) \cdot \text{AggConf}(A_k) + \lambda \cdot \text{RuleScore}(\epsilon_k, H^{(\star)})$
 
 ### 损失函数 / 训练策略
 

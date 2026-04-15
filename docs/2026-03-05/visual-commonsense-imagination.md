@@ -29,23 +29,23 @@ Imagine 包含三个阶段：(1) 构建 Synthetic VQA/VQA+ 多模态数据集；
 ### 关键设计
 
 1. **机器想象模块**：
-   - 做什么：将文本问题转化为视觉图像，提供文本中缺失的视觉常识
-   - 核心思路：将文本到图像生成器 $M_{T2I}$ 和视觉编码器 $M_I$ 接入 PLM $M_T$。给定问题 Q，先用 $M_{T2I}$ 生成图像 I，再用 $M_I$ 提取视觉特征 V
-   - 设计动机：直接生成图像比文本检索能覆盖更多隐性视觉知识，解决 reporting bias
+    - 做什么：将文本问题转化为视觉图像，提供文本中缺失的视觉常识
+    - 核心思路：将文本到图像生成器 $M_{T2I}$ 和视觉编码器 $M_I$ 接入 PLM $M_T$。给定问题 Q，先用 $M_{T2I}$ 生成图像 I，再用 $M_I$ 提取视觉特征 V
+    - 设计动机：直接生成图像比文本检索能覆盖更多隐性视觉知识，解决 reporting bias
 
 2. **Synthetic VQA / VQA+ 数据集构建**：
-   - 做什么：构建包含 (Q, A, I) 三元组的大规模合成 VQA 数据集
-   - 核心思路：从 AbstractATOMIC 知识库提取三元组 → 自然语言模板转 QA 对 → DALL-E 3 生成对应图像。VQA+ 版本额外引入 VCR 和 Sherlock 数据集的真实图像，并用 VERA 模型过滤不合理样本（阈值 0.5）
-   - 数据规模：VQA 约 77 万 QA 对 / 11 万图像；VQA+ 约 93 万 QA 对 / 18 万图像
+    - 做什么：构建包含 (Q, A, I) 三元组的大规模合成 VQA 数据集
+    - 核心思路：从 AbstractATOMIC 知识库提取三元组 → 自然语言模板转 QA 对 → DALL-E 3 生成对应图像。VQA+ 版本额外引入 VCR 和 Sherlock 数据集的真实图像，并用 VERA 模型过滤不合理样本（阈值 0.5）
+    - 数据规模：VQA 约 77 万 QA 对 / 11 万图像；VQA+ 约 93 万 QA 对 / 18 万图像
 
 3. **双目标训练（LM + ITM）**：
-   - 做什么：分别计算语言模型得分和图文匹配得分，联合优化
-   - 核心思路：LM 目标使用 masked/autoregressive loss 计算 $S_{LM}(T)$；ITM 目标通过 cross-attention 将视觉特征融入文本上下文，计算相似度 $S_I(T,V) = \text{sim}(\vec{T}, C)$，其中 $C = \text{softmax}(\frac{\vec{T}V^\top}{\sqrt{d_v}})V$。联合得分 $S_J = \frac{1}{2}(S_{LM} + S_I)$
-   - 设计动机：引入独立的 LM adapter 和 ITM adapter 避免两个目标冲突，仅训练 adapter 参数（约 8M）
+    - 做什么：分别计算语言模型得分和图文匹配得分，联合优化
+    - 核心思路：LM 目标使用 masked/autoregressive loss 计算 $S_{LM}(T)$；ITM 目标通过 cross-attention 将视觉特征融入文本上下文，计算相似度 $S_I(T,V) = \text{sim}(\vec{T}, C)$，其中 $C = \text{softmax}(\frac{\vec{T}V^\top}{\sqrt{d_v}})V$。联合得分 $S_J = \frac{1}{2}(S_{LM} + S_I)$
+    - 设计动机：引入独立的 LM adapter 和 ITM adapter 避免两个目标冲突，仅训练 adapter 参数（约 8M）
 
 4. **检索式推理加速**：
-   - 做什么：用预建图像库替代实时图像生成，大幅提速
-   - 核心思路：构建 Synthetic VQA+ 和 MSCOCO 图像库，用 CLIP 编码后按余弦相似度检索 top-1 最相关图像
+    - 做什么：用预建图像库替代实时图像生成，大幅提速
+    - 核心思路：构建 Synthetic VQA+ 和 MSCOCO 图像库，用 CLIP 编码后按余弦相似度检索 top-1 最相关图像
 
 ### 损失函数 / 训练策略
 

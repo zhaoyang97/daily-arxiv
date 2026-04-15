@@ -1,9 +1,9 @@
 # CORE: Concept-aware Continual Unlearning for Large Vision-Language Models
 
-**日期**: 2026-03-23
-**arXiv**: [2603.21484](https://arxiv.org/abs/2603.21484)
-**代码**: 无
-**领域**: 多模态VLM / 机器遗忘
+**日期**: 2026-03-23  
+**arXiv**: [2603.21484](https://arxiv.org/abs/2603.21484)  
+**代码**: 无  
+**领域**: 多模态VLM / 机器遗忘  
 **关键词**: continual unlearning, LVLM, concept decomposition, mixture-of-experts, over-refusal, concept modulator
 
 ## 一句话总结

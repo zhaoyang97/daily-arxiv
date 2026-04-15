@@ -22,9 +22,9 @@
 整个框架将视频评估形式化为离散文本优化问题：将 prompt 视为优化变量，VLM 反馈视为语义梯度。
 
 1. **Question Generation (QG) Agent**: 分析视频 v、prompt p 和条件 C，沿三个维度动态生成视觉问题集 Q：
-   - Video-Prompt Alignment：视频是否忠实表达了 prompt 的语义？
-   - Visual Quality：是否存在视觉伪影、时序不一致？
-   - Condition Fidelity：是否保持参考图像的身份和语义细节？（I2V 时激活）
+    - Video-Prompt Alignment：视频是否忠实表达了 prompt 的语义？
+    - Visual Quality：是否存在视觉伪影、时序不一致？
+    - Condition Fidelity：是否保持参考图像的身份和语义细节？（I2V 时激活）
 2. **Question Answering (QA) Agent**: 用 VLM 对每个问题评分，低分问题精确指向具体缺陷（如物体数量错误、空间关系混乱、动作不连贯等）。
 3. **Prompt Refinement Agent**: 将低分 QA 对中的批评信息作为"语义梯度"（借鉴 TextGrad 思想），针对性修改 prompt 措辞以修复已识别的缺陷，而非重写整个 prompt。
 

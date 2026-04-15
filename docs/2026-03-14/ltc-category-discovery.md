@@ -29,20 +29,20 @@
 ### 关键设计
 
 1. **Hash-Free 动态原型字典**:
-   - 用连续特征空间的余弦相似度做原型匹配，替代 hash 码的汉明距离
-   - 推理时维护动态字典：$\hat{y} = \arg\max_k f(x)^\top P_k$，若 $s_{\max} < \tau$ 则初始化新原型
-   - 训练目标：supervised contrastive loss（类内聚合、类间分离）+ cross-entropy
+    - 用连续特征空间的余弦相似度做原型匹配，替代 hash 码的汉明距离
+    - 推理时维护动态字典：$\hat{y} = \arg\max_k f(x)^\top P_k$，若 $s_{\max} < \tau$ 则初始化新原型
+    - 训练目标：supervised contrastive loss（类内聚合、类间分离）+ cross-entropy
 
 2. **MKEE 伪未知生成**:
-   - 第一步（Mixup 初始化）：对不同类样本做 mixup $x_{mix} = \lambda x_i + (1-\lambda) x_j$，在类间边界附近生成候选
-   - 第二步（MKEE 扰动）：沿目标函数 $\mathcal{J}(x) = -H(p) - \lambda_\rho \rho(x)$ 做单步梯度上升。$H(p)$ 是分类器预测熵（鼓励不确定性），$\rho(x)$ 是 KDE 估计的已知类特征密度（鼓励远离已知类）
-   - 效果：将样本从已知分布的高密度区域推向低密度、高不确定性的"未知类似"区域
-   - 计算极轻：只需一步梯度操作，batch 内完成，不依赖外部生成器
+    - 第一步（Mixup 初始化）：对不同类样本做 mixup $x_{mix} = \lambda x_i + (1-\lambda) x_j$，在类间边界附近生成候选
+    - 第二步（MKEE 扰动）：沿目标函数 $\mathcal{J}(x) = -H(p) - \lambda_\rho \rho(x)$ 做单步梯度上升。$H(p)$ 是分类器预测熵（鼓励不确定性），$\rho(x)$ 是 KDE 估计的已知类特征密度（鼓励远离已知类）
+    - 效果：将样本从已知分布的高密度区域推向低密度、高不确定性的"未知类似"区域
+    - 计算极轻：只需一步梯度操作，batch 内完成，不依赖外部生成器
 
 3. **双 Max-Margin 损失 + 自适应阈值**:
-   - $\mathcal{L}_{pos}$：迫使已知类样本的最大原型相似度高于 $\tau + m_{pos}$
-   - $\mathcal{L}_{neg}$：迫使伪未知样本的最大原型相似度低于 $\tau - m_{neg}$
-   - 自适应阈值：基于已知/伪未知样本相似度的分位数做 EMA 更新 $\tau$
+    - $\mathcal{L}_{pos}$：迫使已知类样本的最大原型相似度高于 $\tau + m_{pos}$
+    - $\mathcal{L}_{neg}$：迫使伪未知样本的最大原型相似度低于 $\tau - m_{neg}$
+    - 自适应阈值：基于已知/伪未知样本相似度的分位数做 EMA 更新 $\tau$
 
 ### 损失函数
 $\mathcal{L}_{total} = \mathcal{L}_{ce} + \alpha \mathcal{L}_{sup} + \gamma_{mm} \mathcal{L}_{mm}$

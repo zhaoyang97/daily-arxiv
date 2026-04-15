@@ -1,9 +1,9 @@
 # E-SocialNav: Efficient Socially Compliant Navigation with Language Models
 
-**日期**: 2026-03-21
-**arXiv**: [2603.20664](https://arxiv.org/abs/2603.20664)
-**代码**: https://github.com/Dr-LingXiao/ESocialNav
-**领域**: 机器人 / 社会导航 / 小语言模型
+**日期**: 2026-03-21  
+**arXiv**: [2603.20664](https://arxiv.org/abs/2603.20664)  
+**代码**: https://github.com/Dr-LingXiao/ESocialNav  
+**领域**: 机器人 / 社会导航 / 小语言模型  
 **关键词**: Social Navigation, Small Language Model, SFT, DPO, Phi-2, SigLIP, 多模态
 
 ## 一句话总结

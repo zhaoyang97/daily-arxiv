@@ -19,6 +19,7 @@ DUEL 框架证明了使用确定性解码策略的掩码扩散模型（MDM）可
 关键洞察：许多最佳 MDM 采样器使用**确定性解码策略**（greedy confidence、probability margin、confidence threshold、KLASS），而确定性策略将似然计算从超指数级求和（>L! 项）坍缩为**单一路径**的乘积。
 
 ## 方法详解
+
 ### 整体框架
 DUEL sampler 是一个二元组 (x_θ, F)：预训练去噪网络 x_θ 和确定性解码规则 F。给定部分掩码序列 z，F(z) 返回唯一的待解掩位置集合。框架统一了多种现有采样策略：
 
@@ -55,6 +56,7 @@ L_ELBO(θ) = E[w_t · Σ_{ℓ∈M(z_t)} -log P_ℓ[x^(ℓ)]]
 DUEL 仅改变评估方式，将 ELBO 的随机多次采样替换为确定性单路径精确计算。
 
 ## 实验关键数据
+
 ### 主实验
 
 **In-Domain 困惑度（OWT，ARM baseline: 17.54）**:

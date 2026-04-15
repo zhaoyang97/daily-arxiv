@@ -17,26 +17,27 @@
 5. **核心idea一句话**: 用 MAGIC 图扩散做全局去噪 + Transformer 空间注意力做局部感知，再用自编码器融合两路信息完成最终填补。
 
 ## 方法详解
+
 ### 整体框架
 输入基因表达矩阵 $\mathbf{X} \in \mathbb{R}^{n \times g}$ 和空间坐标 $\mathbf{S} \in \mathbb{R}^{n \times 2}$。流程分三步：(1) MAGIC 图扩散对表达矩阵去噪填补；(2) Transformer 编码空间坐标生成空间嵌入；(3) 融合两路信息通过编码器-解码器重建增强表达谱。
 
 ### 关键设计
 1. **MAGIC 图扩散模块**: 
-   - 对表达矩阵 PCA 降维后构建 kNN 图（$k=5$，最大邻居 $k_{max}=15$）
-   - 用自适应高斯核计算亲和矩阵，对称化后行归一化得到转移矩阵 $\mathbf{P}$
-   - 执行 $t$ 步随机游走扩散 $\mathbf{X}_{MAGIC} = \mathbf{P}^t \mathbf{X}_d$，实现长程信息传播
-   - 核心思路：通过流形上的扩散过程平滑基因表达、恢复 dropout 值
+    - 对表达矩阵 PCA 降维后构建 kNN 图（$k=5$，最大邻居 $k_{max}=15$）
+    - 用自适应高斯核计算亲和矩阵，对称化后行归一化得到转移矩阵 $\mathbf{P}$
+    - 执行 $t$ 步随机游走扩散 $\mathbf{X}_{MAGIC} = \mathbf{P}^t \mathbf{X}_d$，实现长程信息传播
+    - 核心思路：通过流形上的扩散过程平滑基因表达、恢复 dropout 值
 
 2. **Spatial Transformer Attention 模块**:
-   - 将 2D 空间坐标线性映射到 $d_s=32$ 维嵌入空间
-   - 通过单层 Transformer 编码器（$h=2$ 头自注意力）学习全局空间依赖
-   - 投影到基因维度后与 MAGIC 输出拼接：$\mathbf{X}_{fused} = [\mathbf{X}_{MAGIC} \| \mathbf{H}_{proj}]$
-   - 设计动机：无需显式邻接矩阵或距离阈值，自适应学习空间关系
+    - 将 2D 空间坐标线性映射到 $d_s=32$ 维嵌入空间
+    - 通过单层 Transformer 编码器（$h=2$ 头自注意力）学习全局空间依赖
+    - 投影到基因维度后与 MAGIC 输出拼接：$\mathbf{X}_{fused} = [\mathbf{X}_{MAGIC} \| \mathbf{H}_{proj}]$
+    - 设计动机：无需显式邻接矩阵或距离阈值，自适应学习空间关系
 
 3. **融合精炼模块（Autoencoder）**:
-   - 编码器：$2G \to 512 \to 256$ 的两层全连接 + ReLU + Dropout
-   - 解码器：$256 \to 512 \to G$ 重建基因表达
-   - 训练时对 MAGIC 填补结果随机遮蔽 20%，迫使模型利用空间信息恢复缺失值
+    - 编码器：$2G \to 512 \to 256$ 的两层全连接 + ReLU + Dropout
+    - 解码器：$256 \to 512 \to G$ 重建基因表达
+    - 训练时对 MAGIC 填补结果随机遮蔽 20%，迫使模型利用空间信息恢复缺失值
 
 ### 损失函数 / 训练策略
 - 损失函数：MSE 重建误差 $\mathcal{L} = \frac{1}{n}\sum_{i=1}^{n}\|\hat{\mathbf{x}}_i - \mathbf{x}_{MAGIC,i}\|_2^2$
@@ -44,6 +45,7 @@
 - 选取 top $k=3000$ 高变异基因，PCA 降至 $d=100$ 维
 
 ## 实验关键数据
+
 ### 主实验
 
 | 数据集 | Before | MAGIC | Attn PCA | Attn UMAP | **SpatialMAGIC** |

@@ -20,9 +20,9 @@
 ### 双通道
 1. **ILC（Implicit Logic Channel）**：MLLM 直接给答案
 2. **ELC（Explicit Logic Channel）**：
-   - LLM 从文本中抽取事实和关系
-   - VFM 在图像中定位证据
-   - 概率逻辑推理输出决策
+    - LLM 从文本中抽取事实和关系
+    - VFM 在图像中定位证据
+    - 概率逻辑推理输出决策
 
 ### 一致率指标
 
