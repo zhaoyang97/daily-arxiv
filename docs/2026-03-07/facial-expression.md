@@ -50,8 +50,8 @@
     - **评估维度**（四维加权打分）：
      - Empathy（共情）、Appropriateness（恰当性）、Engagement（参与度）、Naturalness（自然度）
      - 最终偏好分：$r(\tau^j) = \alpha_{\text{emp}} \cdot \text{Empathy} + \alpha_{\text{app}} \cdot \text{Appropriateness} + \alpha_{\text{eng}} \cdot \text{Engagement} + \alpha_{\text{nat}} \cdot \text{Naturalness}$
-   - **偏好对构建**：每组候选中最高分为 preferred，最低分为 dispreferred，构成 DPO 训练对
-   - 设计动机：对比式 DPO 目标优于单纯在正样本上做 SFT，能学习区分好坏行为
+    - **偏好对构建**：每组候选中最高分为 preferred，最低分为 dispreferred，构成 DPO 训练对
+    - 设计动机：对比式 DPO 目标优于单纯在正样本上做 SFT，能学习区分好坏行为
 
 ### 损失函数 / 训练策略
 

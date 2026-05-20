@@ -132,9 +132,9 @@ DUEL 仅改变评估方式，将 ELBO 的随机多次采样替换为确定性单
 - **与 I-MDCE 关系的区别** [Jeon et al., 2025]: 该工作假设连续时间+最优去噪器，DUEL 适用于离散时间+训练模型
 - **并行工作** [Chen et al., 2025a]: 独立推导相同精确似然用于 GRPO 强化学习训练 MDM
 - **启发的未来方向**: 
-  - 扩展到 remasking 范式 [Wang et al., 2025a]
-  - 基于精确概率的 GRPO 风格 RL 训练 [Shao et al., 2024]
-  - 基于联合似然的 speculative decoding [Guo and Ermon, 2025]
+    - 扩展到 remasking 范式 [Wang et al., 2025a]
+    - 基于精确概率的 GRPO 风格 RL 训练 [Shao et al., 2024]
+    - 基于联合似然的 speculative decoding [Guo and Ermon, 2025]
 
 ## 评分
 - 新颖性: ⭐⭐⭐⭐⭐ 理论贡献深刻——首次为 MDM 建立精确似然和真正的困惑度

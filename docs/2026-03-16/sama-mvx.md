@@ -57,11 +57,11 @@ SAMA 是一个三层架构的 agent 系统：
 
 MVX-Bench (Multi-Video Cross-Dimension Benchmark) 的设计：
 - **任务来源**: 11 个经典 CV 任务重构为多视频 QA 格式
-  - 身份匹配类：Person ReID、Vehicle ReID、Face Verification
-  - 比较分析类：Action Comparison、Attribute Comparison
-  - 跨视频推理类：Temporal Ordering、Spatial Reasoning
-  - 细粒度区分类：Fine-grained Classification、Change Detection
-  - 综合推理类：Multi-step Reasoning、Counterfactual
+    - 身份匹配类：Person ReID、Vehicle ReID、Face Verification
+    - 比较分析类：Action Comparison、Attribute Comparison
+    - 跨视频推理类：Temporal Ordering、Spatial Reasoning
+    - 细粒度区分类：Fine-grained Classification、Change Detection
+    - 综合推理类：Multi-step Reasoning、Counterfactual
 - **规模**: 1,442 个问题，覆盖 4,255 个真实世界视频
 - **评测维度**: 身份级匹配、细粒度区分、结构化多步推理三大能力
 

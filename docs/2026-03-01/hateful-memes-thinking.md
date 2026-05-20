@@ -47,7 +47,7 @@
      - $R_{\text{len}}$：长度正则（高斯型，目标约 100 词，$\sigma=20$）
      - $R_{\text{met}}$：METEOR 语义相似度（与 gold rationale 比较）
      用组内平均奖励作 baseline 计算归一化优势，PPO-style clipped surrogate + KL 正则（$\beta=0.04$, clip $\epsilon=0.2$）。
-   - 设计动机：GRPO 不需要额外训练 reward model，用规则奖励直接可计算；多奖励组合确保格式/准确性/解释质量同时优化。
+    - 设计动机：GRPO 不需要额外训练 reward model，用规则奖励直接可计算；多奖励组合确保格式/准确性/解释质量同时优化。
 
 ### 损失函数 / 训练策略
 

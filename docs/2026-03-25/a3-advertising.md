@@ -39,12 +39,12 @@
 ### A³-Align 模型训练
 - **SFT 阶段**：在 A³-Dataset 上学习 CoT 推理格式、规则判断、工具调用。训练数据包含逐步推理链示范——先分析感知注意维度，再评估形式兴趣，最后评判欲望影响，确保模型学会渐进式评估流程
 - **GRPO 阶段**：多源奖励设计精细——
-  - Format Reward：格式正确性（遵循三阶段输出结构）
-  - Non-Repeat Reward：避免重复空洞的评论
-  - Accuracy Reward：8 个二分类规则的判断匹配度
-  - IoU Reward：促销图标检测的空间准确性
-  - Tool Utilization Reward：3 个规则需要工具调用（色相分析、色彩和谐度计算、OCR 文案提取）
-  - Continuous Score Reward：连续评分维度用高斯奖励函数
+    - Format Reward：格式正确性（遵循三阶段输出结构）
+    - Non-Repeat Reward：避免重复空洞的评论
+    - Accuracy Reward：8 个二分类规则的判断匹配度
+    - IoU Reward：促销图标检测的空间准确性
+    - Tool Utilization Reward：3 个规则需要工具调用（色相分析、色彩和谐度计算、OCR 文案提取）
+    - Continuous Score Reward：连续评分维度用高斯奖励函数
 - **两步训练的必要性**：纯 SFT 的模型在推理过程中容易出现「结论与推理不对齐」（推理说好但打分低），GRPO 校正了这种不一致性
 
 ### A³-Dataset

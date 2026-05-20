@@ -31,6 +31,7 @@
 - 按环境顺序做了平衡分组（stratified randomization by expertise）
 
 ### 数据模态
+
 | 模态 | 设备 | 采样率 | 内容 |
 |------|------|--------|------|
 | 眼动追踪 | Tobii Pro Fusion | 120Hz | 注视点、瞳孔直径、扫视模式 |

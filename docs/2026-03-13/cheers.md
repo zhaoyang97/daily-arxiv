@@ -51,10 +51,10 @@ VAE 编码器 → VAE 解码器 → SigLIP2-ViT 提取语义 token → Pixel-Uns
 
 ### 训练策略
 - 四阶段渐进训练（128×A100）：
-  - Stage I: 视觉-语言对齐（5.8M 数据，30K steps）
-  - Stage II: 通用预训练（30M 数据，60K steps，理解:生成:文本=3:6:1）
-  - Stage III: 精炼预训练（33M 数据，65K steps，加入组合推理数据）
-  - Stage IV: 指令微调（3.8M 数据，30K steps，理解:生成=1:1）
+    - Stage I: 视觉-语言对齐（5.8M 数据，30K steps）
+    - Stage II: 通用预训练（30M 数据，60K steps，理解:生成:文本=3:6:1）
+    - Stage III: 精炼预训练（33M 数据，65K steps，加入组合推理数据）
+    - Stage IV: 指令微调（3.8M 数据，30K steps，理解:生成=1:1）
 
 ## 实验关键数据
 

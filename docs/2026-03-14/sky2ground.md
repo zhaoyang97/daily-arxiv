@@ -89,6 +89,7 @@ Sky2Ground 数据集构建 → 现有方法 benchmark 发现瓶颈 → SkyNet �
 - 价值: ⭐⭐⭐⭐ 对大规模跨高度 3D 感知和行星级重建有推动作用
 
 ### 消融实验（Table 6，Avg = (RRA@5+RTA@5)/2）
+
 | 配置 | MSA | CA-CS | P-VS | Avg |
 |------|-----|-------|------|-----|
 | VGGT-ZS Baseline | ✗ | ✗ | ✗ | 52.9 |

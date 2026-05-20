@@ -38,10 +38,10 @@
 - **做什么**: 将经典的 activation patching 从纯文本扩展到多模态，追踪计数信息的层间流动
 - **怎么做**: 构造控制图像对（clean: 3 个点，corrupted: 5 个点，空间布局相同），将 corrupted 的隐藏状态注入 clean 的推理过程，观察预测是否翻转（overwrite rate）
 - **关键发现**: 
-  - 层 1-15：计数信息主要锚定在图像 token 中（overwrite rate 高）
-  - 层 15 开始：图像 token 影响骤降，Last Prompt Token（"Assistant:" 标签）影响飙升，**层 23 达到峰值**
-  - **层 15-22 是关键的跨模态路由瓶颈**——分布式视觉特征在此被压缩进语言流
-  - Logit Lens 验证：正确数字 token 在层 19-26 开始出现在 top-10，层 27-28 收敛到 rank-1
+    - 层 1-15：计数信息主要锚定在图像 token 中（overwrite rate 高）
+    - 层 15 开始：图像 token 影响骤降，Last Prompt Token（"Assistant:" 标签）影响飙升，**层 23 达到峰值**
+    - **层 15-22 是关键的跨模态路由瓶颈**——分布式视觉特征在此被压缩进语言流
+    - Logit Lens 验证：正确数字 token 在层 19-26 开始出现在 top-10，层 27-28 收敛到 rank-1
 
 #### 3. HeadLens：注意力头级语义解码
 - **做什么**: 将单个注意力头的输出解码为人类可理解的语义 token

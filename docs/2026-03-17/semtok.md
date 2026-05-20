@@ -49,9 +49,9 @@ SemTok = 编码器 $\mathcal{E}$ + 量化器 $\mathcal{Q}$ + 解码器 $\mathcal
 4. **两阶段生成式训练**:
     - **Stage I (扩散预训练)**: 解码器用 flow matching 从噪声预测图像 latent，$\mathcal{L}_{diff} = \mathbb{E}[\|x_v - \epsilon - \mathcal{D}(x_t, \bar{z}, t)\|^2]$。联合优化编码器+量化器+解码器
      - 目的：扩散式训练在多个噪声尺度上优化似然→探索潜在空间的多样路径→避免分布坍塌
-   - **Stage II (精细化微调)**: 将解码器的噪声输入替换为可学习 mask token，改用一步重建 + MSE/LPIPS/GAN 损失
+    - **Stage II (精细化微调)**: 将解码器的噪声输入替换为可学习 mask token，改用一步重建 + MSE/LPIPS/GAN 损失
      - 目的：Stage I 探索了丰富语义空间但缺乏像素细节；Stage II 补回高频纹理，且推理时仅需一步→大幅加速
-   - 消融验证：仅 Stage II（无预训练）rFID 1.80 vs 完整两阶段 0.88——预训练至关重要
+    - 消融验证：仅 Stage II（无预训练）rFID 1.80 vs 完整两阶段 0.88——预训练至关重要
 
 ## 实验关键数据
 

@@ -28,7 +28,7 @@ REdit 分两阶段：(1) **电路重塑阶段**：通过对比元学习重新组
      - (2) 计算电路距离（Jaccard / Edit / Optimal Transport）
      - (3) 单模式编辑后测量对其他模式的干扰 $\Delta_{i \to j}$
      - (4) 发现 $\Delta_{i \to j} \approx \alpha + \beta \cdot d(i,j)$，$\beta < 0$（负相关）
-   - **核心结论**：电路越相似的推理模式，编辑干扰越大；电路越不同，编辑越局部
+    - **核心结论**：电路越相似的推理模式，编辑干扰越大；电路越不同，编辑越局部
 
 2. **Contrastive Circuit Reshaping（对比电路重塑）**:
     - 对 EAP 归因权重 $w_\pi$ 做 L2 归一化得 $\tilde{w}_\pi$
@@ -45,7 +45,7 @@ REdit 分两阶段：(1) **电路重塑阶段**：通过对比元学习重新组
 4. **Dual-Level Protection（双层保护）**:
     - **预测分布保护**：KL 散度约束保持正确推理的输出分布不变
      - $\mathcal{L}_{\mathrm{pred}} = \mathbb{E}_{(\mathcal{P},\mathcal{G}) \in \mathcal{C}} \mathrm{KL}(f_{\theta^{\text{ref}}} \| f_\theta)$
-   - **零空间保护**：内层梯度投影到任务损失梯度的近似零空间
+    - **零空间保护**：内层梯度投影到任务损失梯度的近似零空间
      - $P^{(i,t)} = I - \rho \Pi_{g_{i,t}}$，限制更新方向不损害当前任务性能
 
 ### 损失函数 / 训练策略

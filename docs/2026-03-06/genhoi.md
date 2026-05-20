@@ -40,7 +40,7 @@ GenHOI 基于预训练 Wan-14B-I2V 视频生成模型，增加三个轻量组件
      - 阻止背景 query 关注参考 key（避免背景污染）
      - 阻止参考 query 反向关注视频 key（避免自回归泄漏）
      - $T_{out} = \text{softmax}\left(\frac{M \odot QK^\intercal}{\sqrt{d_k}}\right) V$
-   - **Soft Flow Gate (SFG)**：逐 token 门控系数
+    - **Soft Flow Gate (SFG)**：逐 token 门控系数
      - $G_v = \sigma(\mathcal{F}(\mathcal{LN}(T'_v)))$，$\tilde{T}_v = G_v \odot T'_v$
      - 自适应放大有信息区域、抑制冗余响应
 

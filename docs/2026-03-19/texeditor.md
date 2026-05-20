@@ -42,7 +42,7 @@
      - SAM3 mask IoU：太粗粒度
      - Wireframe IoU：对像素扰动过敏
      - **Wireframe SSIM**（最终选择）：$s = SSIM(SAUGE(I_e), SAUGE(I))$，对小位移鲁棒
-   - 经验归一化：原始 SSIM 值范围窄，为纹理替换和属性编辑分别设 $\tau_{min}, \tau_{max}$ 做分段线性映射
+    - 经验归一化：原始 SSIM 值范围窄，为纹理替换和属性编辑分别设 $\tau_{min}, \tau_{max}$ 做分段线性映射
 
 3. **TexEval 评估指标**:
     - 做什么：联合评估指令遵循和结构保持

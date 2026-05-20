@@ -58,8 +58,8 @@ HyPER-GAN 包含四个阶段：
 ### 损失函数 / 训练策略
 
 - **对抗损失**: 采用 LSGAN（Least-Squares GAN）公式，替代 BCE 以稳定训练：
-  - $\mathcal{L}_D = \mathbb{E}_{q \sim \mathcal{P}_{real}}[(D(q)-1)^2] + \mathbb{E}_{q \sim \mathcal{P}_{generated}}[D(q)^2]$
-  - $\mathcal{L}_G = \mathbb{E}_{q \sim \mathcal{P}_{generated}}[(D(q)-1)^2] + \lambda \|\hat{X} - target\|_1$
+    - $\mathcal{L}_D = \mathbb{E}_{q \sim \mathcal{P}_{real}}[(D(q)-1)^2] + \mathbb{E}_{q \sim \mathcal{P}_{generated}}[D(q)^2]$
+    - $\mathcal{L}_G = \mathbb{E}_{q \sim \mathcal{P}_{generated}}[(D(q)-1)^2] + \lambda \|\hat{X} - target\|_1$
 - **重建损失**: L1 距离，$\lambda = 10$，保持结构和语义一致性。
 - **优化器**: Adam, lr = $2 \times 10^{-4}$, betas = (0.5, 0.999)。
 - **训练**: 20 epochs, batch size = 1, 单张 NVIDIA RTX 4070 Super (12GB)。

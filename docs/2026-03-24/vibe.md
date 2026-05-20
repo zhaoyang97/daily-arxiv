@@ -38,7 +38,7 @@
     - 核心思路：
      - **局部分支**: 滑动窗口注意力，窗口大小等于模型原生分辨率（如 480P），但引入 inward shifting——边界 token 的窗口向内偏移，确保所有 token 的可交互 KV 数量一致
      - **全局分支**: 对 K/V 做 pooling 得到粗粒度 token，与原始 KV 拼接，让每个 query 既看局部细节又看全局语义
-   - 设计动机：纯局部注意力会产生重复 pattern，纯全局注意力在高分辨率下计算不可承受，双分支兼顾两者
+    - 设计动机：纯局部注意力会产生重复 pattern，纯全局注意力在高分辨率下计算不可承受，双分支兼顾两者
 
 3. **High-Frequency-Awareness-Training-Objective (HFATO)**:
     - 做什么：训练时先对 clean latent 做降采样-上采样退化，再加噪，模型需要从退化+加噪的 latent 恢复到原始 clean latent

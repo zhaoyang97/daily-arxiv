@@ -46,6 +46,7 @@ Client-Server 架构：
 - **6 个模型服务器**: CogACT、OpenVLA、OpenVLA-OFT、π₀/π₀-FAST、GR00T N1、X-VLA
 
 ### 主实验（并行加速，H100）
+
 | Benchmark | 配置 | 顺序时间 | 并行时间 | 加速比 |
 |-----------|------|---------|---------|--------|
 | LIBERO | 2000 ep, N=50, B=16 | ~14 h | ~18 min | **47×** |
@@ -53,6 +54,7 @@ Client-Server 架构：
 | SimplerEnv | 288 ep, N=16 | ~1.7 h | ~8.5 min | **12×** |
 
 ### 消融实验（可复现性审计，DB-CogACT vs 论文报告）
+
 | Benchmark | 指标 | 本框架 | 论文值 | Δ |
 |-----------|------|--------|-------|---|
 | LIBERO Spatial | SR% | 95.2 | 93.8 | +1.4 |

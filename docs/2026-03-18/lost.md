@@ -45,8 +45,8 @@
      - **$\mathcal{L}_{global}$（全局关系对比）**: 多正例 InfoNCE，按 DINO 距离挖掘正负对，拉近语义相似 3D 形状
      - **$\mathcal{L}_{rank}$（排序蒸馏）**: 受 RKD 启发，保留连续的成对距离排序关系（不只是正/负二分）
      - **$\mathcal{L}_{spatial}$（空间结构蒸馏）**: 蒸馏实例内 token 之间的亲和矩阵，保留部件级关系
-   - 总损失：$\mathcal{L}_{RIDA} = \lambda_g \mathcal{L}_{global} + \lambda_r \mathcal{L}_{rank} + \lambda_s \mathcal{L}_{spatial}$（$\lambda_g=1.0, \lambda_r=1.0, \lambda_s=0.5$）
-   - 预训练完成后，$f_\theta$ 作为感知损失指导 DiT 解码器训练：$\mathcal{L}_{semantic} = 1 - \langle f_\theta(\hat{X}_0), f_\theta(X_0) \rangle$
+    - 总损失：$\mathcal{L}_{RIDA} = \lambda_g \mathcal{L}_{global} + \lambda_r \mathcal{L}_{rank} + \lambda_s \mathcal{L}_{spatial}$（$\lambda_g=1.0, \lambda_r=1.0, \lambda_s=0.5$）
+    - 预训练完成后，$f_\theta$ 作为感知损失指导 DiT 解码器训练：$\mathcal{L}_{semantic} = 1 - \langle f_\theta(\hat{X}_0), f_\theta(X_0) \rangle$
 
 4. **LoST-GPT：连续空间自回归生成**
     - 不量化 token，保持在连续空间

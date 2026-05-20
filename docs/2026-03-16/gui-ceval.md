@@ -23,16 +23,16 @@
 
 **两层结构**:
 - **基础任务(Foundation)**: 通过多模态 QA 评估原子能力，5 个维度：
-  - 感知(Perception): App 识别、页面识别、控件理解
-  - 规划(Planning): 任务规划、动作决策、动作推理
-  - 反思(Reflection): 短期反思（单步正确性）、长期反思（轨迹级错误识别）
-  - 执行(Execution): GUI Grounding 和动作参数预测
-  - 评估(Evaluation): 成功判断、指令生成、时序排列
+    - 感知(Perception): App 识别、页面识别、控件理解
+    - 规划(Planning): 任务规划、动作决策、动作推理
+    - 反思(Reflection): 短期反思（单步正确性）、长期反思（轨迹级错误识别）
+    - 执行(Execution): GUI Grounding 和动作参数预测
+    - 评估(Evaluation): 成功判断、指令生成、时序排列
 
 - **应用任务(Application)**: 评估端到端执行能力
-  - GUI Grounding: 给定截图+指令，选择正确交互位置
-  - Offline Agent: 静态快照中迭代预测下一步动作
-  - Online Agent: 真机环境完整执行任务
+    - GUI Grounding: 给定截图+指令，选择正确交互位置
+    - Offline Agent: 静态快照中迭代预测下一步动作
+    - Online Agent: 真机环境完整执行任务
 
 ### 数据采集
 

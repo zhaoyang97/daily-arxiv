@@ -48,7 +48,7 @@
      - $r_{\text{acc}}$: 最终判断是否正确 (±1)
      - $r_{\text{proxy}}$: 冻结代理能否用 rubric 做出正确判断 (±1)
      - $r_{\text{format}}$: 输出格式是否规范 (0/1)
-   - 设计动机：$r_{\text{acc}}$ 保证最终答案正确，$r_{\text{proxy}}$ 保证 rubric 有真正的信息量而非 post-hoc rationalization。代理冻结防止共适应。
+    - 设计动机：$r_{\text{acc}}$ 保证最终答案正确，$r_{\text{proxy}}$ 保证 rubric 有真正的信息量而非 post-hoc rationalization。代理冻结防止共适应。
 
 ### 训练细节
 - 基座模型：Qwen2.5-VL-7B-Instruct
